@@ -1,6 +1,6 @@
 {
   "users": {
-    "b7KrKKOyjkcn6TcjPvgqLt0h5Mm2": { "settings":  {
+    "b7KrKKOyjkcn6TcjPvgqLt0h5Mm2": {
       "boxes": {
         "-4ugoerpC6PMLUtFYnRc": { "name": "Lodge" },
         "dkgC3kfhLpkKBysY_C-9": { "name": "The Other Lodge" }
@@ -8,9 +8,9 @@
       "username": "Thor Nilsson",
       "darkmode": true,
       "nfc": "UzHZe9L8Ig3Lgv2YaGB9"
-    }}
+    }
   },
-  "boxes" : { "dkgC3kfhLpkKBysY_C-9": {
+  "keyboxes" : { "dkgC3kfhLpkKBysY_C-9": {
     "name" : "Lodge",
     "description" : "You can find the box at the back side of the red house.",
     "latitude" : "17.640698",
@@ -33,7 +33,7 @@
       "keyId" : "sdu3763jhba2qlghasd23312sad2ah32",
       "customMessage" : "Bastun är redan varm när ni kommer framm.",
       "privateMessage" : "Se till att sätta på bastu och lämna tillbaka nyckeln innan 11:30",
-      "role": "Guest"
+      "role": "guest"
     },"kOc3bjffGdfbHjzBy21X": {
       "url" : "https://firebasesomething.kms.com/uiy3249e6ysfdugsd987f37",
       "checkIn" : "2022-03-24 12:00",
@@ -42,7 +42,7 @@
       "keyId" : "sdu3763jhba2qlghasd23312sad2ah32",
       "customMessage" : "Bastun är redan varm när ni kommer framm.",
       "privateMessage" : "Se till att sätta på bastu och lämna tillbaka nyckeln innan 11:30",
-      "role": "Guest"
+      "role": "guest"
     }, "etwEJeFjuAt3Ibwglrf_": {
       "url" : "https://firebasesomething.kms.com/uiy3249e6ysfdugsd987f37",
       "checkIn" : "2022-03-24 12:00",
@@ -51,7 +51,7 @@
       "keyId" : "sdu3763jhba2qlghasd23312sad2ah32",
       "customMessage" : "Bastun är redan varm när ni kommer framm.",
       "privateMessage" : "Se till att sätta på bastu och lämna tillbaka nyckeln innan 11:30",
-      "role": "Guest"
+      "role": "staff"
     }},
 
 
@@ -62,6 +62,7 @@
       "description" : "The room is located to the under of the kitchen.",
       "image" : "https://www.italianbark.com/wp-content/uploads/2018/01/hotel-room-design-trends-italianbark-interior-design-blog.jpg",
       "keySlot" : 1,
+      "defaultKeySlot" : 1,
       "nfc" : "044F7132214B80",
       "longitude" : "59.858863",
       "latitude" : "17.640698"
@@ -72,6 +73,7 @@
       "description" : "The room is located to the on top of the kitchen.",
       "image" : "https://www.italianbark.com/wp-content/uploads/2018/01/hotel-room-design-trends-italianbark-interior-design-blog.jpg",
       "keySlot" : 2,
+      "defaultKeySlot" : 2,
       "nfc" : "044F7132214B80",
       "longitude" : "59.858863",
       "latitude" : "17.640698"
@@ -81,7 +83,8 @@
       "defaultCheckOutTime" : "11:00",
       "description" : "The room is located to the right of the kitchen.",
       "image" : "https://www.italianbark.com/wp-content/uploads/2018/01/hotel-room-design-trends-italianbark-interior-design-blog.jpg",
-      "keySlot" : 2,
+      "keySlot" : 3,
+      "defaultKeySlot" : 3,
       "nfc" : "044F7132214B80",
       "longitude" : "59.858863",
       "latitude" : "17.640698"
@@ -92,6 +95,7 @@
       "description" : "The room is located to the left of the kitchen.",
       "image" : "https://www.italianbark.com/wp-content/uploads/2018/01/hotel-room-design-trends-italianbark-interior-design-blog.jpg",
       "keySlot" : 0,
+      "defaultKeySlot" : 4,
       "nfc" : "044F7132214B80",
       "longitude" : "59.858863",
       "latitude" : "17.640698"
@@ -152,8 +156,8 @@
     "accessingBooking": {
       "bookingId" : "kOc3bjffGdfbHjzBy21X",
       "userId" : "b7KrKKOyjkcn6TcjPvgqLt0h5Mm2",
-      "accessRequested": "2022-03-6 14:28",
-      "accessExpired": "2022-03-6 14:29",
+      "accessRequested": "2022-4-07T10:20:51.141Z",
+      "accessExpired": "2022-10-07T10:20:51.141Z",
       "name" : "Guest Name",
       "keyId" : "Y9KTAx4aVFfzFmne5GUK"
     }
