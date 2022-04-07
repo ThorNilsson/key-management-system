@@ -1,0 +1,163 @@
+{
+  "users": {
+    "b7KrKKOyjkcn6TcjPvgqLt0h5Mm2": { "settings":  {
+      "boxes": {
+        "-4ugoerpC6PMLUtFYnRc": { "name": "Lodge" },
+        "dkgC3kfhLpkKBysY_C-9": { "name": "The Other Lodge" }
+      },
+      "username": "Thor Nilsson",
+      "darkmode": true,
+      "nfc": "UzHZe9L8Ig3Lgv2YaGB9"
+    }}
+  },
+  "boxes" : { "dkgC3kfhLpkKBysY_C-9": {
+    "name" : "Lodge",
+    "description" : "You can find the box at the back side of the red house.",
+    "latitude" : "17.640698",
+    "longitude" : "59.858863",
+    "nrOfKeySlots" : 16,
+    "image" : "https://images.sembo.se/ImageService/ImageHandler.ashx?service=sembo&nameOfImage=189789.jpg&resizeMode=FitOutside&width=1220&height=768&formatSettings=jpeg(quality-90)",
+
+    "accessTags": {
+      "UzHZe9L8Ig3Lgv2YaGB9": {"name": "Thor Nilsson", "role":  "admin"},
+      "R13G4llmDID4IGp4nauD": {"name": "Städare Olle", "role":  "staff"},
+      "PAd6n5UC7TCEPyBT916X": {"name": "Städare Karin", "role":  "staff"}
+    },
+
+    "bookings" :
+    {"-4ugoerpC6PMLUtFYnRc": {
+      "url" : "https://firebasesomething.kms.com/uiy3249e6ysfdugsd987f37",
+      "checkIn" : "2022-03-24 12:00",
+      "checkOut" : "2022-03-25 11:00",
+      "name" : "ola salo",
+      "keyId" : "sdu3763jhba2qlghasd23312sad2ah32",
+      "customMessage" : "Bastun är redan varm när ni kommer framm.",
+      "privateMessage" : "Se till att sätta på bastu och lämna tillbaka nyckeln innan 11:30",
+      "role": "Guest"
+    },"kOc3bjffGdfbHjzBy21X": {
+      "url" : "https://firebasesomething.kms.com/uiy3249e6ysfdugsd987f37",
+      "checkIn" : "2022-03-24 12:00",
+      "checkOut" : "2022-03-25 11:00",
+      "name" : "ola salo",
+      "keyId" : "sdu3763jhba2qlghasd23312sad2ah32",
+      "customMessage" : "Bastun är redan varm när ni kommer framm.",
+      "privateMessage" : "Se till att sätta på bastu och lämna tillbaka nyckeln innan 11:30",
+      "role": "Guest"
+    }, "etwEJeFjuAt3Ibwglrf_": {
+      "url" : "https://firebasesomething.kms.com/uiy3249e6ysfdugsd987f37",
+      "checkIn" : "2022-03-24 12:00",
+      "checkOut" : "2022-03-25 11:00",
+      "name" : "ola salo",
+      "keyId" : "sdu3763jhba2qlghasd23312sad2ah32",
+      "customMessage" : "Bastun är redan varm när ni kommer framm.",
+      "privateMessage" : "Se till att sätta på bastu och lämna tillbaka nyckeln innan 11:30",
+      "role": "Guest"
+    }},
+
+
+    "keys" : {"RTl834Mvl3NwTn08gDHb": {
+      "name" : "Room 1",
+      "defaultCheckInTime" : "12:00",
+      "defaultCheckOutTime" : "11:00",
+      "description" : "The room is located to the under of the kitchen.",
+      "image" : "https://www.italianbark.com/wp-content/uploads/2018/01/hotel-room-design-trends-italianbark-interior-design-blog.jpg",
+      "keySlot" : 1,
+      "nfc" : "044F7132214B80",
+      "longitude" : "59.858863",
+      "latitude" : "17.640698"
+    },"hq-lFTxa29mB4wyfMrW-": {
+      "name" : "Room 5",
+      "defaultCheckInTime" : "12:00",
+      "defaultCheckOutTime" : "11:00",
+      "description" : "The room is located to the on top of the kitchen.",
+      "image" : "https://www.italianbark.com/wp-content/uploads/2018/01/hotel-room-design-trends-italianbark-interior-design-blog.jpg",
+      "keySlot" : 2,
+      "nfc" : "044F7132214B80",
+      "longitude" : "59.858863",
+      "latitude" : "17.640698"
+    } ,"Y9KTAx4aVFfzFmne5GUK": {
+      "name" : "Room 1",
+      "defaultCheckInTime" : "12:00",
+      "defaultCheckOutTime" : "11:00",
+      "description" : "The room is located to the right of the kitchen.",
+      "image" : "https://www.italianbark.com/wp-content/uploads/2018/01/hotel-room-design-trends-italianbark-interior-design-blog.jpg",
+      "keySlot" : 2,
+      "nfc" : "044F7132214B80",
+      "longitude" : "59.858863",
+      "latitude" : "17.640698"
+    } ,"nhv8bzZtTbSf3e65GeiH": {
+      "name" : "Room 2",
+      "defaultCheckInTime" : "12:00",
+      "defaultCheckOutTime" : "11:00",
+      "description" : "The room is located to the left of the kitchen.",
+      "image" : "https://www.italianbark.com/wp-content/uploads/2018/01/hotel-room-design-trends-italianbark-interior-design-blog.jpg",
+      "keySlot" : 0,
+      "nfc" : "044F7132214B80",
+      "longitude" : "59.858863",
+      "latitude" : "17.640698"
+    }  },
+
+
+    "log" : {
+      "W8XbLV3Hn9aVyCY2weZ7": {
+        "message": "Box Opened",
+        "bookingId" : null,
+        "userId" : "b7KrKKOyjkcn6TcjPvgqLt0h5Mm2",
+        "name": "Thor Nilsson",
+        "time": "2022-03-6 14:29:13",
+        "isOpen": true
+      },
+      "gU9VWBc5WMQt4BNS_9LA": {
+        "message": "Room 1 key accessed",
+        "bookingId" : null,
+        "userId" : "b7KrKKOyjkcn6TcjPvgqLt0h5Mm2",
+        "name": "Thor Nilsson",
+        "time": "2022-03-6 14:29:20",
+        "isOpen": true
+      },
+      "btdPFsykeg7MH06z9mjn": {
+        "message": "Box Closed",
+        "bookingId" : null,
+        "userId" : "b7KrKKOyjkcn6TcjPvgqLt0h5Mm2",
+        "name": "Thor Nilsson",
+        "time": "2022-03-6 14:29:25",
+        "isOpen": false
+      },
+      "lE7U73jPS6vvhTFAC-xm": {
+        "message": "Box Opened",
+        "bookingId" : "kOc3bjffGdfbHjzBy21X",
+        "userId" : null,
+        "name": "Guest Name",
+        "time": "2022-03-6 11:44:10",
+        "isOpen": true
+      },
+      "_IugmDYm_0kKDsUktvtT": {
+        "message": "Room 1 accessed",
+        "bookingId" : "kOc3bjffGdfbHjzBy21X",
+        "userId" : null,
+        "name": "Guest Name",
+        "time": "2022-03-8 11:44:15",
+        "isOpen": true
+      },
+      "Gcfqj5NMUASr33xi6l0y": {
+        "message": "Box Closed",
+        "bookingId" : "kOc3bjffGdfbHjzBy21X",
+        "userId" : null,
+        "name": "Guest Name",
+        "time": "2022-03-6 11:44:20",
+        "isOpen": true
+      }
+    },
+
+    "accessingBooking": {
+      "bookingId" : "kOc3bjffGdfbHjzBy21X",
+      "userId" : "b7KrKKOyjkcn6TcjPvgqLt0h5Mm2",
+      "accessRequested": "2022-03-6 14:28",
+      "accessExpired": "2022-03-6 14:29",
+      "name" : "Guest Name",
+      "keyId" : "Y9KTAx4aVFfzFmne5GUK"
+    }
+  }
+
+  }
+}
