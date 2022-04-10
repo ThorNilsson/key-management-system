@@ -29,20 +29,20 @@
 #define DHTTYPE DHT11   // DHT 11
 
 /* 1. Define the WiFi credentials */
-#define WIFI_SSID "THOR"
-#define WIFI_PASSWORD "123456789"
+#define WIFI_SSID ""
+#define WIFI_PASSWORD ""
 
 //For the following credentials, see examples/Authentications/SignInAsUser/EmailPassword/EmailPassword.ino
 
 /* 2. Define the API Key */
-#define API_KEY "AIzaSyDgE_QZ2qTkDJ5S1_0NDaXWuLdnG7xqTpY"
+#define API_KEY ""
 
 /* 3. Define the RTDB URL */
-#define DATABASE_URL "key-management-system-40057-default-rtdb.europe-west1.firebasedatabase.app" //<databaseName>.firebaseio.com or <databaseName>.<region>.firebasedatabase.app
+#define DATABASE_URL "" //<databaseName>.firebaseio.com or <databaseName>.<region>.firebasedatabase.app
 
 /* 4. Define the user Email and password that alreadey registerd or added in your project */
-#define USER_EMAIL "esp8266@kms.com"
-#define USER_PASSWORD "==ycRc+qZy2j?Adm"
+#define USER_EMAIL ""
+#define USER_PASSWORD ""
 
 //Define Firebase Data object
 FirebaseData fbdo;
