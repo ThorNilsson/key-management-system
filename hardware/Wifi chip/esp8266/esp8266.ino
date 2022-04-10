@@ -13,14 +13,15 @@
 #include <addons/RTDBHelper.h>
 #define DHTTYPE DHT11   // DHT 11
 
-#define WIFI_SSID "THOR"
-#define WIFI_PASSWORD "123456789"
-#define API_KEY "AIzaSyDgE_QZ2qTkDJ5S1_0NDaXWuLdnG7xqTpY"
-#define DATABASE_URL "key-management-system-40057-default-rtdb.europe-west1.firebasedatabase.app" //<databaseName>.firebaseio.com or <databaseName>.<region>.firebasedatabase.app
-#define USER_EMAIL "esp8266@kms.com"
-#define USER_PASSWORD "==ycRc+qZy2j?Adm"
-#define KEYBOX_ID = "dkgC3kfhLpkKBysY_C-9";
+#define WIFI_SSID ""
+#define WIFI_PASSWORD ""
+#define API_KEY ""
+#define DATABASE_URL ""
+#define USER_EMAIL ""
+#define USER_PASSWORD ""
+#define KEYBOX_ID = ""
 
+//RFID: https://www.youtube.com/watch?v=SQIGilMagm0&t=185s
 //Define Pins
 /*
 const int button_Pin = A0; //D5

@@ -1,60 +1,52 @@
-/*
- *  Created by TheCircuit
+/* Read RFID Tag with RC522 RFID Reader
+    Made by miliohm.com
 */
-
-#define SS_PIN 4  //D2
-#define RST_PIN 5 //D1
-
 #include <SPI.h>
 #include <MFRC522.h>
+constexpr uint8_t RST_PIN = D3;     // Configurable, see typical pin layout above
+constexpr uint8_t SS_PIN = D4;     // Configurable, see typical pin layout above
+MFRC522 rfid(SS_PIN, RST_PIN); // Instance of the class
+MFRC522::MIFARE_Key key;
 
-MFRC522 mfrc522(SS_PIN, RST_PIN);   // Create MFRC522 instance.
-int statuss = 0;
-int out = 0;
-void setup() 
-{
-  Serial.begin(9600);   // Initiate a serial communication
-  SPI.begin();      // Initiate  SPI bus
-  mfrc522.PCD_Init();   // Initiate MFRC522
+
+
+String tag;
+void setup() {
+  Serial.begin(9600);
+  SPI.begin(); // Init SPI bus
+  rfid.PCD_Init(); // Init MFRC522
+  pinMode(D1, OUTPUT);
 }
-void loop() 
-{
-  // Look for new cards
-  if ( ! mfrc522.PICC_IsNewCardPresent()) 
-  {
+void loop() {
+  if ( ! rfid.PICC_IsNewCardPresent())
     return;
+  if (rfid.PICC_ReadCardSerial()) {
+    for (byte i = 0; i < 4; i++) {
+      tag += rfid.uid.uidByte[i];
+    }
+    Serial.println(tag);
+    if (tag == "24213714427") {
+      Serial.println("Access Granted!");
+      digitalWrite(D1, HIGH);
+      delay(100);
+      digitalWrite(D1, LOW);
+      delay(100);
+      digitalWrite(D1, HIGH);
+      delay(100);
+      digitalWrite(D1, LOW);
+      delay(100);
+      digitalWrite(D1, HIGH);
+      delay(100);
+      digitalWrite(D1, LOW);
+      delay(100);
+    } else {
+      Serial.println("Access Denied!");
+      digitalWrite(D1, HIGH);
+      delay(2000);
+      digitalWrite(D1, LOW);
+    }
+    tag = "";
+    rfid.PICC_HaltA();
+    rfid.PCD_StopCrypto1();
   }
-  // Select one of the cards
-  if ( ! mfrc522.PICC_ReadCardSerial()) 
-  {
-    return;
-  }
-  //Show UID on serial monitor
-  Serial.println();
-  Serial.print(" UID tag :");
-  String content= "";
-  byte letter;
-  for (byte i = 0; i < mfrc522.uid.size; i++) 
-  {
-     Serial.print(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " ");
-     Serial.print(mfrc522.uid.uidByte[i], HEX);
-     content.concat(String(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " "));
-     content.concat(String(mfrc522.uid.uidByte[i], HEX));
-  }
-  content.toUpperCase();
-  Serial.println();
-  if (content.substring(1) == "8E 39 32 50") //change UID of the card that you want to give access
-  {
-    Serial.println(" Access Granted ");
-    Serial.println(" Welcome Mr.Circuit ");
-    delay(1000);
-    Serial.println(" Have FUN ");
-    Serial.println();
-    statuss = 1;
-  }
-  
-  else   {
-    Serial.println(" Access Denied ");
-    delay(3000);
-  }
-} 
+}
