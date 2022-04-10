@@ -12,7 +12,7 @@ MFRC522::MIFARE_Key key;
 
 String tag;
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   SPI.begin(); // Init SPI bus
   rfid.PCD_Init(); // Init MFRC522
   pinMode(D1, OUTPUT);
