@@ -1,15 +1,3 @@
-
-/**
- * Created by Adesola Samuel
- * 
- * Email:adesolasamuel2018@gmail.c0m
- * 
- * Github: https://github.com/adesolasamuel/ESP8266-NodeMCU-to-Google-Firebase
- * 
- * Copyright (c) 2022 samuel
- *
-*/
-
 #if defined(ESP32)
 #include <WiFi.h>
 #include <FirebaseESP32.h>
@@ -17,49 +5,101 @@
 #include <ESP8266WiFi.h>
 #include <FirebaseESP8266.h>
 #endif
-#include "DHT.h"
+#include <time.h>
+#include <SoftwareSerial.h>
 
-//Provide the token generation process info.
-#include <addons/TokenHelper.h>
-
-//Provide the RTDB payload printing info and other helper functions.
+#include "DHT.h" //Provide the token generation process info.
+#include <addons/TokenHelper.h> //Provide the RTDB payload printing info and other helper functions.
 #include <addons/RTDBHelper.h>
-
-#define DHTPIN 2     // Digital pin connected to the DHT sensor
 #define DHTTYPE DHT11   // DHT 11
 
-/* 1. Define the WiFi credentials */
 #define WIFI_SSID "THOR"
 #define WIFI_PASSWORD "123456789"
-
-//For the following credentials, see examples/Authentications/SignInAsUser/EmailPassword/EmailPassword.ino
-
-/* 2. Define the API Key */
 #define API_KEY "AIzaSyDgE_QZ2qTkDJ5S1_0NDaXWuLdnG7xqTpY"
-
-/* 3. Define the RTDB URL */
 #define DATABASE_URL "key-management-system-40057-default-rtdb.europe-west1.firebasedatabase.app" //<databaseName>.firebaseio.com or <databaseName>.<region>.firebasedatabase.app
-
-/* 4. Define the user Email and password that alreadey registerd or added in your project */
 #define USER_EMAIL "esp8266@kms.com"
 #define USER_PASSWORD "==ycRc+qZy2j?Adm"
+#define KEYBOX_ID = "dkgC3kfhLpkKBysY_C-9";
 
-//Define Firebase Data object
+//Define Pins
+/*
+const int button_Pin = A0; //D5
+
+const int redLedPin = 16;  //D0
+const int greenLedPin = 5; //D1
+const int lock_Pin = 4;     //D2
+const int rxPin = 0;       //D3
+const int txPin = 2;       //D4
+//const int button_Pin = 14; //D5
+const int sensor_Pin = 12; //D6
+const int buzzer_Pin = 13;     //D7
+const int DHTPin = 15;        //D8
+ */
+
+const int button_Pin = A0;//A0
+
+const int led_Pin = 16;   //D0
+const int lock_Pin = 5;   //D1
+const int sensor_Pin = 4; //D2
+
+const int RST_Pin = 0;    //D3  
+const int SDA_Pin = 2;    //D4  YELLOW
+                          //3V  RED
+                          //GND BLACK
+const int SCK_Pin = 14;   //D5  PURPLE
+const int MISO_Pin = 12;  //D6  GREEN
+const int MOSI_Pin = 13;  //D7  BLUE
+
+const int buzzer_Pin = 15;//D8
+
+//const int rx_Pin = 2;       //RX
+//const int tx_Pin = 2;       //TX
+
+
+
+//Define Data objects
 FirebaseData fbdo;
-
 FirebaseAuth auth;
 FirebaseConfig config;
+//DHT dht(DHTPin, DHTTYPE);
+//SoftwareSerial KeyArray(rxPin, txPin, false, 128);
 
+//Global Variables
 unsigned long sendDataPrevMillis = 0;
-
 unsigned long count = 0;
-DHT dht(DHTPIN, DHTTYPE);
+
+
+
+//Time data
+const char* NTP_SERVER = "se.pool.ntp.org";
+const char* TZ_INFO    = "CET-1CEST-2,M3.5.0/02:00:00,M10.5.0/03:00:00";  // enter your time zone (https://remotemonitoringsystems.ca/time-zone-abbreviations.php)
+tm timeinfo;
+time_t now;
+long unsigned lastNTPtime;
+unsigned long lastEntryTime;
+
+//Length of generated ids
+const int idLenght = 20;
+
 
 void setup()
 {
 
   Serial.begin(115200);
-  dht.begin();
+  //KeyArray.begin(115200);
+  //dht.begin();
+  
+  pinMode(button_Pin, OUTPUT);      //D0
+  
+  //pinMode(redLedPin, OUTPUT);      //D0
+  //pinMode(greenLedPin, OUTPUT);    //D1
+  pinMode(lock_Pin, OUTPUT);       //D2
+  //pinMode(button_Pin, INPUT_PULLUP);  //D5
+  pinMode(sensor_Pin, INPUT_PULLUP);  //D6
+  pinMode(buzzer_Pin, OUTPUT);      //D7
+
+
+
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   Serial.print("Connecting to Wi-Fi");
   while (WiFi.status() != WL_CONNECTED)
@@ -71,163 +111,283 @@ void setup()
   Serial.print("Connected with IP: ");
   Serial.println(WiFi.localIP());
   Serial.println();
-
   Serial.printf("Firebase Client v%s\n\n", FIREBASE_CLIENT_VERSION);
 
-  /* Assign the api key (required) */
   config.api_key = API_KEY;
-
-  /* Assign the user sign in credentials */
   auth.user.email = USER_EMAIL;
   auth.user.password = USER_PASSWORD;
-
-  /* Assign the RTDB URL (required) */
   config.database_url = DATABASE_URL;
-
-  /* Assign the callback function for the long running token generation task */
   config.token_status_callback = tokenStatusCallback; //see addons/TokenHelper.h
-
-  //Or use legacy authenticate method
-  //config.database_url = DATABASE_URL;
-  //config.signer.tokens.legacy_token = "<database secret>";
-
-  //To connect without auth in Test Mode, see Authentications/TestMode/TestMode.ino
-
-  //////////////////////////////////////////////////////////////////////////////////////////////
-  //Please make sure the device free Heap is not lower than 80 k for ESP32 and 10 k for ESP8266,
-  //otherwise the SSL connection will fail.
-  //////////////////////////////////////////////////////////////////////////////////////////////
-
   Firebase.begin(&config, &auth);
-
-  //Comment or pass false value when WiFi reconnection will control by your code or third party library
   Firebase.reconnectWiFi(true);
-
   Firebase.setDoubleDigits(5);
 
-  /** Timeout options.
+  configTime(0, 0, NTP_SERVER);
+  // See https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv for Timezone codes for your region
+  setenv("TZ", TZ_INFO, 1);
 
-  //WiFi reconnect timeout (interval) in ms (10 sec - 5 min) when WiFi disconnected.
-  config.timeout.wifiReconnect = 10 * 1000;
-
-  //Socket connection and SSL handshake timeout in ms (1 sec - 1 min).
-  config.timeout.socketConnection = 10 * 1000;
-
-  //Server response read timeout in ms (1 sec - 1 min).
-  config.timeout.serverResponse = 10 * 1000;
-
-  //RTDB Stream keep-alive timeout in ms (20 sec - 2 min) when no server's keep-alive event data received.
-  config.timeout.rtdbKeepAlive = 45 * 1000;
-
-  //RTDB Stream reconnect timeout (interval) in ms (1 sec - 1 min) when RTDB Stream closed and want to resume.
-  config.timeout.rtdbStreamReconnect = 1 * 1000;
-
-  //RTDB Stream error notification timeout (interval) in ms (3 sec - 30 sec). It determines how often the readStream
-  //will return false (error) when it called repeatedly in loop.
-  config.timeout.rtdbStreamError = 3 * 1000;
-
-  Note:
-  The function that starting the new TCP session i.e. first time server connection or previous session was closed, the function won't exit until the 
-  time of config.timeout.socketConnection.
-
-  You can also set the TCP data sending retry with
-  config.tcp_data_sending_retry = 1;
-
-  */
+  if (getNTPtime(10)) {  // wait up to 10sec to sync
+  } else {
+    Serial.println("Time not set");
+    ESP.restart();
+  }
+  showTime(timeinfo);
+  lastNTPtime = time(&now);
+  lastEntryTime = millis();
+  Serial.println();
 }
 
 void loop()
 {
-  float h = dht.readHumidity();
-  float t = dht.readTemperature();
+  /*
+    actions
+     - openGuest  //gäst öppnar via appen
+     - openAdmin  //Admin öppnar via admin panel
+     - getUid     //Läser uid och skickar till server
+     - addKey     //Läser UID uppdaterar server och lägger till nyckel i låda
 
-  if (Firebase.ready() && (millis() - sendDataPrevMillis > 15000 || sendDataPrevMillis == 0))
-  {
+
+    returnKey   //Läser UID och öppnar skåp om nyckel ska lämnas in.
+    pushLog     //Puchar en logg till databasen.
+  */
+  //float h = dht.readHumidity();
+  //float t = dht.readTemperature();
+  
+  //Serial.println(analogRead(button_Pin));
+  
+  if ( isOpenButtonPressed() && Firebase.ready() && (millis() - sendDataPrevMillis > 1000 || sendDataPrevMillis == 0)) {
     sendDataPrevMillis = millis();
-    Serial.printf("Set Temperature... %s\n", Firebase.setFloat(fbdo, F("/test/temperature"), t) ? "ok" : fbdo.errorReason().c_str());
+    notify();
+    Serial.println("Open Button Pressed, checking action");
+    String action = Firebase.getString(fbdo, F("/keyboxes/dkgC3kfhLpkKBysY_C-9/accessingBooking/action")) ? String(fbdo.to<String>()).c_str() : fbdo.errorReason().c_str();
+    Serial.println(action);
 
-    Serial.printf("Get Temperature... %s\n", Firebase.getFloat(fbdo, F("/test/temperature")) ? String(fbdo.to<float>()).c_str() : fbdo.errorReason().c_str());
+    if (action.equals("openBooking")) {
+      Serial.println("Get key by Booking");
 
-    Serial.printf("Set Humidity... %s\n", Firebase.setDouble(fbdo, F("/test/humidity"), h) ? "ok" : fbdo.errorReason().c_str());
+      if (isWithinTimePeriod()) {
+        String keyId = Firebase.getString(fbdo, F("/keyboxes/dkgC3kfhLpkKBysY_C-9/accessingBooking/keyId")) ? String(fbdo.to<String>()).c_str() : fbdo.errorReason().c_str();
+        String bookingId = Firebase.getString(fbdo, F("/keyboxes/dkgC3kfhLpkKBysY_C-9/accessingBooking/bookingId")) ? String(fbdo.to<String>()).c_str() : fbdo.errorReason().c_str();
+        String username = Firebase.getString(fbdo, F("/keyboxes/dkgC3kfhLpkKBysY_C-9/accessingBooking/name")) ? String(fbdo.to<String>()).c_str() : fbdo.errorReason().c_str();
 
-    Serial.printf("Get Humidity... %s\n", Firebase.getDouble(fbdo, F("/test/humidity")) ? String(fbdo.to<double>()).c_str() : fbdo.errorReason().c_str());
+        String keySlotPath = "/keyboxes/dkgC3kfhLpkKBysY_C-9/keys/" + keyId + "/keySlot";
+        int keySlot = Firebase.getInt(fbdo, keySlotPath) ? fbdo.to<int>() : 0;
 
-        //For the usage of FirebaseJson, see examples/FirebaseJson/BasicUsage/Create_Parse_Edit.ino
-    FirebaseJson json;
+        String printMessage = username + " tries to access key " + keySlot + ", id: " + keyId + ", Booking: " + bookingId;
+        Serial.println(printMessage);
 
-    if (count == 0)
-    {
-      json.set("value/round/" + String(count), F("cool!"));
-      json.set(F("vaue/ts/.sv"), F("timestamp"));
-      Serial.printf("Set json... %s\n", Firebase.set(fbdo, F("/test/json"), json) ? "ok" : fbdo.errorReason().c_str());
-    }
-    else
-    {
-      json.add(String(count), "smart!");
-      Serial.printf("Update node... %s\n", Firebase.updateNode(fbdo, F("/test/json/value/round"), json) ? "ok" : fbdo.errorReason().c_str());
-    }
+
+        if (keySlot != 0) {
+          if (isKeyInSlot(keySlot)) {
+            notifySuccess();
+            //unlockDoor();
+            //unlockKey();
+            
+            Serial.println(Firebase.setInt(fbdo, keySlotPath, 0) ? "Key slot set to 0" : fbdo.errorReason().c_str());
+            //closeDoor()
+            
+          } else {
+            sendLog("Get key failed, Key is not found in key box", username, bookingId, "");
+            notifyError();
+          }
+        } else {
+          sendLog("Get key failed, Key is in use acording to database", username, bookingId, "");
+          notifyError();
+        }
+      } else {
+        sendLog("Someone tried to open the box without access", "", "", "");
+        notifyError();
+      }
+    } 
     
-    Serial.println();
     
-    //For generic set/get functions.
-
-    //For generic set, use Firebase.set(fbdo, <path>, <any variable or value>)
-
-    //For generic get, use Firebase.get(fbdo, <path>).
-    //And check its type with fbdo.dataType() or fbdo.dataTypeEnum() and
-    //cast the value from it e.g. fbdo.to<int>(), fbdo.to<std::string>().
-
-    //The function, fbdo.dataType() returns types String e.g. string, boolean,
-    //int, float, double, json, array, blob, file and null.
-
-    //The function, fbdo.dataTypeEnum() returns type enum (number) e.g. fb_esp_rtdb_data_type_null (1),
-    //fb_esp_rtdb_data_type_integer, fb_esp_rtdb_data_type_float, fb_esp_rtdb_data_type_double,
-    //fb_esp_rtdb_data_type_boolean, fb_esp_rtdb_data_type_string, fb_esp_rtdb_data_type_json,
-    //fb_esp_rtdb_data_type_array, fb_esp_rtdb_data_type_blob, and fb_esp_rtdb_data_type_file (10)
-
-    count++;
+    else if (action.equals("openAdmin")) {
+      String keyId = Firebase.getString(fbdo, F("/keyboxes/dkgC3kfhLpkKBysY_C-9/accessingBooking/keyId")) ? String(fbdo.to<String>()).c_str() : fbdo.errorReason().c_str();
+      String userId = Firebase.getString(fbdo, F("/keyboxes/dkgC3kfhLpkKBysY_C-9/accessingBooking/userId")) ? String(fbdo.to<String>()).c_str() : fbdo.errorReason().c_str();
+      String username = Firebase.getString(fbdo, F("/keyboxes/dkgC3kfhLpkKBysY_C-9/accessingBooking/name")) ? String(fbdo.to<String>()).c_str() : fbdo.errorReason().c_str();
+      Serial.println(username);
+      Serial.println("OPEN ADMIN");
+    } else if (action.equals("getUid")) {
+      Serial.println("GET UID");
+    } else if (action.equals("addKey")) {
+      Serial.println("ADD KEY");
+    }
+    //String requestedTime = Firebase.getString(fbdo, F("/keyboxes/dkgC3kfhLpkKBysY_C-9/accessingBooking/accessRequested")) ? String(fbdo.to<String>()).c_str() : fbdo.errorReason().c_str();
+    //String expiredTime = Firebase.getString(fbdo, F("/keyboxes/dkgC3kfhLpkKBysY_C-9/accessingBooking/accessExpired")) ? String(fbdo.to<String>()).c_str() : fbdo.errorReason().c_str();
+    //Serial.println(expiredTime);
+    //getNTPtime(10);
+    //showTime(timeinfo);
   }
+} //Loop
+/*
+  unlock 2 - unlocks the specified key
+  status 3 - gets the status of key in lock
+
+  stat 4
+  ledg 1
+  ledr 3
+
+
+*/
+boolean unlockSlot(int slot) {
+  String command = "unlock " + slot;
+  //KeyArray.print(command);
+  //String result = KeyArray.read();
+  //return result.equls("ok");
 }
 
-/// PLEASE AVOID THIS ////
+boolean closeSlot(int slot) {
 
-//Please avoid the following inappropriate and inefficient use cases
-/**
- * 
- * 1. Call get repeatedly inside the loop without the appropriate timing for execution provided e.g. millis() or conditional checking,
- * where delay should be avoided.
- * 
- * Everytime get was called, the request header need to be sent to server which its size depends on the authentication method used, 
- * and costs your data usage.
- * 
- * Please use stream function instead for this use case.
- * 
- * 2. Using the single FirebaseData object to call different type functions as above example without the appropriate 
- * timing for execution provided in the loop i.e., repeatedly switching call between get and set functions.
- * 
- * In addition to costs the data usage, the delay will be involved as the session needs to be closed and opened too often
- * due to the HTTP method (GET, PUT, POST, PATCH and DELETE) was changed in the incoming request. 
- * 
- * 
- * Please reduce the use of swithing calls by store the multiple values to the JSON object and store it once on the database.
- * 
- * Or calling continuously "set" or "setAsync" functions without "get" called in between, and calling get continuously without set 
- * called in between.
- * 
- * If you needed to call arbitrary "get" and "set" based on condition or event, use another FirebaseData object to avoid the session 
- * closing and reopening.
- * 
- * 3. Use of delay or hidden delay or blocking operation to wait for hardware ready in the third party sensor libraries, together with stream functions e.g. Firebase.RTDB.readStream and fbdo.streamAvailable in the loop.
- * 
- * Please use non-blocking mode of sensor libraries (if available) or use millis instead of delay in your code.
- * 
- * 4. Blocking the token generation process.
- * 
- * Let the authentication token generation to run without blocking, the following code MUST BE AVOIDED.
- * 
- * while (!Firebase.ready()) <---- Don't do this in while loop
- * {
- *     delay(1000);
- * }
- * 
+  String command = "lock " + slot;
+  //KeyArray.print(command);
+
+  return digitalRead(sensor_Pin);
+}
+boolean isKeyInSlot(int slot) {
+  String command = "status " + slot;
+  //KeyArray.print(command);
+  //String readString;
+  //while (Serial.available()) {
+  //  delay(3);  //delay to allow buffer to fill
+  //  if (Serial.available() > 0) {
+   //   char c = Serial.read();  //gets one byte from serial buffer
+    //  readString += c; //makes the string readString
+   // }
+ // }
+  //String result = KeyArray.read();
+  return true;
+  //return result.equls("ok true");
+}
+
+void unlockDoor() {
+  /*
+     Implement check if door magnet is opened.
+  */
+  tone(buzzer_Pin, 1000);
+  //digitalWrite(greenLedPin, HIGH);
+  digitalWrite(lock_Pin, HIGH);
+  delay(2000);
+  noTone(buzzer_Pin);
+  digitalWrite(lock_Pin, LOW);
+  //digitalWrite(greenLedPin, LOW);
+}
+
+
+
+
+/*
+ * The wfollowing code is for now considered done ****************************************************************
  */
+void notifyError() {
+  //digitalWrite(redLedPin, HIGH);
+  tone(buzzer_Pin, 400);
+  delay(200);
+  tone(buzzer_Pin, 300);
+  delay(1000);
+  noTone(buzzer_Pin);
+  //digitalWrite(redLedPin, LOW);
+}
+
+void notifySuccess() {
+ // digitalWrite(greenLedPin, HIGH);
+  tone(buzzer_Pin, 800);
+  delay(200);
+  tone(buzzer_Pin, 1000);
+  delay(200);
+  tone(buzzer_Pin, 1300);
+  delay(200);
+  noTone(buzzer_Pin);
+  //digitalWrite(greenLedPin, LOW);
+}
+
+void notify() {
+  //digitalWrite(greenLedPin, HIGH);
+  tone(buzzer_Pin, 800);
+  delay(200);
+   noTone(buzzer_Pin);
+ // digitalWrite(greenLedPin, LOW);
+}
+
+void sendLog(String message, String userName, String bookingId, String userId) {
+  String id = generateId();
+  String logStr = "LOG: " + message + ", By " + userName + ", At: " + now + ", Door: " + isDoorOpen() + ", Booking: " + bookingId  + ", User:  " + userId;
+  Serial.println(logStr);
+  String logMessagePath = "/keyboxes/dkgC3kfhLpkKBysY_C-9/log/" + id;
+
+  FirebaseJson json;
+  json.set("isOpen", isDoorOpen());
+  json.set("message", message);
+  json.set("name", userName);
+  json.set("time", now);
+  json.set("bookingId", bookingId);
+  json.set("userId", userId);
+  Serial.println(Firebase.set(fbdo, logMessagePath, json) ? "Log deliverd." : fbdo.errorReason().c_str());
+}
+
+String generateId() {
+  byte randomValue;
+  char temp[5];
+  char letter;
+  char msg[50];     // Keep in mind SRAM limits
+  int numBytes = 20;
+  int i;
+  int charsRead;
+  memset(msg, 0, sizeof(msg));
+  for (i = 0; i < numBytes; i++) {
+    randomValue = random(0, 37);
+    msg[i] = randomValue + 'a';
+    if (randomValue > 26) {
+      msg[i] = (randomValue - 26) + '0';
+    }
+  }
+  return msg;
+}
+
+boolean isDoorOpen() {
+  return digitalRead(sensor_Pin);
+}
+boolean isOpenButtonPressed() {
+  return analogRead(button_Pin) > 300;
+}
+bool isWithinTimePeriod() {
+  int requestedTime = Firebase.getInt(fbdo, F("/keyboxes/dkgC3kfhLpkKBysY_C-9/accessingBooking/accessRequested")) ? fbdo.to<int>() : 0;
+  int expiredTime = Firebase.getInt(fbdo, F("/keyboxes/dkgC3kfhLpkKBysY_C-9/accessingBooking/accessExpired")) ? fbdo.to<int>() : 0;
+  getNTPtime(10);
+  return now > requestedTime && now < expiredTime;
+}
+
+bool getNTPtime(int sec) {
+  {
+    uint32_t start = millis();
+    do {
+      time(&now);
+      localtime_r(&now, &timeinfo);
+      Serial.print(".");
+      delay(10);
+    } while (((millis() - start) <= (1000 * sec)) && (timeinfo.tm_year < (2016 - 1900)));
+    if (timeinfo.tm_year <= (2016 - 1900)) return false;  // the NTP call was not successful
+    Serial.print("now ");  Serial.println(now);
+    char time_output[30];
+    strftime(time_output, 30, "%a  %d-%m-%y %T", localtime(&now));
+    Serial.println(time_output);
+    Serial.println();
+  }
+  return true;
+}
+
+void showTime(tm localTime) {
+  Serial.print(localTime.tm_mday);
+  Serial.print('/');
+  Serial.print(localTime.tm_mon + 1);
+  Serial.print('/');
+  Serial.print(localTime.tm_year - 100);
+  Serial.print('-');
+  Serial.print(localTime.tm_hour);
+  Serial.print(':');
+  Serial.print(localTime.tm_min);
+  Serial.print(':');
+  Serial.print(localTime.tm_sec);
+  //Serial.print(" Day of Week ");
+  //if (localTime.tm_wday == 0)   Serial.println(7);
+  //else Serial.println(localTime.tm_wday);
+}
