@@ -30,3 +30,4 @@
 *.exe
 *.out
 *.app
+/Wifi chip/esp8266/API_keys.ino
