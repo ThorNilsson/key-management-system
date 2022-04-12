@@ -1,6 +1,6 @@
 {
   "users": {
-    "b7KrKKOyjkcn6TcjPvgqLt0h5Mm2": { "settings":  {
+    "b7KrKKOyjkcn6TcjPvgqLt0h5Mm2": {
       "boxes": {
         "-4ugoerpC6PMLUtFYnRc": { "name": "Lodge" },
         "dkgC3kfhLpkKBysY_C-9": { "name": "The Other Lodge" }
@@ -8,7 +8,7 @@
       "username": "Thor Nilsson",
       "darkmode": true,
       "nfc": "UzHZe9L8Ig3Lgv2YaGB9"
-    }}
+    }
   },
   "keyboxes" : { "dkgC3kfhLpkKBysY_C-9": {
     "name" : "Lodge",
@@ -27,31 +27,31 @@
     "bookings" :
     {"-4ugoerpC6PMLUtFYnRc": {
       "url" : "https://firebasesomething.kms.com/uiy3249e6ysfdugsd987f37",
-      "checkIn" : "2022-03-24 12:00",
-      "checkOut" : "2022-03-25 11:00",
+      "checkIn" : 1649610624,
+      "checkOut" : 1649610624,
       "name" : "ola salo",
       "keyId" : "sdu3763jhba2qlghasd23312sad2ah32",
       "customMessage" : "Bastun är redan varm när ni kommer framm.",
       "privateMessage" : "Se till att sätta på bastu och lämna tillbaka nyckeln innan 11:30",
-      "role": "Guest"
+      "role": "guest"
     },"kOc3bjffGdfbHjzBy21X": {
       "url" : "https://firebasesomething.kms.com/uiy3249e6ysfdugsd987f37",
-      "checkIn" : "2022-03-24 12:00",
-      "checkOut" : "2022-03-25 11:00",
+      "checkIn" : 1649610624,
+      "checkOut" : 1649610624,
       "name" : "ola salo",
       "keyId" : "sdu3763jhba2qlghasd23312sad2ah32",
       "customMessage" : "Bastun är redan varm när ni kommer framm.",
       "privateMessage" : "Se till att sätta på bastu och lämna tillbaka nyckeln innan 11:30",
-      "role": "Guest"
+      "role": "guest"
     }, "etwEJeFjuAt3Ibwglrf_": {
       "url" : "https://firebasesomething.kms.com/uiy3249e6ysfdugsd987f37",
-      "checkIn" : "2022-03-24 12:00",
-      "checkOut" : "2022-03-25 11:00",
+      "checkIn" : 1649610624,
+      "checkOut" : 1649610624,
       "name" : "ola salo",
       "keyId" : "sdu3763jhba2qlghasd23312sad2ah32",
       "customMessage" : "Bastun är redan varm när ni kommer framm.",
       "privateMessage" : "Se till att sätta på bastu och lämna tillbaka nyckeln innan 11:30",
-      "role": "Guest"
+      "role": "staff"
     }},
 
 
@@ -63,7 +63,6 @@
       "image" : "https://www.italianbark.com/wp-content/uploads/2018/01/hotel-room-design-trends-italianbark-interior-design-blog.jpg",
       "keySlot" : 0,
       "preferredKeySlot" : 1,
-      "nfc" : "044F7132214B80",
       "longitude" : "59.858863",
       "latitude" : "17.640698"
     },"hq-lFTxa29mB4wyfMrW-": {
@@ -74,7 +73,6 @@
       "image" : "https://www.italianbark.com/wp-content/uploads/2018/01/hotel-room-design-trends-italianbark-interior-design-blog.jpg",
       "keySlot" : 2,
       "preferredKeySlot" : 2,
-      "nfc" : "044F7132214B80",
       "longitude" : "59.858863",
       "latitude" : "17.640698"
     } ,"Y9KTAx4aVFfzFmne5GUK": {
@@ -85,7 +83,6 @@
       "image" : "https://www.italianbark.com/wp-content/uploads/2018/01/hotel-room-design-trends-italianbark-interior-design-blog.jpg",
       "keySlot" : 0,
       "preferredKeySlot" : 3,
-      "nfc" : "044F7132214B80",
       "longitude" : "59.858863",
       "latitude" : "17.640698"
     } ,"nhv8bzZtTbSf3e65GeiH": {
@@ -96,7 +93,6 @@
       "image" : "https://www.italianbark.com/wp-content/uploads/2018/01/hotel-room-design-trends-italianbark-interior-design-blog.jpg",
       "keySlot" : 4,
       "preferredKeySlot" : 4,
-      "nfc" : "044F7132214B80",
       "longitude" : "59.858863",
       "latitude" : "17.640698"
     }  },
@@ -108,7 +104,7 @@
         "bookingId" : null,
         "userId" : "b7KrKKOyjkcn6TcjPvgqLt0h5Mm2",
         "name": "Thor Nilsson",
-        "time": "2022-03-6 14:29:13",
+        "time": 1649610624,
         "isOpen": true
       },
       "gU9VWBc5WMQt4BNS_9LA": {
@@ -116,7 +112,7 @@
         "bookingId" : null,
         "userId" : "b7KrKKOyjkcn6TcjPvgqLt0h5Mm2",
         "name": "Thor Nilsson",
-        "time": "2022-03-6 14:29:20",
+        "time": 1649610624,
         "isOpen": true
       },
       "btdPFsykeg7MH06z9mjn": {
@@ -124,7 +120,7 @@
         "bookingId" : null,
         "userId" : "b7KrKKOyjkcn6TcjPvgqLt0h5Mm2",
         "name": "Thor Nilsson",
-        "time": "2022-03-6 14:29:25",
+        "time": 1649610624,
         "isOpen": false
       },
       "lE7U73jPS6vvhTFAC-xm": {
@@ -132,7 +128,7 @@
         "bookingId" : "kOc3bjffGdfbHjzBy21X",
         "userId" : null,
         "name": "Guest Name",
-        "time": "2022-03-6 11:44:10",
+        "time": 1649610624,
         "isOpen": true
       },
       "_IugmDYm_0kKDsUktvtT": {
@@ -140,7 +136,7 @@
         "bookingId" : "kOc3bjffGdfbHjzBy21X",
         "userId" : null,
         "name": "Guest Name",
-        "time": "2022-03-8 11:44:15",
+        "time": 1649610624,
         "isOpen": true
       },
       "Gcfqj5NMUASr33xi6l0y": {
@@ -148,7 +144,7 @@
         "bookingId" : "kOc3bjffGdfbHjzBy21X",
         "userId" : null,
         "name": "Guest Name",
-        "time": "2022-03-6 11:44:20",
+        "time": 1649610624,
         "isOpen": true
       }
     },
