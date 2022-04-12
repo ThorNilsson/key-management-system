@@ -1,5 +1,7 @@
-import { Tabs, Tab } from "@mui/material"
+import { Tabs, Tab, Box } from "@mui/material"
 import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom"
+
+import BoxView from "../view/BoxView"
 
 const boxes = [
 	{
@@ -21,7 +23,7 @@ const boxes = [
 		latitude: 1000,
 		nrOfKeySlots: 10,
 		image: "",
-		color: "#000",
+		color: "#f44336",
 		type: "house",
 	},
 ]
@@ -29,22 +31,22 @@ const boxes = [
 const TABS = [
 	{
 		label: "Overview",
-        order: 1
+		order: 1,
 	},
 	{
 		link: "bookings",
 		label: "Bookings",
-        order: 2
+		order: 2,
 	},
 	{
 		link: "timeline",
 		label: "Timeline",
-        order: 3
+		order: 3,
 	},
 	{
 		link: "events",
 		label: "Events",
-        order: 4
+		order: 4,
 	},
 ]
 
@@ -60,18 +62,20 @@ export default function BoxPresenter() {
 	const tab = TABS.find(tab => location.pathname.indexOf(tab.link) !== -1) || TABS[0]
 
 	const handleChange = (_, newValue) => {
-        const { link } = TABS.find(tab => tab.label === newValue)
-		navigate(`/${boxId}/${link || ''}`)
+		const { link } = TABS.find(tab => tab.label === newValue)
+		navigate(`/${boxId}/${link || ""}`)
 	}
 
 	return (
 		<div>
-			{box.name}
-			<Tabs value={tab.label} onChange={handleChange}>
-				{TABS.map(tab => (
-					<Tab key={tab.label} value={tab.label} label={tab.label} />
-				))}
-			</Tabs>
+			<BoxView boxes={boxes} currentBox={box} backAction={() => navigate("/")} />
+			<Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+				<Tabs value={tab.label} onChange={handleChange}>
+					{TABS.map(tab => (
+						<Tab key={tab.label} value={tab.label} label={tab.label} />
+					))}
+				</Tabs>
+			</Box>
 
 			<Outlet />
 		</div>
