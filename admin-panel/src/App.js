@@ -22,7 +22,7 @@ export default function App() {
 						<Route index element={<OverviewPresenter />} />
 						<Route path="bookings" element={<BookingsPresenter />} />
 						<Route path="timeline" element={<TimelinePresenter />} />
-						<Route path="events" element={<EventsPresenter />} />
+						<Route path="events" element={<EventsPresenter/>} />
 					</Route>
 					<Route
 						path="*"
