@@ -1,8 +1,5 @@
 import React from 'react';
-import EventsView from './EventsView';
-import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
-import { getDatabase, ref, onValue } from "firebase/database";
+import EventsView from '../view/EventsView';
 
 export default function EventsPresenter(props) {
 
@@ -40,33 +37,27 @@ export default function EventsPresenter(props) {
     ]
 
     return (
-        <EventsView keys={data}></EventsView>
+        <EventsView keys={eventArray(data)}></EventsView>
     )
 }
 
-function fetchData() {
-    let keys = null;
-    const firebaseConfig = {
-        apiKey: "AIzaSyAUsPBPy1B5cr_U0xeB1xPU8T_7S-x_dyg",
-        authDomain: "key-management-system-40057.firebaseapp.com",
-        databaseURL: "https://key-management-system-40057-default-rtdb.europe-west1.firebasedatabase.app",
-        projectId: "key-management-system-40057",
-        storageBucket: "key-management-system-40057.appspot.com",
-        messagingSenderId: "818193873576",
-        appId: "1:818193873576:web:2e3c62dffff7d584f7a09d"
-    };
+function convertTime(time) {
+    let unix_timestamp = time;
+    var date = new Date(unix_timestamp * 1000);
+    var years = date.getFullYear();
+    var months = date.getMonth() + 1;
+    var days = date.getDate();
+    var hours = date.getHours();
+    var minutes = "0" + date.getMinutes();
+    var seconds = "0" + date.getSeconds();
+    var formattedTime = days + '/' + months + '-' + years + ' ' + hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+    return formattedTime;
+}
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    const logs = ref(db, 'keyboxes/dkgC3kfhLpkKBysY_C-9/log');
-    onValue(logs, (snapshot) => {
-        const data = snapshot.val();
-        keys = Object.values(data);
-        keys.sort(function (a, b) {
-            return parseFloat(b.time) - parseFloat(a.time);
-        });
-        console.log(keys);
-        return keys;
-    });
+function eventArray(array){
+    return array.map((event, index) => {
+        event["id"] = index;
+        event["time"] = convertTime(event["time"]);
+        return event;
+    })
 }

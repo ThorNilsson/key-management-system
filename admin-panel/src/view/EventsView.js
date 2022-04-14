@@ -1,38 +1,41 @@
-import { Card, ListGroup, ListGroupItem } from "react-bootstrap";
+import { Card, Typography } from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
+
 
 function EventsView(props) {
+
+    const columns = [
+        { field: 'id', headerName: 'ID', width: 50 },
+        { field: 'time', headerName: 'Time', width: 130 },
+        { field: 'message', headerName: 'Message', width: 130 },
+        { field: 'name', headerName: 'User', width: 130 },
+        { field: 'userId', headerName: 'User ID', width: 130 },
+        { field: 'bookingId', headerName: 'Booking ID', width: 130 },
+    ];
+    
+    const rows = [
+        { id: '1', room: '51', checkIn: '2022-03-24 12:00', checkOut: '2022-03-25 11:00', name: 'Karin Boye', role: 'guest', message: '...Protect your Realtime Database resources from abuse, such as billing fraud or phishing' },
+
+    ];
+    console.log(props.keys)
     return (
-        <div>   
-            <h1 className={"mt-3"}>Logs:</h1>
-            {props.keys.map(key => {
-                return (
-                    <Card className={"mb-4"} style={{ width: '18rem' }}>
-                        <Card.Body>
-                            <Card.Title>{key.message}</Card.Title>
-                            <ul>
-                                <li>Time: {convertTime(key.time)} </li>
-                                <li>Booking ID: {key.bookingId}</li>
-                                <li>Name: {key.name}</li>
-                                <li>UserID: {key.userId}</li>
-                            </ul>
-                        </Card.Body>
-                    </Card>
-                );
-            })}
+        <div>
+
+            <div className='tableContainer'>
+                <Typography variant="h3" sx={{ mb: 3 }}>All current bookings for key box {2}</Typography>
+                <div style={{ height: 800, width: '100%' }}>
+                    <DataGrid
+                        rows={props.keys}
+                        columns={columns}
+                        proleSize={10}
+                        rowsPerProleOptions={[10]}
+                        checkboxSelection={false}
+                        showColumnRightBorder={false}
+                    />
+                </div>
+            </div>
         </div>
     );
 }
 
-function convertTime(time) {
-    let unix_timestamp = time;
-    var date = new Date(unix_timestamp * 1000);
-    var years = date.getFullYear();
-    var months = date.getMonth() + 1;
-    var days = date.getDate();
-    var hours = date.getHours();
-    var minutes = "0" + date.getMinutes();
-    var seconds = "0" + date.getSeconds();
-    var formattedTime = days + '/' + months + '-' + years + ' ' + hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
-    return formattedTime;
-}
 export default EventsView;
