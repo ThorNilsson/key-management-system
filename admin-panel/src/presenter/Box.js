@@ -1,5 +1,7 @@
 import { Tabs, Tab, Box } from "@mui/material"
-import { Outlet, useLocation, useNavigate, useParams } from "react-router-dom"
+import { Outlet, useLocation, useNavigate, useParams, generatePath } from "react-router-dom"
+
+import { useBasePath } from "../util"
 
 import BoxView from "../view/BoxView"
 
@@ -31,22 +33,18 @@ const boxes = [
 const TABS = [
 	{
 		label: "Overview",
-		order: 1,
 	},
 	{
 		link: "bookings",
 		label: "Bookings",
-		order: 2,
 	},
 	{
 		link: "timeline",
 		label: "Timeline",
-		order: 3,
 	},
 	{
 		link: "events",
 		label: "Events",
-		order: 4,
 	},
 ]
 
@@ -54,6 +52,7 @@ export default function BoxPresenter() {
 	const { boxId } = useParams()
 	const location = useLocation()
 	const navigate = useNavigate()
+	const basePath = useBasePath()
 
 	const box = boxes.find(box => box.id === boxId)
 
@@ -68,7 +67,14 @@ export default function BoxPresenter() {
 
 	return (
 		<div>
-			<BoxView boxes={boxes} currentBox={box} backAction={() => navigate("/")} />
+			<BoxView
+				boxes={boxes}
+				currentBox={box}
+				backAction={() => navigate("/")}
+				changeBox={boxId => navigate(generatePath(basePath, { boxId }))}
+				editAction={() => alert("Edit")}
+				newKeyAction={() => alert("new Key")}
+			/>
 			<Box sx={{ borderBottom: 1, borderColor: "divider" }}>
 				<Tabs value={tab.label} onChange={handleChange}>
 					{TABS.map(tab => (
