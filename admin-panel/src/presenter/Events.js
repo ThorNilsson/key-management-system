@@ -3,11 +3,6 @@ import EventsView from '../view/EventsView';
 
 export default function EventsPresenter(props) {
 
-    /** Sortera alla objekt efter deras datum.
-     *  props.keys.sort(function(a, b) {
-        return parseFloat(b.time) - parseFloat(a.time);
-        });
-     */
     const data = [
         {
             "bookingId": "",
