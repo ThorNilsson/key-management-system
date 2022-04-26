@@ -4,15 +4,16 @@ import moment from 'moment';
 import Timeline, {
     TimelineHeaders,
     SidebarHeader,
-    DateHeader
-  } from 'react-calendar-timeline'
+    DateHeader,
+    CustomHeader
+} from 'react-calendar-timeline'
 import { Typography } from '@mui/material';
 
 class TimelineView extends React.Component {
     render() {
         return (
             <div className="Timeline">
-                <Typography variant="h3" sx={{mb: 3, mt: 3}}>Timeline of Key Status</Typography>
+                <Typography variant="h3" sx={{ mb: 3, mt: 3 }}>Timeline of Key Status</Typography>
                 <h1> </h1>
                 <Timeline
                     groups={this.props.groups}
@@ -20,14 +21,9 @@ class TimelineView extends React.Component {
                     defaultTimeStart={moment().add(-15, 'day')}
                     defaultTimeEnd={moment().add(15, 'day')}>
                     <TimelineHeaders>
-                        <SidebarHeader>
+                        <SidebarHeader headerData={{ someData: 'extra' }}>
                             {({ getRootProps }) => {
                                 return <div {...getRootProps()}>Keys</div>
-                            }}
-                        </SidebarHeader>
-                        <SidebarHeader variant="right" headerData={{ someData: 'extra' }}>
-                            {({ getRootProps, data }) => {
-                                return <div {...getRootProps()}> Right {data.someData}</div>
                             }}
                         </SidebarHeader>
                         <DateHeader unit="primaryHeader" />

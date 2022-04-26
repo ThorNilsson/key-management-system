@@ -3,6 +3,7 @@ import TimelineView from "../view/TimelineView.js";
 // make sure you include the timeline stylesheet or the timeline will not be styled
 import 'react-calendar-timeline/lib/Timeline.css'
 import moment from 'moment'
+import { rgbToHex } from "@mui/material";
 
 // npm install --save react-calendar-timeline
 
@@ -78,6 +79,7 @@ const items = [
         group: 4,
         start_time: moment().add(-15, 'day').hours(0).minutes(0).seconds(0),
         end_time: moment().add(7, 'day').hours(0).minutes(0).seconds(0),
+        selectedBgColor: 'rgb(158,14,206)',
         itemProps: {
             // these optional attributes are passed to the root <div /> of each item as <div {...itemProps} />
             'data-custom-attribute': 'Random content',
@@ -93,6 +95,6 @@ const items = [
 
 export default function TimelinePresenter() {
     return (
-        <TimelineView groups={groups} items={items}/>
+        <TimelineView groups={groups} items={items} />
     )
 }
