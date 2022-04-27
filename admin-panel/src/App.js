@@ -10,8 +10,24 @@ import TimelinePresenter from './presenter/Timeline'
 import EventsPresenter from './presenter/Events'
 
 import { Route, Routes } from "react-router-dom"
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth"
+import { useEffect, useState } from "react"
+import Login from "./components/Login"
 
 export default function App() {
+    const auth = getAuth()
+    const [user, setUser] = useState(undefined)
+
+    onAuthStateChanged(auth, user => {
+        setUser(user)
+        console.log("Auth state changed")
+    })
+
+
+
+    if(user === undefined) return <div>Loading...</div>
+    if(user === null) return <Login />
+
 	return (
 		<div>
 			<Header />
@@ -34,6 +50,7 @@ export default function App() {
 					/>
 				</Routes>
 			</Container>
+            <button onClick={() => signOut(auth)}>Sign out</button>
 		</div>
 	)
 }

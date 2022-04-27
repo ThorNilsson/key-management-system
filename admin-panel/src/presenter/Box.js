@@ -1,13 +1,17 @@
 import { Tabs, Tab, Box } from "@mui/material"
+import { useEffect, useState } from "react"
 import { Outlet, useLocation, useNavigate, useParams, generatePath } from "react-router-dom"
 
 import { useBasePath } from "../util"
 
 import BoxView from "../view/BoxView"
 
+import { db } from "../api/firebase"
+import { ref, onValue } from "firebase/database"
+
 const boxes = [
 	{
-		id: "123",
+		id: "dkgC3kfhLpkKBysY_C-9",
 		name: "Box number one",
 		description: "This is a description, It can describe the place it is located at",
 		longitude: 1000,
@@ -54,9 +58,17 @@ export default function BoxPresenter() {
 	const navigate = useNavigate()
 	const basePath = useBasePath()
 
-	const box = boxes.find(box => box.id === boxId)
+    const [box, setBox] = useState({})
+    
+    useEffect(() => {
+        const infoRef = ref(db, 'keyboxes/' + boxId + '/info');
+        onValue(infoRef, (snapshot) => {
+            const data = snapshot.val();
+            setBox(data);
+          });
+    }, [])
 
-	if (!box) return <div>Not found</div>
+	if (box === null) return <div>Not found</div>
 
 	const tab = TABS.find(tab => location.pathname.indexOf(tab.link) !== -1) || TABS[0]
 
