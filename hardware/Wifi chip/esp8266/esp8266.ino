@@ -11,6 +11,9 @@
 #include <MFRC522.h> //https://www.youtube.com/watch?v=SQIGilMagm0&t=185s
 #include <addons/TokenHelper.h> //Provide the RTDB payload printing info and other helper functions.
 #include <addons/RTDBHelper.h>
+#include <WiFiManager.h> // https://github.com/tzapu/WiFiManager
+int timeout = 120; // seconds to run for
+WiFiManager wm;
 
 #define WIFI_SSID ""
 #define WIFI_PASSWORD ""
@@ -21,17 +24,19 @@
 #define KEYBOX_ID = ""
 
 //Define Pins
-const int button_Pin = A0;//A0 rgrdg
-const int led_Pin = 16;   //D0
-const int lock_Pin = 5;   //D1
-const int sensor_Pin = 4; //D2
-const int RST_Pin = 0;    //D3
+const int button_Pin = A0;//A0 DATA PIN
+const int led_Pin = 16;   //D0 DATA 5V GND
+const int lock_Pin = 5;   //D1 DATA -> Transistor -> 12V GND
+const int sensor_Pin = 4; //D2 DATA GND
+
+const int RST_Pin = 0;    //D3  ORANGE
 const int SDA_Pin = 2;    //D4  YELLOW
-//3V  RED
-//GND BLACK
+//                          3V  RED
+//                          GND BLACK
 const int SCK_Pin = 14;   //D5  PURPLE
 const int MISO_Pin = 12;  //D6  GREEN
 const int MOSI_Pin = 13;  //D7  BLUE
+
 const int buzzer_Pin = 15;//D8
 
 //Define Data objects
@@ -59,6 +64,8 @@ String tag;
 
 void setup()
 {
+  WiFi.mode(WIFI_STA); // explicitly set mode, esp defaults to STA+AP
+
   Serial.begin(115200);
   SPI.begin();
   rfid.PCD_Init();
@@ -68,7 +75,14 @@ void setup()
   pinMode(sensor_Pin, INPUT_PULLUP); //D6
   pinMode(buzzer_Pin, OUTPUT);       //D7
 
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  //WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+
+  //wm.resetSettings();
+
+  if (wm.autoConnect("KEY Managment System")) {
+    Serial.println("failed to auto connect to wifi");
+  }
+
   Serial.print("Connecting to Wi-Fi");
   while (WiFi.status() != WL_CONNECTED)
   {
@@ -102,6 +116,27 @@ void setup()
   lastNTPtime = time(&now);
   lastEntryTime = millis();
   Serial.println();
+
+  /*
+
+    if ( ! rfid.PICC_IsNewCardPresent())
+    return;
+    if (rfid.PICC_ReadCardSerial()) {
+    for (byte i = 0; i < 4; i++) {
+      tag += rfid.uid.uidByte[i];
+    }
+    if (
+      notify(); //Give a short signal to indicate that the tag has been scanned.
+      Serial.println("A master tag has been scanned: " + tag);
+
+
+
+
+      tag = "";
+      rfid.PICC_HaltA();
+      rfid.PCD_StopCrypto1();
+    }
+  */
 }
 
 void loop()
@@ -129,7 +164,7 @@ void loop()
     } else if (action.equals("addKey")) {
       Serial.println("ADD KEY");
       //returnKey(keySlot);
-    }else {
+    } else {
       sendLog("Open button pressed, no valid action found on server.", "", "", "");
       notifyError();
     }
@@ -140,6 +175,7 @@ void loop()
     If the nfc tag is found in the array of allowed nfc tags any avaliable key can be taken out of box.
     If the nfc tag is not found anywhere in the database no access is granted.
 
+    setupWifi     //Läser UID och öppnar skåp om nyckel ska lämnas in.
     returnKey     //Läser UID och öppnar skåp om nyckel ska lämnas in.
     getKeyByNfc   //Läser UID och öppnar skåp om nyckel ska lämnas in.
   */
@@ -151,16 +187,43 @@ void loop()
     }
     notify(); //Give a short signal to indicate that the tag has been scanned.
     Serial.println("A tag has been scanned: " + tag);
+
     String accessTagPath = "/keyboxes/dkgC3kfhLpkKBysY_C-9/accessTags/" + tag + "/name";
     String keySlotPath = "/keyboxes/dkgC3kfhLpkKBysY_C-9/keys/" + tag + "/keySlot";
+    String masterTagPath = "/keyboxes/dkgC3kfhLpkKBysY_C-9/info/masterTag";
 
-    if (Firebase.getString(fbdo, keySlotPath) && fbdo.to<int>() == 0) {
+
+    if (Firebase.getString(fbdo, masterTagPath) && String(fbdo.to<String>()) == tag) {
+      notify();
+      notify();
+      wm.setConfigPortalTimeout(timeout);
+      WiFiManagerParameter kms_user("KMS_user", "Enter your username here", "", 50);
+      WiFiManagerParameter kms_pass("KMS_pass", "Enter your username here", "", 50);
+      wm.addParameter(&kms_user);
+      wm.addParameter(&kms_pass);
+      
+      if (!wm.startConfigPortal("KEY Managment System")) {
+        Serial.println("failed to connect and hit timeout");
+        delay(3000);
+        ESP.restart(); //reset and try again, or maybe put it to deep sleep
+        delay(5000);
+      }
+      sendLog("Wifi settings have been changed or viewed.", "MasterTag", "", "");
+      //if you get here you have connected to the WiFi
+      Serial.println("connected...yeey :)");
+      Serial.println(WiFi.localIP());
+
+      Serial.println(kms_user.getValue());
+      Serial.println(kms_pass.getValue());
+    }
+    else if (Firebase.getString(fbdo, keySlotPath) && fbdo.to<int>() == 0) {
       int keySlot = fbdo.to<int>();
       returnKey(keySlot);
     }
     else if (Firebase.getString(fbdo, accessTagPath)) {
       getKeyByNfc();
-    } else {
+    }
+    else {
       sendLog("Someone tried to open the box by using an unregisterd nfc tag or a nfc tag that should be in the box, Access denied.", "", "", "");
       notifyError();
     }

@@ -1,4 +1,5 @@
 void getKeyByBooking() {
+  
   if (isWithinTimePeriod()) {
     String keyId = Firebase.getString(fbdo, F("/keyboxes/dkgC3kfhLpkKBysY_C-9/accessingBooking/keyId")) ? String(fbdo.to<String>()).c_str() : fbdo.errorReason().c_str();
     String bookingId = Firebase.getString(fbdo, F("/keyboxes/dkgC3kfhLpkKBysY_C-9/accessingBooking/bookingId")) ? String(fbdo.to<String>()).c_str() : fbdo.errorReason().c_str();
