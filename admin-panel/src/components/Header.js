@@ -14,8 +14,6 @@ import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { getAuth, signOut } from "firebase/auth"
 
-const settings = ["Profile", "Account", "Dashboard", "Logout"]
-
 export default function Header() {
 	const auth = getAuth()
 	const navigate = useNavigate()
@@ -41,9 +39,7 @@ export default function Header() {
 							navigate("/")
 						}}
 					>
-						<Typography variant="h6" noWrap component="div" sx={{ mr: 2 }}>
-							LOGO
-						</Typography>
+						<img src="/logo-box.png" alt="logo" height="30px" />
 					</Link>
 				</Box>
 
