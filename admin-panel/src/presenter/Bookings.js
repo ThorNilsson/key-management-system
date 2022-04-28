@@ -12,8 +12,6 @@ export default function BookingsPresenter() {
 
     if(error) return <div>Something went wrong</div>
 
-    console.log(bookings)
-
     return (
         <BookingsView columns={columns} loading={loading} rows={bookings.map(b => ({...b.val(), id: b.key}))}/>
     )

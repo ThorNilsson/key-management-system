@@ -5,7 +5,6 @@ import {
 	CottageRounded,
 	Edit,
 	HouseRounded,
-	Image,
 	Key,
 } from "@mui/icons-material"
 import { Button, Stack, Box, Typography, Select, MenuItem, Skeleton } from "@mui/material"
@@ -20,8 +19,6 @@ export default function BoxView({ boxes, currentBox, backAction, changeBox, edit
 	let Icon
 	if (currentBox) Icon = ICONS[currentBox.type] || HouseRounded
 
-	console.log(boxes, currentBox)
-
 	const DropDownIcon = props => <ArrowDropDownRounded {...props} sx={{ fontSize: 40 }} />
 
 	return (
@@ -32,13 +29,19 @@ export default function BoxView({ boxes, currentBox, backAction, changeBox, edit
 			<Box sx={{ flexGrow: 1 }}>
 				<Stack direction="row" spacing={3}>
 					{currentBox ? (
-                        <>
-                            {currentBox.image != null && currentBox.image != "" ? (
-                                <img src={currentBox.image} width={100} height={100} className="profile" />
-                            ) : (
-                                <Icon sx={{ fontSize: 100, color: currentBox.color }} />
-                            )}
-                        </>
+						<>
+							{currentBox.image && currentBox.image != "" ? (
+								<img
+									src={currentBox.image}
+									width={100}
+									height={100}
+									alt={"image for " + currentBox.name}
+									className="profile"
+								/>
+							) : (
+								<Icon sx={{ fontSize: 100, color: currentBox.color }} />
+							)}
+						</>
 					) : (
 						<Skeleton variant="circular" width={100} height={100} />
 					)}

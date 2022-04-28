@@ -7,7 +7,7 @@ import { useBasePath } from "../util"
 import BoxView from "../view/BoxView"
 
 import { db } from "../api/firebase"
-import { ref, onValue, get } from "firebase/database"
+import { ref, get } from "firebase/database"
 import { getAuth } from "firebase/auth"
 import { useListVals } from "react-firebase-hooks/database"
 
@@ -38,9 +38,9 @@ export default function BoxPresenter() {
 
 	const [box, setBox] = useState(null)
 	const [boxes, setBoxes] = useState(null)
-	const [boxIds, _, boxIdsError] = useListVals(ref(db, `users/${currentUser.uid}/boxes`))
+	const [boxIds, , boxIdsError] = useListVals(ref(db, `users/${currentUser.uid}/boxes`))
 
-    // Fetch boxes
+	// Fetch boxes
 	useEffect(() => {
 		if (!boxIds || boxIdsError) return
 		const promises = boxIds.map(id => get(ref(db, "keyboxes/" + id + "/info")))
@@ -49,10 +49,10 @@ export default function BoxPresenter() {
 			.catch(error => console.error(error))
 	}, [boxIds, boxIdsError])
 
-    // Keep track of current box
+	// Keep track of current box
 	useEffect(() => {
-        if(!boxes) return
-        setBox(boxes.find(b => b.id == boxId))
+		if (!boxes) return
+		setBox(boxes.find(b => b.id === boxId))
 	}, [boxId, boxes, boxIdsError])
 
 	if (box === null) return <div>Not found</div>
@@ -63,8 +63,6 @@ export default function BoxPresenter() {
 		const { link } = TABS.find(tab => tab.label === newValue)
 		navigate(`/${boxId}/${link || ""}`)
 	}
-
-    console.log(box)
 
 	return (
 		<div>
@@ -83,9 +81,9 @@ export default function BoxPresenter() {
 					))}
 				</Tabs>
 			</Box>
-            <Box sx={{py: 2}}>
-			    <Outlet />
-            </Box>
+			<Box sx={{ py: 2 }}>
+				<Outlet />
+			</Box>
 		</div>
 	)
 }
