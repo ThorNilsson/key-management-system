@@ -5,9 +5,10 @@ import {
 	CottageRounded,
 	Edit,
 	HouseRounded,
+	Image,
 	Key,
 } from "@mui/icons-material"
-import { Button, Stack, Box, Typography, Select, MenuItem } from "@mui/material"
+import { Button, Stack, Box, Typography, Select, MenuItem, Skeleton } from "@mui/material"
 
 const ICONS = {
 	apartment: ApartmentRounded,
@@ -16,7 +17,10 @@ const ICONS = {
 }
 
 export default function BoxView({ boxes, currentBox, backAction, changeBox, editAction, newKeyAction }) {
-	const Icon = ICONS[currentBox.type] || HouseRounded
+	let Icon
+	if (currentBox) Icon = ICONS[currentBox.type] || HouseRounded
+
+	console.log(boxes, currentBox)
 
 	const DropDownIcon = props => <ArrowDropDownRounded {...props} sx={{ fontSize: 40 }} />
 
@@ -27,29 +31,50 @@ export default function BoxView({ boxes, currentBox, backAction, changeBox, edit
 			</Button>
 			<Box sx={{ flexGrow: 1 }}>
 				<Stack direction="row" spacing={3}>
-					<Icon sx={{ fontSize: 100, color: currentBox.color }} />
+					{currentBox ? (
+                        <>
+                            {currentBox.image != null && currentBox.image != "" ? (
+                                <img src={currentBox.image} width={100} height={100} className="profile" />
+                            ) : (
+                                <Icon sx={{ fontSize: 100, color: currentBox.color }} />
+                            )}
+                        </>
+					) : (
+						<Skeleton variant="circular" width={100} height={100} />
+					)}
 					<Box>
-						<Select
-							variant="standard"
-							value={currentBox.id}
-							onChange={event => changeBox(event.target.value)}
-							IconComponent={DropDownIcon}
-							renderValue={value => (
-								<Typography variant="h1">{boxes.find(box => box.id === value).name}</Typography>
-							)}
-							SelectDisplayProps={{ sx: { pr: "40px !important" } }}
-						>
-							{boxes.map(box => (
-								<MenuItem value={box.id}>{box.name}</MenuItem>
-							))}
-						</Select>
-						<Typography variant="body1">{currentBox.description}</Typography>
+						{currentBox && boxes ? (
+							<Select
+								variant="standard"
+								value={currentBox.id}
+								onChange={event => changeBox(event.target.value)}
+								IconComponent={DropDownIcon}
+								renderValue={value => (
+									<Typography variant="h1">{boxes.find(box => box.id === value).name}</Typography>
+								)}
+								SelectDisplayProps={{ sx: { pr: "40px !important" } }}
+							>
+								{boxes.map(box => (
+									<MenuItem value={box.id}>{box.name}</MenuItem>
+								))}
+							</Select>
+						) : (
+							<Skeleton variant="text" width={200} height={44} />
+						)}
+						{currentBox ? (
+							<Typography variant="body1">{currentBox.description}</Typography>
+						) : (
+							<>
+								<Skeleton variant="text" width={100} height={20} />
+								<Skeleton variant="text" width={150} height={20} />
+							</>
+						)}
 					</Box>
 				</Stack>
 			</Box>
 			<Box>
 				<Stack direction="column" spacing={1}>
-					<Button variant="contained" size="small" sx={{px: 2}} endIcon={<Edit />} onClick={editAction}>
+					<Button variant="contained" size="small" sx={{ px: 2 }} endIcon={<Edit />} onClick={editAction}>
 						Edit box
 					</Button>
 					<Button variant="outlined" size="small" endIcon={<Key />} onClick={newKeyAction}>

@@ -4,29 +4,26 @@ import Header from "./components/Header"
 import BoxPresenter from "./presenter/Box"
 import StartPagePresenter from "./presenter/StartPage"
 
-import OverviewPresenter from './presenter/Overview'
-import BookingsPresenter from './presenter/Bookings'
-import TimelinePresenter from './presenter/Timeline'
-import EventsPresenter from './presenter/Events'
+import OverviewPresenter from "./presenter/Overview"
+import BookingsPresenter from "./presenter/Bookings"
+import TimelinePresenter from "./presenter/Timeline"
+import EventsPresenter from "./presenter/Events"
 
 import { Route, Routes } from "react-router-dom"
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth"
-import { useEffect, useState } from "react"
+import { getAuth, signOut } from "firebase/auth"
 import Login from "./components/Login"
 
+import { useAuthState } from "react-firebase-hooks/auth"
+
+const auth = getAuth()
+
 export default function App() {
-    const auth = getAuth()
-    const [user, setUser] = useState(undefined)
+	const [user, loading, error] = useAuthState(auth)
 
-    onAuthStateChanged(auth, user => {
-        setUser(user)
-        console.log("Auth state changed")
-    })
+	if (loading) return <div>Loading...</div>
+    if (error) return <div>Could not authenticate... {/* TODO */}</div>
 
-
-
-    if(user === undefined) return <div>Loading...</div>
-    if(user === null) return <Login />
+	if (!user) return <Login />
 
 	return (
 		<div>
@@ -38,7 +35,7 @@ export default function App() {
 						<Route index element={<OverviewPresenter />} />
 						<Route path="bookings" element={<BookingsPresenter />} />
 						<Route path="timeline" element={<TimelinePresenter />} />
-						<Route path="events" element={<EventsPresenter/>} />
+						<Route path="events" element={<EventsPresenter />} />
 					</Route>
 					<Route
 						path="*"
@@ -50,7 +47,7 @@ export default function App() {
 					/>
 				</Routes>
 			</Container>
-            <button onClick={() => signOut(auth)}>Sign out</button>
+			<button onClick={() => signOut(auth)}>Sign out</button>
 		</div>
 	)
 }

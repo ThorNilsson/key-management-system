@@ -7,32 +7,9 @@ import { useBasePath } from "../util"
 import BoxView from "../view/BoxView"
 
 import { db } from "../api/firebase"
-import { ref, onValue } from "firebase/database"
-
-const boxes = [
-	{
-		id: "dkgC3kfhLpkKBysY_C-9",
-		name: "Box number one",
-		description: "This is a description, It can describe the place it is located at",
-		longitude: 1000,
-		latitude: 1000,
-		nrOfKeySlots: 10,
-		image: "",
-		color: "#000",
-		type: "apartment",
-	},
-	{
-		id: "124",
-		name: "Box number two",
-		description: "This is a description, It can describe the place it is located at",
-		longitude: 1000,
-		latitude: 1000,
-		nrOfKeySlots: 10,
-		image: "",
-		color: "#f44336",
-		type: "house",
-	},
-]
+import { ref, onValue, get } from "firebase/database"
+import { getAuth } from "firebase/auth"
+import { useListVals } from "react-firebase-hooks/database"
 
 const TABS = [
 	{
@@ -53,20 +30,30 @@ const TABS = [
 ]
 
 export default function BoxPresenter() {
+	const { currentUser } = getAuth()
 	const { boxId } = useParams()
 	const location = useLocation()
 	const navigate = useNavigate()
 	const basePath = useBasePath()
 
-    const [box, setBox] = useState({})
-    
-    useEffect(() => {
-        const infoRef = ref(db, 'keyboxes/' + boxId + '/info');
-        onValue(infoRef, (snapshot) => {
-            const data = snapshot.val();
-            setBox(data);
-          });
-    }, [])
+	const [box, setBox] = useState(null)
+	const [boxes, setBoxes] = useState(null)
+	const [boxIds, _, boxIdsError] = useListVals(ref(db, `users/${currentUser.uid}/boxes`))
+
+    // Fetch boxes
+	useEffect(() => {
+		if (!boxIds || boxIdsError) return
+		const promises = boxIds.map(id => get(ref(db, "keyboxes/" + id + "/info")))
+		Promise.all(promises)
+			.then(data => setBoxes(data.map((snap, i) => ({ ...snap.val(), id: boxIds[i] }))))
+			.catch(error => console.error(error))
+	}, [boxIds, boxIdsError])
+
+    // Keep track of current box
+	useEffect(() => {
+        if(!boxes) return
+        setBox(boxes.find(b => b.id == boxId))
+	}, [boxId, boxes, boxIdsError])
 
 	if (box === null) return <div>Not found</div>
 
@@ -76,6 +63,8 @@ export default function BoxPresenter() {
 		const { link } = TABS.find(tab => tab.label === newValue)
 		navigate(`/${boxId}/${link || ""}`)
 	}
+
+    console.log(box)
 
 	return (
 		<div>
@@ -94,8 +83,9 @@ export default function BoxPresenter() {
 					))}
 				</Tabs>
 			</Box>
-
-			<Outlet />
+            <Box sx={{py: 2}}>
+			    <Outlet />
+            </Box>
 		</div>
 	)
 }
