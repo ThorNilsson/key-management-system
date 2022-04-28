@@ -30,13 +30,13 @@ export default function BoxView({ boxes, currentBox, backAction, changeBox, edit
 				<Stack direction="row" spacing={3}>
 					{currentBox ? (
 						<>
-							{currentBox.image && currentBox.image != "" ? (
+							{currentBox.image && currentBox.image !== "" ? (
 								<img
 									src={currentBox.image}
 									width={100}
 									height={100}
 									alt={"image for " + currentBox.name}
-									className="profile"
+									className="profile cover"
 								/>
 							) : (
 								<Icon sx={{ fontSize: 100, color: currentBox.color }} />
@@ -58,7 +58,7 @@ export default function BoxView({ boxes, currentBox, backAction, changeBox, edit
 								SelectDisplayProps={{ sx: { pr: "40px !important" } }}
 							>
 								{boxes.map(box => (
-									<MenuItem value={box.id}>{box.name}</MenuItem>
+									<MenuItem value={box.id} key={box.id}>{box.name}</MenuItem>
 								))}
 							</Select>
 						) : (

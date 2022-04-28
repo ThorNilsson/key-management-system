@@ -47,7 +47,6 @@ export default function App() {
 					/>
 				</Routes>
 			</Container>
-			<button onClick={() => signOut(auth)}>Sign out</button>
 		</div>
 	)
 }

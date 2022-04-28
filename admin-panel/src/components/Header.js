@@ -11,13 +11,17 @@ import Stack from "@mui/material/Stack"
 
 import { useState } from "react"
 
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import { getAuth, signOut } from "firebase/auth"
 
 const settings = ["Profile", "Account", "Dashboard", "Logout"]
 
 export default function Header() {
+	const auth = getAuth()
+	const navigate = useNavigate()
+
 	const [anchorElUser, setAnchorElUser] = useState(null)
-    
+
 	const handleOpenUserMenu = event => {
 		setAnchorElUser(event.currentTarget)
 	}
@@ -29,16 +33,22 @@ export default function Header() {
 	return (
 		<Paper sx={{ px: 2 }} square elevation={1}>
 			<Toolbar disableGutters>
-                <Box sx={{ flexGrow: 1 }}>
-				<Link to={"/"}>
-					<Typography variant="h6" noWrap component="div" sx={{ mr: 2 }}>
-						LOGO
-					</Typography>
-				</Link>
-                </Box>
+				<Box sx={{ flexGrow: 1 }}>
+					<Link
+						to={"/"}
+						onClick={e => {
+							e.preventDefault()
+							navigate("/")
+						}}
+					>
+						<Typography variant="h6" noWrap component="div" sx={{ mr: 2 }}>
+							LOGO
+						</Typography>
+					</Link>
+				</Box>
 
-				<Stack direction="row" alignItems="center" spacing={2} >
-                    <Typography>Logged in as Kalle Elmdahl</Typography>
+				<Stack direction="row" alignItems="center" spacing={2}>
+					<Typography>Logged in as {auth.currentUser.email}</Typography>
 					<Tooltip title="Open settings">
 						<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
 							<Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
@@ -59,13 +69,23 @@ export default function Header() {
 						open={Boolean(anchorElUser)}
 						onClose={handleCloseUserMenu}
 					>
-						{settings.map(setting => (
-							<MenuItem key={setting} onClick={handleCloseUserMenu}>
-								<Typography variant="body1" component="span" textAlign="center">{setting}</Typography>
-							</MenuItem>
-						))}
+						<MenuItem onClick={handleCloseUserMenu}>
+							<Typography variant="body1" component="span" textAlign="center">
+								Edit profile
+							</Typography>
+						</MenuItem>
+						<MenuItem
+							onClick={() => {
+								handleCloseUserMenu()
+								signOut(auth)
+							}}
+						>
+							<Typography variant="body1" component="span" textAlign="center">
+								Sign out
+							</Typography>
+						</MenuItem>
 					</Menu>
-                </Stack>
+				</Stack>
 			</Toolbar>
 		</Paper>
 	)

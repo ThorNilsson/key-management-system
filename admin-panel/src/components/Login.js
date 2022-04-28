@@ -1,29 +1,118 @@
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth"
+import {
+	getAuth,
+	signInWithEmailAndPassword,
+	setPersistence,
+	browserLocalPersistence,
+	browserSessionPersistence,
+} from "firebase/auth"
 import { useState } from "react"
 
+import { Container, Box, Typography, TextField, Grid, FormControlLabel, Checkbox, Link, Button } from "@mui/material"
+
 export default function Login() {
-    const [mail, setMail] = useState("")
-    const [pass, setPass] = useState("")
+	const [email, setEmail] = useState("")
+	const [emailError, setEmailError] = useState(null)
 
-    function handleSubmit(e) {
-        e.preventDefault()
-        if(mail === "" || pass === "") return
+	const [password, setPassword] = useState("")
+	const [passwordError, setPasswordError] = useState(null)
 
-        const auth = getAuth()
+	const [persist, updatePersist] = useState(true)
 
-        signInWithEmailAndPassword(auth, mail, pass)
-			.catch(error => {
-				const errorCode = error.code
-				const errorMessage = error.message
-				console.log(errorCode, errorMessage)
-			})
-    }
+	async function handleSubmit(e) {
+		e.preventDefault()
+		setEmailError(null)
+		setPasswordError(null)
 
-    return (
-        <form onSubmit={handleSubmit}>
-            <input type="text" onChange={e => setMail(e.target.value)} value={mail} />
-            <input type="text" onChange={e => setPass(e.target.value)} value={pass} />
-            <input type="submit" />
-        </form>
-    )
+		if (email === "") return setEmailError("Enter an email")
+		if (password === "") return setPasswordError("Enter a password")
+
+		const usedPersistance = persist ? browserLocalPersistence : browserSessionPersistence
+
+		const auth = getAuth()
+
+		try {
+			await setPersistence(auth, usedPersistance)
+			await signInWithEmailAndPassword(auth, email, password)
+		} catch (error) {
+			switch (error.code) {
+				case "auth/wrong-password":
+					setPasswordError("Wrong password")
+					break
+				case "auth/user-not-found":
+					setEmailError("No user with that email")
+					break
+				case "auth/invalid-email":
+					setEmailError("Invalid email")
+					break
+
+				default:
+                    alert(error.message)
+					break
+			}
+		}
+	}
+
+	return (
+		<Container component="main" maxWidth="xs">
+			<Box
+				sx={{
+					marginTop: 8,
+					display: "flex",
+					flexDirection: "column",
+					alignItems: "center",
+				}}
+			>
+				<Typography component="h1" variant="h3">
+					Sign in
+				</Typography>
+				<Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+					<Grid container spacing={2}>
+						<Grid item xs={12}>
+							<TextField
+								fullWidth
+								error={emailError !== null}
+								helperText={emailError || ""}
+								onInput={e => setEmail(e.target.value)}
+								value={email}
+								id="email"
+								label="Email Address"
+								name="email"
+								autoComplete="email"
+							/>
+						</Grid>
+						<Grid item xs={12}>
+							<TextField
+								fullWidth
+								error={passwordError !== null}
+								helperText={passwordError || ""}
+								onInput={e => setPassword(e.target.value)}
+								value={password}
+								name="password"
+								label="Password"
+								type="password"
+								id="password"
+								autoComplete="password"
+							/>
+						</Grid>
+						<Grid item xs={12}>
+							<FormControlLabel
+								control={
+									<Checkbox
+										value="keep-logged-in"
+										checked={persist}
+										onInput={e => updatePersist(!persist)}
+										color="primary"
+									/>
+								}
+								label="Keep me logged in"
+							/>
+						</Grid>
+					</Grid>
+					<Button type="submit" fullWidth variant="contained" sx={{ mt: 1, mb: 2 }}>
+						Sign In
+					</Button>
+				</Box>
+			</Box>
+		</Container>
+	)
 }
