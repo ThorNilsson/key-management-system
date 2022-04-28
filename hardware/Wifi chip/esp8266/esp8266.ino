@@ -1,10 +1,14 @@
+#define ESP_DRD_USE_SPIFFS true
+
 #if defined(ESP32)
 #include <WiFi.h>
 #include <FirebaseESP32.h>
+
 #elif defined(ESP8266)
 #include <ESP8266WiFi.h>
 #include <FirebaseESP8266.h>
 #endif
+
 #include <time.h>
 #include <SoftwareSerial.h>
 #include <SPI.h>
@@ -12,16 +16,46 @@
 #include <addons/TokenHelper.h> //Provide the RTDB payload printing info and other helper functions.
 #include <addons/RTDBHelper.h>
 #include <WiFiManager.h> // https://github.com/tzapu/WiFiManager
+#include "Nvm.h"
+
+//#include <FS.h>
+//#include <spiffs.h>
+//#include <ArduinoJson.h>
+//#define JSON_CONFIG_FILE "/test_config.json"
+//bool shouldSaveConfig = false;
+
 int timeout = 120; // seconds to run for
 WiFiManager wm;
+char testString[50] = "Username";
+char KMS_userrname[50] = "Username";
+char KMS_password[50] = "Password";
+int testNumber = 1234;
 
-#define WIFI_SSID ""
-#define WIFI_PASSWORD ""
-#define API_KEY ""
-#define DATABASE_URL ""
-#define USER_EMAIL ""
-#define USER_PASSWORD ""
-#define KEYBOX_ID = ""
+// The layout and constructor
+static NvmField fields[] = {
+  {"userMail"     , "Your Key Management System Email"    , 32, 0},
+  {"userPass"     , "Your Key Management System Password" , 32, 0},
+  {"keyboxId"     , "NotAdded"                            , 32, 0},
+  {"masterTag"     , "NotAdded"                           , 32, 0},
+  {0              , 0                                     ,  0, 0}, // Mandatory sentinel
+};
+
+Nvm nvm(fields);
+
+char userMail  [NVM_MAX_LENZ];
+char userPass  [NVM_MAX_LENZ];
+char keyboxId  [NVM_MAX_LENZ];
+char masterTag [NVM_MAX_LENZ];
+
+//#define WIFI_SSID "THOR"
+//#define WIFI_PASSWORD "123456789"
+
+#define API_KEY "AIzaSyAUsPBPy1B5cr_U0xeB1xPU8T_7S-x_dyg"
+#define DATABASE_URL "key-management-system-40057-default-rtdb.europe-west1.firebasedatabase.app" //<databaseName>.firebaseio.com or <databaseName>.<region>.firebasedatabase.app
+
+//#define USER_EMAIL "esp8266@kms.com"
+//#define USER_PASSWORD "==ycRc+qZy2j?Adm"
+//#define KEYBOX_ID = "dkgC3kfhLpkKBysY_C-9";
 
 //Define Pins
 const int button_Pin = A0;//A0 DATA PIN
@@ -75,29 +109,47 @@ void setup()
   pinMode(sensor_Pin, INPUT_PULLUP); //D6
   pinMode(buzzer_Pin, OUTPUT);       //D7
 
+  // Dump the NVM
+  Serial.printf("Dump\n");
+  nvm.dump();
+
+  checkMastertagTag();
+
+  
+  /*
+    initial setup -> scan master tag
+    
+    //, open wifi configuration, enter wifi, email, password
+
+    wifi-OK -> user-OK -> Kör
+  
+    masterTagScanned -> edit settings
+  */
+  
   //WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 
   //wm.resetSettings();
-
-  if (wm.autoConnect("KEY Managment System")) {
+ 
+ if (wm.autoConnect("KEY Managment System")) {
     Serial.println("failed to auto connect to wifi");
   }
+  //setupFilesystemAndWiFi();
 
-  Serial.print("Connecting to Wi-Fi");
-  while (WiFi.status() != WL_CONNECTED)
-  {
-    Serial.print(".");
-    delay(300);
-  }
-  Serial.println();
+  //Serial.print("Connecting to Wi-Fi");
+  //while (WiFi.status() != WL_CONNECTED)
+  //{
+  //  Serial.print(".");
+  //  delay(300);
+  //}
+  //Serial.println();
   Serial.print("Connected with IP: ");
   Serial.println(WiFi.localIP());
   Serial.println();
   Serial.printf("Firebase Client v%s\n\n", FIREBASE_CLIENT_VERSION);
 
   config.api_key = API_KEY;
-  auth.user.email = USER_EMAIL;
-  auth.user.password = USER_PASSWORD;
+  auth.user.email = userMail;
+  auth.user.password = userPass;
   config.database_url = DATABASE_URL;
   config.token_status_callback = tokenStatusCallback; //see addons/TokenHelper.h
   Firebase.begin(&config, &auth);
@@ -201,7 +253,7 @@ void loop()
       WiFiManagerParameter kms_pass("KMS_pass", "Enter your username here", "", 50);
       wm.addParameter(&kms_user);
       wm.addParameter(&kms_pass);
-      
+
       if (!wm.startConfigPortal("KEY Managment System")) {
         Serial.println("failed to connect and hit timeout");
         delay(3000);
