@@ -4,12 +4,14 @@ import {
 	setPersistence,
 	browserLocalPersistence,
 	browserSessionPersistence,
+	sendPasswordResetEmail,
 } from "firebase/auth"
 import { useState } from "react"
 
-import { Container, Box, Typography, TextField, Grid, FormControlLabel, Checkbox, Link, Button } from "@mui/material"
+import { Container, Box, Typography, TextField, Grid, FormControlLabel, Checkbox, Button, Link } from "@mui/material"
 
 export default function Login() {
+	const auth = getAuth()
 	const [email, setEmail] = useState("")
 	const [emailError, setEmailError] = useState(null)
 
@@ -28,8 +30,6 @@ export default function Login() {
 
 		const usedPersistance = persist ? browserLocalPersistence : browserSessionPersistence
 
-		const auth = getAuth()
-
 		try {
 			await setPersistence(auth, usedPersistance)
 			await signInWithEmailAndPassword(auth, email, password)
@@ -46,7 +46,7 @@ export default function Login() {
 					break
 
 				default:
-                    alert(error.message)
+					alert(error.message)
 					break
 			}
 		}
@@ -62,7 +62,8 @@ export default function Login() {
 					alignItems: "center",
 				}}
 			>
-				<Typography component="h1" variant="h3">
+				<img src="/logo-box.png" alt="logo" width="170px" />
+				<Typography component="h1" variant="h3" sx={{ mt: 5 }}>
 					Sign in
 				</Typography>
 				<Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
@@ -111,6 +112,16 @@ export default function Login() {
 					<Button type="submit" fullWidth variant="contained" sx={{ mt: 1, mb: 2 }}>
 						Sign In
 					</Button>
+					<Typography
+						variant="body1"
+						onClick={() => {
+							const email = prompt("Enter your email")
+							sendPasswordResetEmail(auth, email)
+						}}
+						sx={{ cursor: "pointer" }}
+					>
+						Forgot password?
+					</Typography>
 				</Box>
 			</Box>
 		</Container>
