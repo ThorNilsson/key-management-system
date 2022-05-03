@@ -1,5 +1,7 @@
 import { Grid, Paper, Typography } from "@mui/material"
 
+import { Key } from "@mui/icons-material"
+
 export default function OverView({ keys }) {
 	return (
 		<div>
@@ -12,8 +14,12 @@ export default function OverView({ keys }) {
 						<Paper sx={{ p: 1 }}>
 							{key ? (
 								<>
+									<Key
+										sx={{ fontSize: 40 }}
+										style={{ opacity: key.keySlot === key.preferredKeySlot ? 1 : 0.3 }}
+									/>
 									<Typography variant="h5">{key.name}</Typography>
-									<Typography variant="body1">{key.description}</Typography>
+									<Typography variant="body2">{key.description}</Typography>
 								</>
 							) : (
 								<Typography variant="h5">Empty</Typography>

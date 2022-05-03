@@ -17,7 +17,7 @@ export default function OverviewPresenter() {
 
     keys.forEach(key => {
         const k = {...key.val(), id: key.key}
-        slots[k.keySlot] = k
+        slots[k.preferredKeySlot] = k
     })
 
 
