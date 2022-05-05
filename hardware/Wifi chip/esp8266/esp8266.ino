@@ -18,12 +18,6 @@
 #include <WiFiManager.h> // https://github.com/tzapu/WiFiManager
 #include "Nvm.h"
 
-//#include <FS.h>
-//#include <spiffs.h>
-//#include <ArduinoJson.h>
-//#define JSON_CONFIG_FILE "/test_config.json"
-//bool shouldSaveConfig = false;
-
 int timeout = 120; // seconds to run for
 WiFiManager wm;
 char testString[50] = "Username";
@@ -36,32 +30,32 @@ static NvmField fields[] = {
   {"userMail"     , "Your Key Management System Email"    , 32, 0},
   {"userPass"     , "Your Key Management System Password" , 32, 0},
   {"keyboxId"     , "NotAdded"                            , 32, 0},
-  {"masterTag"     , "NotAdded"                           , 32, 0},
+  {"masterTag"    , "NotAdded"                            , 32, 0},
   {0              , 0                                     ,  0, 0}, // Mandatory sentinel
 };
 
 Nvm nvm(fields);
+
+
+WiFiManagerParameter kms_user("KMS_user", "Enter your email here", "", 50);
+WiFiManagerParameter kms_pass("KMS_pass", "Enter your password here", "", 50);
+
 
 char userMail  [NVM_MAX_LENZ];
 char userPass  [NVM_MAX_LENZ];
 char keyboxId  [NVM_MAX_LENZ];
 char masterTag [NVM_MAX_LENZ];
 
-//#define WIFI_SSID "THOR"
-//#define WIFI_PASSWORD "123456789"
-
-#define API_KEY "AIzaSyAUsPBPy1B5cr_U0xeB1xPU8T_7S-x_dyg"
-#define DATABASE_URL "key-management-system-40057-default-rtdb.europe-west1.firebasedatabase.app" //<databaseName>.firebaseio.com or <databaseName>.<region>.firebasedatabase.app
-
-//#define USER_EMAIL "esp8266@kms.com"
-//#define USER_PASSWORD "==ycRc+qZy2j?Adm"
+#define API_KEY ""
+#define DATABASE_URL ""
 //#define KEYBOX_ID = "dkgC3kfhLpkKBysY_C-9";
 
 //Define Pins
-const int button_Pin = A0;//A0 DATA PIN
-const int led_Pin = 16;   //D0 DATA 5V GND
-const int lock_Pin = 5;   //D1 DATA -> Transistor -> 12V GND
-const int sensor_Pin = 4; //D2 DATA GND
+const int button_Pin = A0;//A0 BUTTON DATA PIN
+
+const int led_Pin = 16;   //D0 LEDS DATA 5V GND
+const int lock_Pin = 5;   //D1 LOCK DATA -> Transistor -> 12V GND
+const int sensor_Pin = 4; //D2 DOOR DATA GND
 
 const int RST_Pin = 0;    //D3  ORANGE
 const int SDA_Pin = 2;    //D4  YELLOW
@@ -71,7 +65,7 @@ const int SCK_Pin = 14;   //D5  PURPLE
 const int MISO_Pin = 12;  //D6  GREEN
 const int MOSI_Pin = 13;  //D7  BLUE
 
-const int buzzer_Pin = 15;//D8
+const int buzzer_Pin = 15;//D8 SOUND DATA GND
 
 //Define Data objects
 FirebaseData fbdo;
@@ -99,48 +93,64 @@ String tag;
 void setup()
 {
   WiFi.mode(WIFI_STA); // explicitly set mode, esp defaults to STA+AP
+  wm.setConfigPortalTimeout(timeout);
+  wm.addParameter(&kms_user);
+  wm.addParameter(&kms_pass);
 
   Serial.begin(115200);
   SPI.begin();
   rfid.PCD_Init();
 
-  pinMode(button_Pin, OUTPUT);       //D0
+  //pinMode(button_Pin, INPUT);       //A0
   pinMode(lock_Pin, OUTPUT);         //D2
-  pinMode(sensor_Pin, INPUT_PULLUP); //D6
+  pinMode(sensor_Pin, INPUT); //D6
   pinMode(buzzer_Pin, OUTPUT);       //D7
 
   // Dump the NVM
-  Serial.printf("Dump\n");
-  nvm.dump();
+  //Serial.printf("Dump\n");
+  //nvm.dump();
+  nvm.get("masterTag", masterTag);
+  nvm.get("userMail", userMail);
+  nvm.get("userPass", userPass);
+  nvm.get("keyboxId", keyboxId);
 
+  Serial.println(masterTag);
+  Serial.println(userMail);
+  Serial.println(userPass);
+  Serial.println(keyboxId);
+
+  //if no master tag is added, add one, notifies 5 beeps
   checkMastertagTag();
+  //checkUser();
 
-  
+
   /*
     initial setup -> scan master tag
-    
+
     //, open wifi configuration, enter wifi, email, password
 
     wifi-OK -> user-OK -> Kör
-  
+
     masterTagScanned -> edit settings
   */
-  
+
   //WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 
   //wm.resetSettings();
- 
- if (wm.autoConnect("KEY Managment System")) {
+
+  if (wm.autoConnect("KEY Managment System")) {
     Serial.println("failed to auto connect to wifi");
   }
   //setupFilesystemAndWiFi();
 
   //Serial.print("Connecting to Wi-Fi");
-  //while (WiFi.status() != WL_CONNECTED)
-  //{
-  //  Serial.print(".");
-  //  delay(300);
-  //}
+  /*
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    Serial.print(".");
+    delay(300);
+  }
+   */
   //Serial.println();
   Serial.print("Connected with IP: ");
   Serial.println(WiFi.localIP());
@@ -168,27 +178,7 @@ void setup()
   lastNTPtime = time(&now);
   lastEntryTime = millis();
   Serial.println();
-
-  /*
-
-    if ( ! rfid.PICC_IsNewCardPresent())
-    return;
-    if (rfid.PICC_ReadCardSerial()) {
-    for (byte i = 0; i < 4; i++) {
-      tag += rfid.uid.uidByte[i];
-    }
-    if (
-      notify(); //Give a short signal to indicate that the tag has been scanned.
-      Serial.println("A master tag has been scanned: " + tag);
-
-
-
-
-      tag = "";
-      rfid.PICC_HaltA();
-      rfid.PCD_StopCrypto1();
-    }
-  */
+  notify();
 }
 
 void loop()
@@ -215,6 +205,7 @@ void loop()
       getUid();
     } else if (action.equals("addKey")) {
       Serial.println("ADD KEY");
+      
       //returnKey(keySlot);
     } else {
       sendLog("Open button pressed, no valid action found on server.", "", "", "");
@@ -242,31 +233,10 @@ void loop()
 
     String accessTagPath = "/keyboxes/dkgC3kfhLpkKBysY_C-9/accessTags/" + tag + "/name";
     String keySlotPath = "/keyboxes/dkgC3kfhLpkKBysY_C-9/keys/" + tag + "/keySlot";
-    String masterTagPath = "/keyboxes/dkgC3kfhLpkKBysY_C-9/info/masterTag";
 
-
-    if (Firebase.getString(fbdo, masterTagPath) && String(fbdo.to<String>()) == tag) {
-      notify();
-      notify();
-      wm.setConfigPortalTimeout(timeout);
-      WiFiManagerParameter kms_user("KMS_user", "Enter your username here", "", 50);
-      WiFiManagerParameter kms_pass("KMS_pass", "Enter your username here", "", 50);
-      wm.addParameter(&kms_user);
-      wm.addParameter(&kms_pass);
-
-      if (!wm.startConfigPortal("KEY Managment System")) {
-        Serial.println("failed to connect and hit timeout");
-        delay(3000);
-        ESP.restart(); //reset and try again, or maybe put it to deep sleep
-        delay(5000);
-      }
-      sendLog("Wifi settings have been changed or viewed.", "MasterTag", "", "");
-      //if you get here you have connected to the WiFi
-      Serial.println("connected...yeey :)");
-      Serial.println(WiFi.localIP());
-
-      Serial.println(kms_user.getValue());
-      Serial.println(kms_pass.getValue());
+    // If master tag is scanned -> configureWifi (and login)
+    if (strcmp(masterTag, tag.c_str()) == 0) {
+      configureWifi();
     }
     else if (Firebase.getString(fbdo, keySlotPath) && fbdo.to<int>() == 0) {
       int keySlot = fbdo.to<int>();
@@ -283,4 +253,9 @@ void loop()
     rfid.PICC_HaltA();
     rfid.PCD_StopCrypto1();
   }
+
+  //if(ISdOORoPEN()){
+  //  sendLog("Someone tried to open the box by FOURCE and succeded, Door is open", "", "", "");
+  //}
+  
 } //Loop

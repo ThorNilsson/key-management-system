@@ -14,7 +14,7 @@ void getKeyByBooking() {
     if (keySlot != 0) {
       if (isKeyInSlot(keySlot)) {
         notifySuccess();
-        //unlockDoor();
+        unlockDoor();
         //unlockKey();
 
         Serial.println(Firebase.setInt(fbdo, keySlotPath, 0) ? "Key slot set to 0" : fbdo.errorReason().c_str());
