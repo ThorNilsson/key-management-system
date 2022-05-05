@@ -1,4 +1,5 @@
 void getKeyByBooking() {
+  
   if (isWithinTimePeriod()) {
     String keyId = Firebase.getString(fbdo, F("/keyboxes/dkgC3kfhLpkKBysY_C-9/accessingBooking/keyId")) ? String(fbdo.to<String>()).c_str() : fbdo.errorReason().c_str();
     String bookingId = Firebase.getString(fbdo, F("/keyboxes/dkgC3kfhLpkKBysY_C-9/accessingBooking/bookingId")) ? String(fbdo.to<String>()).c_str() : fbdo.errorReason().c_str();
@@ -13,7 +14,7 @@ void getKeyByBooking() {
     if (keySlot != 0) {
       if (isKeyInSlot(keySlot)) {
         notifySuccess();
-        //unlockDoor();
+        unlockDoor();
         //unlockKey();
 
         Serial.println(Firebase.setInt(fbdo, keySlotPath, 0) ? "Key slot set to 0" : fbdo.errorReason().c_str());
