@@ -1,49 +1,5 @@
-#include <FastLED.h>
 
-#define NUM_LEDS 24
-#define DATA_PIN 5
-
-CRGB leds[NUM_LEDS];
-#define BRIGHTNESS  100
-#define UPDATES_PER_SECOND 100
-#define PALETTE 0
-
-CRGBPalette16 currentPalette;
-TBlendType    currentBlending;
-static int i = 6;
-static int j = 0;
-
-void setup() {
-    FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
-    FastLED.setBrightness(  BRIGHTNESS );
-}
-
-
-void loop()
-{
-    
-    static uint8_t startIndex = 0;
-    startIndex = startIndex + 1; /* motion speed */
-
-    if(i== 14){
-      i = 6;
-      }
-    
-    if(PALETTE == 0) {Success(startIndex);}
-    if(PALETTE == 1) {Loading();}
-    if(PALETTE == 2) {Notify(startIndex);}
-    if(PALETTE == 3) {Error(startIndex);}
-    if(PALETTE == 4) {CloseBox(startIndex);}
-
-
-   
-    FastLED.show();
-    FastLED.delay(1000 / UPDATES_PER_SECOND);
-}
-
-
-
-void Success(uint8_t colorIndex)
+void SuccessLed(uint8_t colorIndex)
 {
     j += 1;
     SetupGreenAndBlackPalette();
@@ -60,10 +16,9 @@ void Success(uint8_t colorIndex)
         leds[i] = CHSV( HUE_GREEN, 255, 255);
       }
     }
-
 }
 
-void Notify( uint8_t colorIndex)
+void NotifyLed( uint8_t colorIndex)
 {
     SetupWhiteAndBlackPalette();
     uint8_t brightness = 255;
@@ -72,7 +27,7 @@ void Notify( uint8_t colorIndex)
     }
 }
 
-void Error( uint8_t colorIndex)
+void ErrorLed( uint8_t colorIndex)
 {
     SetupRedAndBlackPalette();
     uint8_t brightness = 255;
@@ -83,7 +38,7 @@ void Error( uint8_t colorIndex)
 
 
 
-void Loading()
+void LoadingLed()
 {
 
     leds[i] = CRGB::Purple;
@@ -92,7 +47,7 @@ void Loading()
     delay(100);
 }
 
-void CloseBox( uint8_t colorIndex)
+void CloseBoxLed( uint8_t colorIndex)
 {
     uint8_t brightness = 255;
     leds[i] = CRGB::Purple;
