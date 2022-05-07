@@ -1,38 +1,69 @@
 /*
- * Makes short sound to notify to the user that something has happend.
- */
+   Makes short sound to notify to the user that something has happend.
+*/
 void notify() {
-  //digitalWrite(greenLedPin, HIGH);
   tone(buzzer_Pin, 800);
-  delay(200);
+
+  for (float i = 0.001; sin(i) > 0; i = i + 0.03) {
+    int brightness = sin(i) * 255;
+    Serial.println(brightness);
+    fill_solid(leds, 24, CRGB(brightness, brightness , brightness));
+    FastLED.show();
+  }
+
   noTone(buzzer_Pin);
-  // digitalWrite(greenLedPin, LOW);
+
+  fill_solid(leds, 24, CRGB(0, 0 , 0));
+  FastLED.show();
+
 }
 
 /*
- * Makes a success sound to notify to the user that the process succeded.
- */
+   Makes a success sound to notify to the user that the process succeded.
+*/
 void notifySuccess() {
-  // digitalWrite(greenLedPin, HIGH);
   tone(buzzer_Pin, 800);
-  delay(200);
-  tone(buzzer_Pin, 1000);
-  delay(200);
-  tone(buzzer_Pin, 1300);
-  delay(200);
+  for (float i = -1.57; i < 1.57; i = i + 0.014) {
+    Serial.print(sin(i));
+    Serial.print(" ");
+    int led = (sin(i) + 1) * 12;
+    Serial.println(led);
+    leds[led] = CRGB(0, 255 , 0);
+    FastLED.show();
+
+    if (led == 8) {
+      tone(buzzer_Pin, 1000);
+    }
+    if (led == 16) {
+      tone(buzzer_Pin, 1300);
+    }
+  }
   noTone(buzzer_Pin);
-  //digitalWrite(greenLedPin, LOW);
+
 }
 
 /*
- * Makes a error sound to notify to the user that an error occured.
- */
+   Makes a error sound to notify to the user that an error occured.
+*/
 void notifyError() {
-  //digitalWrite(redLedPin, HIGH);
+
   tone(buzzer_Pin, 400);
-  delay(200);
+  for (float i = 0.001; sin(i) > 0; i = i + 0.03) {
+    int brightness = sin(i) * 255;
+    Serial.println(brightness);
+    fill_solid(leds, 24, CRGB(brightness, 0 , 0));
+    FastLED.show();
+  }
+  fill_solid(leds, 24, CRGB(0, 0 , 0));
+  FastLED.show();
   tone(buzzer_Pin, 300);
-  delay(1000);
+
+  for (float i = 0.001; sin(i) > 0; i = i + 0.01) {
+    int brightness = sin(i) * 255;
+    Serial.println(brightness);
+    fill_solid(leds, 24, CRGB(brightness, 0 , 0));
+    FastLED.show();
+  }
+  
   noTone(buzzer_Pin);
-  //digitalWrite(redLedPin, LOW);
 }

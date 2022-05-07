@@ -9,6 +9,7 @@
 #include <FirebaseESP8266.h>
 #endif
 
+#include <FastLED.h>
 #include <time.h>
 #include <SoftwareSerial.h>
 #include <SPI.h>
@@ -17,6 +18,17 @@
 #include <addons/RTDBHelper.h>
 #include <WiFiManager.h> // https://github.com/tzapu/WiFiManager
 #include "Nvm.h"
+
+#define NUM_LEDS 24
+CRGB leds[NUM_LEDS];
+#define BRIGHTNESS  100
+#define UPDATES_PER_SECOND 100
+#define PALETTE 4
+
+CRGBPalette16 currentPalette;
+TBlendType    currentBlending;
+static int i = 6;
+static int j = 0;
 
 int timeout = 120; // seconds to run for
 WiFiManager wm;
@@ -46,15 +58,15 @@ char userPass  [NVM_MAX_LENZ];
 char keyboxId  [NVM_MAX_LENZ];
 char masterTag [NVM_MAX_LENZ];
 
-#define API_KEY ""
-#define DATABASE_URL ""
+#define API_KEY "AIzaSyAUsPBPy1B5cr_U0xeB1xPU8T_7S-x_dyg"
+#define DATABASE_URL "key-management-system-40057-default-rtdb.europe-west1.firebasedatabase.app"
 //#define KEYBOX_ID = "dkgC3kfhLpkKBysY_C-9";
 
 //Define Pins
 const int button_Pin = A0;//A0 BUTTON DATA PIN
 
-const int led_Pin = 16;   //D0 LEDS DATA 5V GND
-const int lock_Pin = 5;   //D1 LOCK DATA -> Transistor -> 12V GND
+const int lock_Pin = 16;   //D0 LEDS DATA 5V GND
+const int led_Pin = 5;   //D1 LOCK DATA -> Transistor -> 12V GND
 const int sensor_Pin = 4; //D2 DOOR DATA GND
 
 const int RST_Pin = 0;    //D3  ORANGE
@@ -92,6 +104,13 @@ String tag;
 
 void setup()
 {
+  FastLED.addLeds<NEOPIXEL, led_Pin>(leds, NUM_LEDS);
+  FastLED.setBrightness(  BRIGHTNESS );
+  leds[0] = CRGB::White; 
+   leds[1] = CRGB::White; 
+    leds[2] = CRGB::White; 
+  FastLED.show(); delay(30);
+
   WiFi.mode(WIFI_STA); // explicitly set mode, esp defaults to STA+AP
   wm.setConfigPortalTimeout(timeout);
   wm.addParameter(&kms_user);
@@ -145,12 +164,12 @@ void setup()
 
   //Serial.print("Connecting to Wi-Fi");
   /*
-  while (WiFi.status() != WL_CONNECTED)
-  {
+    while (WiFi.status() != WL_CONNECTED)
+    {
     Serial.print(".");
     delay(300);
-  }
-   */
+    }
+  */
   //Serial.println();
   Serial.print("Connected with IP: ");
   Serial.println(WiFi.localIP());
@@ -205,7 +224,7 @@ void loop()
       getUid();
     } else if (action.equals("addKey")) {
       Serial.println("ADD KEY");
-      
+
       //returnKey(keySlot);
     } else {
       sendLog("Open button pressed, no valid action found on server.", "", "", "");
@@ -257,5 +276,28 @@ void loop()
   //if(ISdOORoPEN()){
   //  sendLog("Someone tried to open the box by FOURCE and succeded, Door is open", "", "", "");
   //}
-  
+
+
+      static uint8_t startIndex = 0;
+    startIndex = startIndex + 1; /* motion speed */
+
+    if(i== 14){
+      i = 6;
+      }
+    
+    /*
+     * 
+
+     if(PALETTE == 0) {SuccessLed(startIndex);}
+    if(PALETTE == 1) {LoadingLed();}
+    if(PALETTE == 2) {NotifyLed(startIndex);}
+    if(PALETTE == 3) {ErrorLed(startIndex);}
+    if(PALETTE == 4) {CloseBoxLed(startIndex);}
+     */
+
+   SuccessLed(startIndex);
+   
+    FastLED.show();
+    FastLED.delay(1000 / UPDATES_PER_SECOND);
+
 } //Loop
