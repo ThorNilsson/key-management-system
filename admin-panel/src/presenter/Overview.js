@@ -22,6 +22,6 @@ export default function OverviewPresenter() {
 
 
     return (
-        <OverView keys={slots} />
+        <OverView keys={slots} loading={loading} />
     )
 }
