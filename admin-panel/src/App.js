@@ -10,11 +10,12 @@ import TimelinePresenter from "./presenter/Timeline"
 import EventsPresenter from "./presenter/Events"
 import EditProfilePresenter from "./presenter/EditProfile"
 
-import { Route, Routes } from "react-router-dom"
+import { Route, Routes } from "react-router-dom" 
 import { getAuth } from "firebase/auth"
 import Login from "./components/Login"
 
 import { useAuthState } from "react-firebase-hooks/auth"
+import RegisterPresenter from "./presenter/RegisterPresenter"
 
 const auth = getAuth()
 
@@ -37,6 +38,8 @@ export default function App() {
 						<Route path="bookings" element={<BookingsPresenter />} />
 						<Route path="timeline" element={<TimelinePresenter />} />
 						<Route path="events" element={<EventsPresenter />} />
+						<Route path="events" element={<EventsPresenter/>} />
+						<Route path="register" element={<RegisterPresenter/>} />
 					</Route>
                     <Route path="/edit" element={<EditProfilePresenter />} />
 					<Route
