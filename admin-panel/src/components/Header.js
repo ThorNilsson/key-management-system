@@ -9,15 +9,26 @@ import MenuItem from "@mui/material/MenuItem"
 import Paper from "@mui/material/Paper"
 import Stack from "@mui/material/Stack"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
-import { Link } from "react-router-dom"
-
-const settings = ["Profile", "Account", "Dashboard", "Logout"]
+import { Link, useNavigate } from "react-router-dom"
+import { getAuth, signOut } from "firebase/auth"
+import { db } from "../api/firebase"
+import { off, onValue, ref } from "firebase/database"
 
 export default function Header() {
+	const auth = getAuth()
+    const [username, setUsername] = useState("")
+    useEffect(() => {
+        const usernameRef = ref(db, `users/${auth.currentUser.uid}/username`)
+        const handleUsername = snapshot => setUsername(snapshot.val())
+        onValue(usernameRef, handleUsername)
+        return () => off(usernameRef, 'value', handleUsername)
+    }, [])
+	const navigate = useNavigate()
+
 	const [anchorElUser, setAnchorElUser] = useState(null)
-    
+
 	const handleOpenUserMenu = event => {
 		setAnchorElUser(event.currentTarget)
 	}
@@ -29,16 +40,20 @@ export default function Header() {
 	return (
 		<Paper sx={{ px: 2 }} square elevation={1}>
 			<Toolbar disableGutters>
-                <Box sx={{ flexGrow: 1 }}>
-				<Link to={"/"}>
-					<Typography variant="h6" noWrap component="div" sx={{ mr: 2 }}>
-						LOGO
-					</Typography>
-				</Link>
-                </Box>
+				<Box sx={{ flexGrow: 1 }}>
+					<Link
+						to={"/"}
+						onClick={e => {
+							e.preventDefault()
+							navigate("/")
+						}}
+					>
+						<img src="/logo-box.png" alt="logo" height="30px" />
+					</Link>
+				</Box>
 
-				<Stack direction="row" alignItems="center" spacing={2} >
-                    <Typography>Logged in as Kalle Elmdahl</Typography>
+				<Stack direction="row" alignItems="center" spacing={2}>
+					<Typography>Logged in as {username}</Typography>
 					<Tooltip title="Open settings">
 						<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
 							<Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
@@ -59,13 +74,26 @@ export default function Header() {
 						open={Boolean(anchorElUser)}
 						onClose={handleCloseUserMenu}
 					>
-						{settings.map(setting => (
-							<MenuItem key={setting} onClick={handleCloseUserMenu}>
-								<Typography variant="body1" component="span" textAlign="center">{setting}</Typography>
-							</MenuItem>
-						))}
+						<MenuItem onClick={() => {
+                            handleCloseUserMenu()
+                            navigate("/edit")
+                            }}>
+							<Typography variant="body1" component="span" textAlign="center">
+								Edit profile
+							</Typography>
+						</MenuItem>
+						<MenuItem
+							onClick={() => {
+								handleCloseUserMenu()
+								signOut(auth)
+							}}
+						>
+							<Typography variant="body1" component="span" textAlign="center">
+								Sign out
+							</Typography>
+						</MenuItem>
 					</Menu>
-                </Stack>
+				</Stack>
 			</Toolbar>
 		</Paper>
 	)
