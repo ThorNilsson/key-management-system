@@ -96,7 +96,7 @@ function RegisterView(props) {
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
                         >
-                            Sign In
+                            Sign Up
                         </Button>
                         <Grid container style={{textAlign: "center", display: "block"}}>
                             <Grid item>
