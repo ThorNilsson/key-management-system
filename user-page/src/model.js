@@ -1,8 +1,13 @@
-import { db } from "./firebase.js"
-import { ref, get } from "firebase/database"
-import { useList } from "react-firebase-hooks/database"
+
 class Model {
-    constructor() {
+    constructor(params) {
+        // console.log(params);
+        this.bookingId = params[1];
+        this.keyBoxId = params[2];
+
+        //const [bookings, loading, error] = useList(ref(db, `keyboxes/${keyBoxId}/bookings/${bookingId}`));
+
+
         this.boxOpen = false;
         this.bookedDate = Date.parse(new Date(2022, 3, 19, 0, 41, 0));
         this.returnDate = Date.parse(new Date(2022, 3, 20, 1, 38, 0));
@@ -14,11 +19,15 @@ class Model {
         this.targetLocation = { lng: 17.948411885183468, lat: 59.40462693468842 }
         this.setTimeUntilAccess();
         this.getDistanceToTarget();
-        console.log(this.distance)
+        this.getLinkData();
+
+       // console.log(this.distance)
     }
 
-    firebaseTest(){
-        console.log(useList(ref(db, `keyboxes/dkgC3kfhLpkKBysY_C-9/bookings`)))
+    getLinkData(){
+
+
+        //console.log(useList(ref(db, `keyboxes/dkgC3kfhLpkKBysY_C-9/bookings`)))
     }
 
     getDistanceToTarget() {
