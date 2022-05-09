@@ -21,7 +21,11 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 function RegisterView(props) {
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [password, setPassword] = useState('')
+
+    const [emailErrorText, setEmailErrorText] = useState('')
+    const [passwordErrorText, setPasswordErrorText] = useState('')
+
     const [emailError, setEmailError] = useState(false);
     const [passwordError, setPasswordError] = useState(false);
 
@@ -32,14 +36,66 @@ function RegisterView(props) {
 
         if (email == '') {
             setEmailError(true);
+
         }
-        if (password == ''){
+        else {
+            setEmailError(false);
+            setEmailErrorText('');
+        }
+        if (password == '') {
             setPasswordError(true);
         }
+        else {
+            setPasswordError(false);
+            setPasswordErrorText('');
+        }
 
-        if(email != '' && password != ''){
+        if (email != '' && password != '') {
+
             const data = new FormData(event.currentTarget);
-            createUser(data.get('email'), data.get('password'));
+
+            createUserWithEmailAndPassword(getAuth(), email, password)
+                .then((userCredentials) => {
+                    console.log(userCredentials);
+                    (async () => {
+                        try {
+                            await set(ref(db, 'users/' + userCredentials.user.uid), {
+                                username: "",
+                                email: email,
+                            });
+                        } catch (e) {
+                            console.error("Error adding document: ", e);
+                        }
+                    })();
+                })
+                .catch((error) => {
+                    switch (error.code) {
+                        case "auth/missing-email":
+                            setEmailError(true);
+                            setEmailErrorText("Email Required")
+                            break;
+                        case "auth/invalid-email":
+                            setEmailError(true);
+                            setEmailErrorText("Email is Invalid")
+                            break;
+                        case "auth/email-already-in-use":
+                            setEmailError(true);
+                            setEmailErrorText("Email already in use")
+                            break;
+                        case "auth/weak-password":
+                            setPasswordError(true);
+                            setPasswordErrorText("Password not strong enough. A password containing a combination of 6 numbers and/or letters required.");
+                            break;
+                        case "auth/internal-error":
+                            setPasswordError(true);
+                            setPasswordErrorText("Password required");
+                            break;
+                        default:
+                            setPasswordErrorText("Unknown Error");
+                            break;
+                    }
+                    console.log(error);
+                });
         }
     };
     return (
@@ -60,7 +116,7 @@ function RegisterView(props) {
                     <Typography component="h1" variant="h5">
                         Sign Up
                     </Typography>
-                    <Box component="form" onSubmit={handleSubmit}  noValidate sx={{ mt: 1 }}>
+                    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                         <TextField
                             onChange={(e) => setEmail(e.target.value)}
                             margin="normal"
@@ -71,11 +127,12 @@ function RegisterView(props) {
                             name="email"
                             autoComplete="email"
                             autoFocus
-                            error = {emailError}
+                            helperText={emailErrorText}
+                            error={emailError}
                         />
 
                         <TextField
-                        onChange={(e) => setPassword(e.target.value)}
+                            onChange={(e) => setPassword(e.target.value)}
                             margin="normal"
                             required
                             fullWidth
@@ -84,7 +141,8 @@ function RegisterView(props) {
                             type="password"
                             id="password"
                             autoComplete="current-password"
-                            error = {passwordError}
+                            helperText={passwordErrorText}
+                            error={passwordError}
                         />
                         <FormControlLabel
                             control={<Checkbox value="remember" color="primary" />}
@@ -98,7 +156,7 @@ function RegisterView(props) {
                         >
                             Sign Up
                         </Button>
-                        <Grid container style={{textAlign: "center", display: "block"}}>
+                        <Grid container style={{ textAlign: "center", display: "block" }}>
                             <Grid item>
                                 <Link href="#" variant="body2">
                                     {"Already have an account? Sign In"}
@@ -111,64 +169,5 @@ function RegisterView(props) {
         </ThemeProvider>
     );
 }
-
-function createUser(email, password) {
-
-    const user = {
-        email: {
-            email: email,
-            username: "",
-        }
-    }
-
-    console.log(db)
-    createUserWithEmailAndPassword(getAuth(), email, password)
-        .then((userCredentials) => {
-            console.log(userCredentials);
-            (async () => {
-                try {
-                    await set(ref(db, 'users/' + userCredentials.user.uid), {
-                        username: "",
-                        email: email,
-                    });
-                } catch (e) {
-                    console.error("Error adding document: ", e);
-                }
-            })();
-        })
-        .catch((error) => {
-            switch (error.code) {
-                case "auth/missing-email":
-                    const emailError = document.getElementById('email');
-                    emailError.innerHTML = "EMAIL REQUIRED";
-                    break;
-                // case "auth/invalid-email":
-                //     emailErrorMessage.style.opacity = 1;
-                //     emailErrorMessage.innerHTML = "Email is invalid.";
-                //     break;
-                // case "auth/email-already-in-use":
-                //     emailErrorMessage.style.opacity = 1;
-                //     emailErrorMessage.innerHTML = "Email already in use!";
-                //     break;
-                // case "auth/weak-password":
-                //     passwordErrorMessage.style.opacity = 1;
-                //     passwordErrorMessage.innerHTML =
-                //         "Password not strong enough. A password containing a combination of 6 numbers and/or letters required.";
-                //     break;
-                // case "auth/internal-error":
-                //     passwordErrorMessage.style.opacity = 1;
-                //     passwordErrorMessage.innerHTML =
-                //         "Password is required.";
-                //     break;
-                // default:
-                //     passwordErrorMessage.style.opacity = 1;
-                //     passwordErrorMessage.innerHTML = "Unknown error.";
-                //     break;
-            }
-            console.log(error);
-        });
-
-}
-
 
 export default RegisterView;
