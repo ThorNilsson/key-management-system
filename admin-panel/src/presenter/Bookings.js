@@ -1,33 +1,47 @@
-import * as React from 'react';
-import BookingsView from '../view/bookingsView';
+import BookingsView from "../view/bookingsView"
+import { useList } from "react-firebase-hooks/database"
+import { useParams } from "react-router-dom"
+import { ref, get } from "firebase/database"
+import { useState, useEffect } from "react"
+import { db } from "../api/firebase"
 
 export default function BookingsPresenter() {
+	const { boxId } = useParams()
 
-    return (
-        <BookingsView columns={columns} rows={rows}/>
-    )
+	const [bookings, loading, error] = useList(ref(db, `keyboxes/${boxId}/bookings`))
+	const [keyInfo, setKeyInfo] = useState({})
+
+	useEffect(() => {
+		if (!bookings || bookings.length === 0) return
+
+		const keysBooked = [...new Set(bookings.map(booking => booking.val().keyId))]
+
+        const promises = keysBooked.map(keyId => get(ref(db, `keyboxes/${boxId}/keys/${keyId}`)))
+
+		Promise.all(promises)
+			.then(keys => {
+                setKeyInfo(keys.reduce((acc, key, index) => ({...acc, [keysBooked[index]]: key.val()}), {}))
+            })
+			.catch(error => console.error(error))
+	}, [bookings])
+
+	if (error) return <div>Something went wrong</div>
+
+    const populatedBookings = bookings
+        .map(b => ({ ...b.val(), id: b.key, }))
+        .map(b => ({...b, room: keyInfo[b.keyId]?.name }))
+
+
+	return <BookingsView columns={columns} loading={loading} rows={populatedBookings} />
 }
 
-
 const columns = [
-    { field: 'id', headerName: 'Key ID', width: 100 },
-    { field: 'room', headerName: 'Room', width: 70 },
-    { field: 'checkIn', headerName: 'Check in', width: 130 },
-    { field: 'checkOut', headerName: 'Check out', width: 130 },
-    { field: 'name', headerName: 'Name', width: 130 },
-    { field: 'role', headerName: 'Role', width: 70 },
-    { field: 'message', headerName: 'Message', width: 500 },
-];
-
-const rows = [
-    { id: '1', room: '51', checkIn: '2022-03-24 12:00', checkOut: '2022-03-25 11:00', name: 'Karin Boye', role: 'guest', message: '...Protect your Realtime Database resources from abuse, such as billing fraud or phishing' },
-    { id: '2', room: '51', checkIn: '2022-03-24 12:00', checkOut: '2022-03-25 11:00', name: 'Karin Boye', role: 'guest', message: '...' },
-    { id: '3', room: '51', checkIn: '2022-03-24 12:00', checkOut: '2022-03-25 11:00', name: 'Karin Boye', role: 'guest', message: '...' },
-    { id: '4', room: '52', checkIn: '2022-03-24 12:00', checkOut: '2022-03-25 11:00', name: 'Karin Boye', role: 'guest', message: '...' },
-    { id: '5', room: '52', checkIn: '2022-03-24 12:00', checkOut: '2022-03-25 11:00', name: 'Karin Boye', role: 'guest', message: '...' },
-    { id: '6', room: '54', checkIn: '2022-03-24 12:00', checkOut: '2022-03-25 11:00', name: 'Karin Boye', role: 'guest', message: '...' },
-    { id: '7', room: '54', checkIn: '2022-03-24 12:00', checkOut: '2022-03-25 11:00', name: 'Karin Boye', role: 'guest', message: '...' },
-    { id: '8', room: '55', checkIn: '2022-03-24 12:00', checkOut: '2022-03-25 11:00', name: 'Karin Boye', role: 'guest', message: '...' },
-    { id: '9', room: '55', checkIn: '2022-03-24 12:00', checkOut: '2022-03-25 11:00', name: 'Karin Boye', role: 'guest', message: '...' },
-    { id: '10', room: '55', checkIn: '2022-03-24 12:00', checkOut: '2022-03-25 11:00', name: 'Karin Boye', role: 'guest', message: '...' },
-];
+	{ field: "id", headerName: "Booking id", width: 200 },
+	{ field: 'room', headerName: 'Room', width: 70 },
+	{ field: "checkIn", headerName: "Check in", width: 130 },
+	{ field: "checkOut", headerName: "Check out", width: 130 },
+	{ field: "name", headerName: "Name", width: 130 },
+	{ field: "role", headerName: "Role", width: 70 },
+	{ field: "privateMessage", headerName: "Message", width: 500 },
+	{ field: "url", headerName: "Link", width: 400 },
+]
