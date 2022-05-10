@@ -4,7 +4,7 @@ import { Key } from "@mui/icons-material"
 
 import { CircularProgress } from "@mui/material"
 
-export default function OverView({ keys, loading }) {
+export default function OverView({ keys, loading, editKey }) {
 	return (
 		<div>
 			<Typography variant="h3" sx={{ mb: 3 }}>
@@ -17,7 +17,7 @@ export default function OverView({ keys, loading }) {
 				<Grid container columns={8} spacing={1} direction="row" alignItems="stretch">
 					{keys.map(key => (
 						<Grid item xs={1}>
-							<ButtonBase sx={{ display: "block", height: "100%", width: "100%", textAlign: "left" }}>
+							<ButtonBase onClick={() => editKey(key?.id)} sx={{ display: "block", height: "100%", width: "100%", textAlign: "left" }}>
 								<Paper sx={{ p: 1, height: "100%" }}>
 									{key ? (
 										<Stack direction="column" sx={{ height: "100%" }}>
