@@ -21,7 +21,6 @@ export default function PopupKeyForm() {
     const [roomImage, setRoomImage] = React.useState('');
     const {boxId} = useParams()
     const [uid, setUid] = React.useState("")
-    const [scan, SetScan] = React.useState("")
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -48,17 +47,17 @@ export default function PopupKeyForm() {
     };
 
     const handleSubmit = (event) => {
-        set(ref(db, 'keyboxes/' + boxId + '/keys/' + scan
+        set(ref(db, 'keyboxes/' + boxId + '/keys/' + uid
         ), {
             name: roomName,
             description: roomDescription,
             longitude: roomLongitude,
             latitude: roomLatitude,
-            keySlot: roomKeySlot,
+            preferredKeySlot: roomKeySlot,
             image: roomImage,
             defaultCheckInTime: "12:00",
             defaultCheckOutTime: "11:00",
-            preferredKeySlot: 6,
+            keySlot: 0
         }).catch(error => alert("Something went wrong " + error.message))
         handleClose()
     }
@@ -76,12 +75,14 @@ return (
                 <DialogContentText>
                     To add a new key, click the big blue button, followed by scanning your key tag
                 </DialogContentText>
+                <p></p>
                 <Button onClick={handleScan}
                         variant="contained"
                         component="label">
                     Click for scan
                 </Button>
                 <div>{uid}</div>
+                <p></p>
                 <TextField
                     onInput={(e) => setRoomName(e.target.value)}
                     autoFocus
