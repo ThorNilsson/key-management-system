@@ -14,7 +14,6 @@ export default function OverviewPresenter() {
 
     if(error) return <div>Something went wrong</div>
 
-    console.log(keys)
     const slots = new Array(16).fill(null)
 
     keys.forEach(key => {
