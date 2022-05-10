@@ -43,20 +43,27 @@ static NvmField fields[] = {
   {"userPass"     , "Your Key Management System Password" , 32, 0},
   {"keyboxId"     , "NotAdded"                            , 32, 0},
   {"masterTag"    , "NotAdded"                            , 32, 0},
+  {"wifiPass"     , "NotAdded"                            , 32, 0},
   {0              , 0                                     ,  0, 0}, // Mandatory sentinel
 };
 
 Nvm nvm(fields);
 
-
-WiFiManagerParameter kms_user("KMS_user", "Enter your email here", "", 50);
-WiFiManagerParameter kms_pass("KMS_pass", "Enter your password here", "", 50);
-
-
 char userMail  [NVM_MAX_LENZ];
 char userPass  [NVM_MAX_LENZ];
 char keyboxId  [NVM_MAX_LENZ];
 char masterTag [NVM_MAX_LENZ];
+char wifiPass [NVM_MAX_LENZ];
+
+WiFiManagerParameter kms_user("KMS_user", "Enter your email here", "", 50);
+WiFiManagerParameter kms_pass("KMS_pass", "Enter your password here", "", 50);
+const char* idText = "<H1>Your keybox secret: </H1>";
+const char* passText = "<H1>The wifi password to change the settings:</H1>";
+WiFiManagerParameter custom_text(idText);
+//WiFiManagerParameter custom_text(keyboxId);
+WiFiManagerParameter custom_text2(passText);
+//WiFiManagerParameter custom_text(wifiPass);
+
 
 #define API_KEY "AIzaSyAUsPBPy1B5cr_U0xeB1xPU8T_7S-x_dyg"
 #define DATABASE_URL "key-management-system-40057-default-rtdb.europe-west1.firebasedatabase.app"
@@ -106,10 +113,6 @@ void setup()
 {
   FastLED.addLeds<NEOPIXEL, led_Pin>(leds, NUM_LEDS);
   FastLED.setBrightness(  BRIGHTNESS );
-  leds[0] = CRGB::White; 
-   leds[1] = CRGB::White; 
-    leds[2] = CRGB::White; 
-  FastLED.show(); delay(30);
 
   WiFi.mode(WIFI_STA); // explicitly set mode, esp defaults to STA+AP
   wm.setConfigPortalTimeout(timeout);
@@ -132,6 +135,7 @@ void setup()
   nvm.get("userMail", userMail);
   nvm.get("userPass", userPass);
   nvm.get("keyboxId", keyboxId);
+  nvm.get("wifiPass", wifiPass);
 
   Serial.println(masterTag);
   Serial.println(userMail);
@@ -140,6 +144,8 @@ void setup()
 
   //if no master tag is added, add one, notifies 5 beeps
   checkMastertagTag();
+  checkWifiPass();
+  checkKeyboxId();
   //checkUser();
 
 
@@ -157,7 +163,7 @@ void setup()
 
   //wm.resetSettings();
 
-  if (wm.autoConnect("KEY Managment System")) {
+  if (wm.autoConnect("KEY Managment System", wifiPass)) {
     Serial.println("failed to auto connect to wifi");
   }
   //setupFilesystemAndWiFi();
@@ -278,26 +284,26 @@ void loop()
   //}
 
 
-      static uint8_t startIndex = 0;
-    startIndex = startIndex + 1; /* motion speed */
+  static uint8_t startIndex = 0;
+  startIndex = startIndex + 1; /* motion speed */
 
-    if(i== 14){
-      i = 6;
-      }
-    
-    /*
-     * 
+  if (i == 14) {
+    i = 6;
+  }
 
-     if(PALETTE == 0) {SuccessLed(startIndex);}
+  /*
+
+
+    if(PALETTE == 0) {SuccessLed(startIndex);}
     if(PALETTE == 1) {LoadingLed();}
     if(PALETTE == 2) {NotifyLed(startIndex);}
     if(PALETTE == 3) {ErrorLed(startIndex);}
     if(PALETTE == 4) {CloseBoxLed(startIndex);}
-     */
+  */
 
-   SuccessLed(startIndex);
-   
-    FastLED.show();
-    FastLED.delay(1000 / UPDATES_PER_SECOND);
+  SuccessLed(startIndex);
+
+  FastLED.show();
+  FastLED.delay(1000 / UPDATES_PER_SECOND);
 
 } //Loop
