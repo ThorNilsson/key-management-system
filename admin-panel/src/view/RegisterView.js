@@ -1,5 +1,4 @@
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-import { setDoc, doc, collection } from 'firebase/firestore';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import { db } from '../api/firebase';
 import React, { useState } from 'react';
 import { ref, set } from "firebase/database";
@@ -9,7 +8,6 @@ import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
@@ -22,6 +20,8 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 function RegisterView(props) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('')
+
+    const [loginState, setLoginState] = useState('false');
 
     const [username, setUsername] = useState('');
 
@@ -51,54 +51,61 @@ function RegisterView(props) {
             setPasswordError(false);
             setPasswordErrorText('');
         }
-
-        if (email != '' && password != '') {
-
-            const data = new FormData(event.currentTarget);
-
-            createUserWithEmailAndPassword(getAuth(), email, password)
-                .then((userCredentials) => {
-                    console.log(userCredentials);
-                    (async () => {
-                        try {
-                            await set(ref(db, 'users/' + userCredentials.user.uid), {
-                                username: username,
-                                email: email,
-                            });
-                        } catch (e) {
-                            console.error("Error adding document: ", e);
-                        }
-                    })();
-                })
-                .catch((error) => {
-                    switch (error.code) {
-                        case "auth/missing-email":
-                            setEmailError(true);
-                            setEmailErrorText("Email Required")
-                            break;
-                        case "auth/invalid-email":
-                            setEmailError(true);
-                            setEmailErrorText("Email is Invalid")
-                            break;
-                        case "auth/email-already-in-use":
-                            setEmailError(true);
-                            setEmailErrorText("Email already in use")
-                            break;
-                        case "auth/weak-password":
-                            setPasswordError(true);
-                            setPasswordErrorText("Password not strong enough. A password containing a combination of 6 numbers and/or letters required.");
-                            break;
-                        case "auth/internal-error":
-                            setPasswordError(true);
-                            setPasswordErrorText("Password required");
-                            break;
-                        default:
-                            setPasswordErrorText("Unknown Error");
-                            break;
-                    }
-                    console.log(error);
-                });
+        
+        if(!loginState){
+            signInWithEmailAndPassword(getAuth(),email,password);
         }
+        else {
+            if (email != '' && password != '') {
+    
+                const data = new FormData(event.currentTarget);
+    
+                createUserWithEmailAndPassword(getAuth(), email, password)
+                    .then((userCredentials) => {
+                        console.log(userCredentials);
+                        (async () => {
+                            try {
+                                await set(ref(db, 'users/' + userCredentials.user.uid), {
+                                    username: username,
+                                    email: email,
+                                });
+                            } catch (e) {
+                                console.error("Error adding document: ", e);
+                            }
+                        })();
+                    })
+                    .catch((error) => {
+                        switch (error.code) {
+                            case "auth/missing-email":
+                                setEmailError(true);
+                                setEmailErrorText("Email Required")
+                                break;
+                            case "auth/invalid-email":
+                                setEmailError(true);
+                                setEmailErrorText("Email is Invalid")
+                                break;
+                            case "auth/email-already-in-use":
+                                setEmailError(true);
+                                setEmailErrorText("Email already in use")
+                                break;
+                            case "auth/weak-password":
+                                setPasswordError(true);
+                                setPasswordErrorText("Password not strong enough. A password containing a combination of 6 numbers and/or letters required.");
+                                break;
+                            case "auth/internal-error":
+                                setPasswordError(true);
+                                setPasswordErrorText("Password required");
+                                break;
+                            default:
+                                setPasswordErrorText("Unknown Error");
+                                break;
+                        }
+                        console.log(error);
+                    });
+            }
+
+        }
+
     };
     return (
         <ThemeProvider theme={theme}>
@@ -116,7 +123,7 @@ function RegisterView(props) {
                         <LockOutlinedIcon />
                     </Avatar>
                     <Typography component="h1" variant="h5">
-                        Sign Up
+                        {loginState ? 'Sign Up' : 'Sign In'}
                     </Typography>
                     <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                         <TextField
@@ -132,18 +139,21 @@ function RegisterView(props) {
                             helperText={emailErrorText}
                             error={emailError}
                         />
-
+                        {loginState ?
                             <TextField
-                            onChange={(e) => setUsername(e.target.value)}
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="username"
-                            label="Username (Optional)"
-                            type="username"
-                            id="username"
-                            autoComplete="current-password" 
-                        />
+                                onChange={(e) => setUsername(e.target.value)}
+                                margin="normal"
+                                required
+                                fullWidth
+                                name="username"
+                                label="Username (Optional)"
+                                type="username"
+                                id="username"
+                                autoComplete="current-password"
+                            />
+                            :
+                            null
+                        }
 
                         <TextField
                             onChange={(e) => setPassword(e.target.value)}
@@ -168,13 +178,13 @@ function RegisterView(props) {
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
                         >
-                            Sign Up
+                            {loginState ? 'Sign Up' : 'Sign In'}
                         </Button>
                         <Grid container style={{ textAlign: "center", display: "block" }}>
                             <Grid item>
-                                <Link href="#" variant="body2">
-                                    {"Already have an account? Sign In"}
-                                </Link>
+                                <Button onClick={(e) => setLoginState(!loginState)} variant="text">
+                                {!loginState ? "Don't have an account? Sign Up" : 'Already have an account? Sign In'}
+                                </Button>
                             </Grid>
                         </Grid>
                     </Box>
