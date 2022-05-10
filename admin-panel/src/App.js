@@ -9,6 +9,7 @@ import BookingsPresenter from "./presenter/Bookings"
 import TimelinePresenter from "./presenter/Timeline"
 import EventsPresenter from "./presenter/Events"
 import EditProfilePresenter from "./presenter/EditProfile"
+import NewBookingPresenter from "./presenter/NewBooking";
 import EditKeyPresenter from "./presenter/key/Edit"
 import KeyPresenter from "./presenter/key/Key"
 
@@ -39,7 +40,7 @@ export default function App() {
 						<Route path="bookings" element={<BookingsPresenter />} />
 						<Route path="timeline" element={<TimelinePresenter />} />
 						<Route path="events" element={<EventsPresenter />} />
-						<Route path="events" element={<EventsPresenter/>} />
+						<Route path="new-booking" element={<NewBookingPresenter/>} />
 						<Route path="key" element={<KeyPresenter/>} >
                             <Route path=":keyId/edit" element={<EditKeyPresenter />} />
                         </Route>
