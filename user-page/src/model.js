@@ -1,20 +1,19 @@
 import React, { useRef, useEffect, useState } from 'react';
 import Base from './presenters/basePresenter'
-import { ref, onValue } from 'firebase/database';
+import { ref, onValue, get, child } from 'firebase/database';
 import { db } from "./firebase"
 
 class Model {
     constructor() {
-        // console.log(params);
+        console.log("hej");
         this.bookingId = null;
-        this.keyBoxId = null;
-        this.getLinkData();
+        this.keyboxId = null;
 
         //const [bookings, loading, error] = useList(ref(db, `keyboxes/${keyBoxId}/bookings/${bookingId}`));
 
         this.boxOpen = false; //changes
         this.keyTaken = false;  //Changes
-        
+
         this.bookedDate = null;
         this.returnDate = null;
 
@@ -22,45 +21,94 @@ class Model {
         this.observers = [];
         this.timeUntilAccess = null;
         this.timeUntilReturn = null;
-        this.distance = null;   
-        this.targetLocation = { lng: 17.948411885183468, lat: 59.40462693468842 }
+        this.distance = null;
+        this.targetLocation = { lng: 0.0, lat: 0.0 }
+        this.getLinkData();
         this.setTimeUntilAccess();
-        this.getDistanceToTarget();
+
 
         // console.log(this.distance)
 
     }
 
+
     getLinkData() {
         const starCountRef = ref(db, 'links/' + window.location.pathname.split('/')[1]);
-        //console.log(window.location.pathname.split('/')[1])
-        onValue(starCountRef, (snapshot) => {
-            const data = snapshot.val();
-            this.keyBoxId = data.keyboxId;
-            this.bookingId = data.bookingId;
-            console.log(data);
-            this.getBooking()
+        get(starCountRef).then((snapshot) => {
+            if (snapshot.exists()) {
+                console.log(snapshot.val());
+                const data = snapshot.val();
+                this.keyboxId = data.keyboxId;
+                this.bookingId = data.bookingId;
+                console.log(this.keyboxId)
+                this.getBooking()
+            } else {
+                console.log("No data available");
+            }
+        }).catch((error) => {
+            console.error(error);
         });
+        // console.log(starCountRef)
+        // onValue(starCountRef,(snapshot) => {
+        //     const data = snapshot.val();
+        //     this.keyboxId = data.keyboxId;
+        //     this.bookingId = data.bookingId;
+        //     console.log(this.keyboxId)
+        //     this.getBooking()
+        // });
         //console.log(useList(ref(db, `keyboxes/dkgC3kfhLpkKBysY_C-9/bookings`)))
     }
 
     getBooking() {
-        const starCountRef = ref(db, 'keyboxes/' + this.keyBoxId + '/bookings/' + this.bookingId);
-        console.log('keyboxes/' + this.keyBoxId + '/bookings/' + this.bookingId)
-        onValue(starCountRef, (snapshot) => {
-            const data = snapshot.val();
-            this.bookedDate = new Date(data.checkIn * 1000);
-            this.returnDate = new Date(data.checkIn * 1000);
-            console.log(this.bookedDate)
+        const starCountRef = ref(db, 'keyboxes/' + this.keyboxId + '/bookings/' + this.bookingId);
+        get(starCountRef).then((snapshot) => {
+            if (snapshot.exists()) {
+                console.log(snapshot.val());
+                const data = snapshot.val();
+                this.bookedDate = new Date(data.checkIn * 1000);
+                this.returnDate = new Date(data.checkIn * 1000);
+                console.log(this.bookedDate)
+                this.getLocation()
+            } else {
+                console.log("No data available");
+            }
+        }).catch((error) => {
+            console.error(error);
+        });
+    }
+
+    getLocation() {
+        const starCountRef = ref(db, 'keyboxes/' + this.keyboxId + '/info');
+        get(starCountRef).then((snapshot) => {
+            if (snapshot.exists()) {
+                console.log(snapshot.val());
+                const data = snapshot.val();
+                this.targetLocation = { lng: data.longitude, lat: data.latitude }
+                this.boxOpen = data.open;
+                console.log(this.boxOpen);
+                this.getDistanceToTarget();
+                //this.getKeyStatus();
+            } else {
+                console.log("No data available");
+            }
+        }).catch((error) => {
+            console.error(error);
         });
     }
 
     getKeyStatus() {
-        const starCountRef = ref(db, 'keyboxes/' + this.keyBoxId + '/keys/' + this.bookingId);
-        onValue(starCountRef, (snapshot) => {
-            const data = snapshot.val();
-            this.bookedDate = data.keyboxId;
-            this.returnDate = data.bookingId;
+        const starCountRef = ref(db, 'keyboxes/' + this.keyBoxId + '/info');
+        get(starCountRef).then((snapshot) => {
+            if (snapshot.exists()) {
+                console.log(snapshot.val());
+                const data = snapshot.val();
+                this.boxOpen = data.open;
+                console.log(data.open)
+            } else {
+                console.log("No data available");
+            }
+        }).catch((error) => {
+            console.error(error);
         });
     }
 

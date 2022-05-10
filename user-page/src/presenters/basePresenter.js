@@ -47,7 +47,7 @@ function Base(props) {
             maximumAge: 0
         };
 
-    });
+    },[props.model]);
 
     return (
         <div>

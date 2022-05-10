@@ -7,8 +7,11 @@ import TooFar from './tooFarPresenter';
 import LockIcon from '../outline_lock_black_48dp.png'
 import unLockIcon from '../outline_lock_open_black_48dp.png'
 import Icon from '../successIcon.png'
+import { ref, onValue } from 'firebase/database';
+import { db } from "../firebase"
+
 function ViewPresenter(props) {
-    const [boxState, setBoxState] = useState(props.model.boxOpen);
+    const [boxState, setBoxState] = useState(props.model.bosOpen);
     const [keyState, setKeyState] = useState(props.model.keyTaken);
     const [dist, setDist] = useState(props.model.distance);
     const [timeUntilReturn, settimeUntilReturn] = useState(props.model.timeUntilReturn);
@@ -16,8 +19,11 @@ function ViewPresenter(props) {
 
 
     useEffect(() => {
+        
+        
         const obs = () => {
             setBoxState(props.model.boxOpen)
+            console.log(props.model.keyboxId)
             setKeyState(props.model.keyTaken)
             setDist(props.model.distance)
             settimeUntilReturn(props.model.timeUntilReturn)
@@ -36,6 +42,7 @@ function ViewPresenter(props) {
 }
 
 function currentView(model) {
+    //console.log(model)
     if (model.timeUntilAccess > 0) {
         return (
             <BeforeAccess model={model} />

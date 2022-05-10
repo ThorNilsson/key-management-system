@@ -18,7 +18,7 @@ function App() {
     var pathArray = window.location.pathname.split('/');
 
 
-    let model = new Model(pathArray);
+    let model = new Model();
     //console.log(model);
 
     // const [booking, setBooking] = useState(null);
