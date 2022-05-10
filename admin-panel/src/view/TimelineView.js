@@ -5,7 +5,8 @@ import Timeline, {
     TimelineHeaders,
     SidebarHeader,
     DateHeader,
-    CustomHeader
+    CustomHeader,
+    TodayMarker
 } from 'react-calendar-timeline'
 import { Typography } from '@mui/material';
 
@@ -13,17 +14,17 @@ class TimelineView extends React.Component {
     render() {
         return (
             <div className="Timeline">
-                <Typography variant="h3" sx={{ mb: 3, mt: 3 }}>Timeline of Key Status</Typography>
-                <h1> </h1>
+                <Typography variant="h3" sx={{ my: 3 }}>Timeline of Key box</Typography>
                 <Timeline
                     groups={this.props.groups}
                     items={this.props.items}
                     defaultTimeStart={moment().add(-15, 'day')}
                     defaultTimeEnd={moment().add(15, 'day')}>
+                    <TodayMarker interval={2000} />
                     <TimelineHeaders>
                         <SidebarHeader headerData={{ someData: 'extra' }}>
                             {({ getRootProps }) => {
-                                return <div {...getRootProps()}>Keys</div>
+                                return <Typography variant="h3" color="white" {...getRootProps()}>Keys</Typography>
                             }}
                         </SidebarHeader>
                         <DateHeader unit="primaryHeader" />
