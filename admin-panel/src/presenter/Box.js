@@ -9,7 +9,6 @@ import { db } from "../api/firebase"
 import { ref, get } from "firebase/database"
 import { getAuth } from "firebase/auth"
 import { useListVals } from "react-firebase-hooks/database"
-import Popup from "../components/PopupKeyForm";
 const TABS = [
 	{
 		label: "Overview",
@@ -38,8 +37,6 @@ export default function BoxPresenter() {
 	const [box, setBox] = useState(null)
 	const [boxes, setBoxes] = useState(null)
 	const [boxIds, , boxIdsError] = useListVals(ref(db, `users/${currentUser.uid}/boxes`))
-	const [openPopup, setOpenPopup] = useState(false)
-
 
 	// Fetch boxes
 	useEffect(() => {

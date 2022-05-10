@@ -10,7 +10,12 @@ import {Key} from "@mui/icons-material";
 
 export default function PopupKeyForm() {
     const [open, setOpen] = React.useState(false);
-
+    const [formState, setFormState] = React.useState({
+        keyName: "",
+        houseName: "",
+        anotherThing: "",
+        lastThing: "",
+    })
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -18,6 +23,19 @@ export default function PopupKeyForm() {
     const handleClose = () => {
         setOpen(false);
     };
+
+    const handleChange = (evt) => {
+        const value = evt.target.value;
+        setFormState({
+            ...formState,
+            [evt.target.name]: value
+        });
+    }
+
+    const handleSendForm = () => {
+        console.log(formState.keyName)
+        console.log(formState.houseName)
+    }
 
     return (
         <div>
@@ -28,9 +46,9 @@ export default function PopupKeyForm() {
                 <DialogTitle>Add key</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        To add a new key, try the all new KMS-management system for only 10.99€ a month for the rest of your life, KMS!
+                        To add a new key, carefully fill in the text fields below followed by hitting the send button
                     </DialogContentText>
-                    <TextField
+                    <TextField value={formState.houseName} onChange={handleChange}
                         autoFocus
                         margin="dense"
                         id="name"
@@ -39,19 +57,37 @@ export default function PopupKeyForm() {
                         fullWidth
                         variant="standard"
                     />
-                    <TextField
+                    <TextField value={formState.keyName} onChange={handleChange}
                         autoFocus
                         margin="dense"
-                        id="name"
+                        id="keyid"
                         label="Key information blabla"
                         type="email"
                         fullWidth
                         variant="standard"
                     />
+                    <TextField value = {formState.anotherThing} onChange={handleChange}
+                               autoFocus
+                               margin="dense"
+                               id="idk"
+                               label="key field"
+                               type="email"
+                               fullWidth
+                               variant="standard"
+                    />
+                    <TextField value = {formState.lastThing} onChange={handleChange}
+                               autoFocus
+                               margin="dense"
+                               id="hejhej"
+                               label="Another key field"
+                               type="email"
+                               fullWidth
+                               variant="standard"
+                    />
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
-                    <Button onClick={handleClose}>Subscribe</Button>
+                    <Button onClick={handleSendForm}>Submit</Button>
                 </DialogActions>
             </Dialog>
         </div>
