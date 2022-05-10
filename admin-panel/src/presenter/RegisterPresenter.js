@@ -91,6 +91,13 @@ export default function RegisterPresenter() {
 			})
 	}
 
+    const forgotPassword = () => {
+        const email = prompt("Enter your email")
+        sendPasswordResetEmail(auth, email)
+            .then(() => alert(`A mail has been sent to ${email}...`))
+            .catch(error => alert("something went wrong" + error.message))
+    }
+
 	return (
 		<RegisterView
 			email={email}
@@ -108,6 +115,7 @@ export default function RegisterPresenter() {
 			setLoginState={setLoginState}
 			remember={remember}
 			setRemember={setRemember}
+            forgotPassword={forgotPassword}
 		/>
 	)
 }

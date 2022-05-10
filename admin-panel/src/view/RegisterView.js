@@ -7,6 +7,7 @@ import Grid from "@mui/material/Grid"
 import Box from "@mui/material/Box"
 import Typography from "@mui/material/Typography"
 import Container from "@mui/material/Container"
+import { Stack } from "@mui/material"
 
 function RegisterView({
 	email,
@@ -22,6 +23,7 @@ function RegisterView({
 	setLoginState,
 	remember,
 	setRemember,
+    forgotPassword
 }) {
 	return (
 		<Container component="main" maxWidth="xs">
@@ -93,13 +95,16 @@ function RegisterView({
 					<Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
 						{shouldLogin ? "Sign In" : "Sign Up"}
 					</Button>
-					<Grid container style={{ textAlign: "center", display: "block" }}>
-						<Grid item>
-							<Button onClick={() => setLoginState(!shouldLogin)} variant="text" size="small">
-								{shouldLogin ? "Don't have an account?" : "I already have an account"}
+					<Stack direction="row" justifyContent="space-between">
+						{shouldLogin && (
+							<Button onClick={forgotPassword} variant="outlined" size="small">
+								Forgot password
 							</Button>
-						</Grid>
-					</Grid>
+						)}
+						<Button onClick={() => setLoginState(!shouldLogin)} variant="text" size="small">
+							{shouldLogin ? "Don't have an account?" : "I already have an account"}
+						</Button>
+					</Stack>
 				</Box>
 			</Box>
 		</Container>
