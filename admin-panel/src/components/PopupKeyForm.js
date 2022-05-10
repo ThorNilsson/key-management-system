@@ -20,20 +20,26 @@ export default function PopupKeyForm() {
     const [roomKeySlot, setRoomKeySlot] = React.useState('');
     const [roomImage, setRoomImage] = React.useState('');
     const {boxId} = useParams()
+    const [uid, setUid] = React.useState("")
     const [scan, SetScan] = React.useState("")
     const handleClickOpen = () => {
         setOpen(true);
     };
 
     const handleScan = () => {
-        set(ref(db, 'keyboxes/' + boxId + 'accessBooking/'
+        set(ref(db, 'keyboxes/' + boxId + '/accessingBooking/'
         ), {
             action: "getUid"
         }).then(() => {
-            ref(db, 'keyboxes/' + boxId + 'accessBooking/action')
-            onValue(ref, snapshot => {
+            const actionRef = ref(db, 'keyboxes/' + boxId + '/accessingBooking/status')
+            onValue(actionRef, snapshot => {
                 const data = snapshot.val()
-                console.log(data)
+                if (data === "tag sent") {
+                    const uidRef = ref(db, 'keyboxes/' + boxId + '/accessingBooking/uid')
+                    get(uidRef).then(snapshot => {
+                        setUid(snapshot.val())
+                    })
+                }
             })
         }).catch(error => alert("Something went wrong " + error.message))
     }
@@ -68,13 +74,14 @@ return (
             <DialogTitle>Add key</DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    To add a new key, carefully fill in the text fields below followed by hitting the send button
+                    To add a new key, click the big blue button, followed by scanning your key tag
                 </DialogContentText>
                 <Button onClick={handleScan}
                         variant="contained"
                         component="label">
                     Click for scan
                 </Button>
+                <div>{uid}</div>
                 <TextField
                     onInput={(e) => setRoomName(e.target.value)}
                     autoFocus
