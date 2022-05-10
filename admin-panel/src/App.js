@@ -25,7 +25,7 @@ export default function App() {
 	if (loading) return <div>Loading...</div>
     if (error) return <div>Could not authenticate... {/* TODO */}</div>
 
-	if (!user) return <Login />
+	if (!user) return (<RegisterPresenter props={auth} />)
 
 	return (
 		<div>
@@ -39,7 +39,7 @@ export default function App() {
 						<Route path="timeline" element={<TimelinePresenter />} />
 						<Route path="events" element={<EventsPresenter />} />
 						<Route path="events" element={<EventsPresenter/>} />
-						<Route path="register" element={<RegisterPresenter/>} />
+						
 					</Route>
                     <Route path="/edit" element={<EditProfilePresenter />} />
 					<Route
