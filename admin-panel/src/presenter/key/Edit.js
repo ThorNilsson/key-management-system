@@ -32,9 +32,9 @@ export default function EditKeyPresenter() {
             setRoomImage(data.image)
             lastReadData = data
         }
-		onValue(keyRef, handleValue)
+		const unsub = onValue(keyRef, handleValue)
 
-        return () => off(keyRef, 'value', handleValue)
+        return () => unsub()
 	}, [boxId, keyId])
 
     const save = shouldExit => {
