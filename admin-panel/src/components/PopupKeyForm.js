@@ -8,7 +8,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import {Key} from "@mui/icons-material";
 import {db} from "../api/firebase"
-import {ref, get, set} from "firebase/database"
+import {ref, get, set, push} from "firebase/database"
 import {useParams} from "react-router-dom"
 
 export default function PopupKeyForm() {
@@ -47,7 +47,7 @@ export default function PopupKeyForm() {
     }
 
     const handleSubmit = (event) => {
-        set(ref(db, 'keyboxes/' + boxId + '/keys/'), {
+        push(ref(db, 'keyboxes/' + boxId + '/keys/'), {
             name: roomName,
             description: roomDescription,
             longitude: roomLongitude,
