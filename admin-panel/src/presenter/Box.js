@@ -5,12 +5,10 @@ import { Outlet, useLocation, useNavigate, useParams, generatePath } from "react
 import { useBasePath } from "../util"
 
 import BoxView from "../view/BoxView"
-
 import { db } from "../api/firebase"
 import { ref, get } from "firebase/database"
 import { getAuth } from "firebase/auth"
 import { useListVals } from "react-firebase-hooks/database"
-
 const TABS = [
 	{
 		label: "Overview",
@@ -72,7 +70,6 @@ export default function BoxPresenter() {
 				backAction={() => navigate("/")}
 				changeBox={boxId => navigate(generatePath(basePath, { boxId }))}
 				editAction={() => alert("Edit")}
-				newKeyAction={() => alert("new Key")}
 			/>
 			<Box sx={{ borderBottom: 1, borderColor: "divider" }}>
 				<Tabs value={tab.label} onChange={handleChange}>

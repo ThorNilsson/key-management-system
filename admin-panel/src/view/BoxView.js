@@ -5,9 +5,9 @@ import {
 	CottageRounded,
 	Edit,
 	HouseRounded,
-	Key,
 } from "@mui/icons-material"
 import { Button, Stack, Box, Typography, Select, MenuItem, Skeleton } from "@mui/material"
+import PopupKeyForm from "../components/PopupKeyForm";
 
 const ICONS = {
 	apartment: ApartmentRounded,
@@ -15,7 +15,7 @@ const ICONS = {
 	cottage: CottageRounded,
 }
 
-export default function BoxView({ boxes, currentBox, backAction, changeBox, editAction, newKeyAction }) {
+export default function BoxView({ boxes, currentBox, backAction, changeBox, editAction,}) {
 	let Icon
 	if (currentBox) Icon = ICONS[currentBox.type] || HouseRounded
 
@@ -80,9 +80,8 @@ export default function BoxView({ boxes, currentBox, backAction, changeBox, edit
 					<Button variant="contained" size="small" sx={{ px: 2 }} endIcon={<Edit />} onClick={editAction}>
 						Edit box
 					</Button>
-					<Button variant="outlined" size="small" endIcon={<Key />} onClick={newKeyAction}>
-						Add new key
-					</Button>
+					<PopupKeyForm>
+					</PopupKeyForm>
 				</Stack>
 			</Box>
 		</Stack>

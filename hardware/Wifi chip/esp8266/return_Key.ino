@@ -8,4 +8,5 @@ void returnKey(int keySlot) {
   notifySuccess();
   Serial.println(Firebase.setInt(fbdo, keySlotPath, preferredKeySlot) ? "Key inserted at preferred Key Slot" : fbdo.errorReason().c_str());
   sendLog("Box opened to return key.", "", "", "");
+   unlockDoor();
 }
