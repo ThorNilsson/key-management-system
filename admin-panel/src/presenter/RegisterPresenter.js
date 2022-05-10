@@ -59,10 +59,9 @@ export default function RegisterPresenter() {
 		createUserWithEmailAndPassword(auth, email, password)
 			.then(userCredentials => {
 				console.log(userCredentials)
-				set(ref(db, "users/" + userCredentials.user.uid), {
-					username: username,
-					email: email,
-				}).catch(error => alert("Something went wrong " + error.message))
+				set(ref(db, "users/" + userCredentials.user.uid + "/username"), username).catch(error =>
+					alert("Something went wrong " + error.message)
+				)
 			})
 			.catch(error => {
 				switch (error.code) {
@@ -91,12 +90,12 @@ export default function RegisterPresenter() {
 			})
 	}
 
-    const forgotPassword = () => {
-        const email = prompt("Enter your email")
-        sendPasswordResetEmail(auth, email)
-            .then(() => alert(`A mail has been sent to ${email}...`))
-            .catch(error => alert("something went wrong" + error.message))
-    }
+	const forgotPassword = () => {
+		const email = prompt("Enter your email")
+		sendPasswordResetEmail(auth, email)
+			.then(() => alert(`A mail has been sent to ${email}...`))
+			.catch(error => alert("something went wrong" + error.message))
+	}
 
 	return (
 		<RegisterView
@@ -115,7 +114,7 @@ export default function RegisterPresenter() {
 			setLoginState={setLoginState}
 			remember={remember}
 			setRemember={setRemember}
-            forgotPassword={forgotPassword}
+			forgotPassword={forgotPassword}
 		/>
 	)
 }
