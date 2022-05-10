@@ -6,7 +6,7 @@ import ViewPresenter from './presenters/viewPresenter';
 
 
 import {useList} from "react-firebase-hooks/database"
-import {ref, get, onValue} from "firebase/database"
+import {ref, get, onValue, child, query, orderByChild, limitToLast} from "firebase/database"
 import {db} from "./firebase"
 
 import BeforeAccess from './presenters/beforeAccessPres';
@@ -15,21 +15,41 @@ import BeforeAccess from './presenters/beforeAccessPres';
 
 function App() {
     //http://localhost:3000/asodiaouio29186ey7gawd
+
     var pathArray = window.location.pathname.split('/');
+    let model = new Model(pathArray);
 
 
-    let model = new Model();
-    //console.log(model);
+    useEffect(() => {
 
-    // const [booking, setBooking] = useState(null);
+        /*
+          Get the current door status
+       */
+        const isBoxOpenRef = query(ref(db, 'keyboxes/' + "dkgC3kfhLpkKBysY_C-9" + '/log'), orderByChild('time'), limitToLast(1));
 
-    // useEffect(() => {
-    //     onValue(starCountRef, (snapshot) => {
-    //         const data = snapshot.val();
-    //         setBooking(data);
-    //         console.log(booking);
-    //     });
-    // }, [])
+        onValue(isBoxOpenRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data != null) {
+                const keys = Object.keys(data);
+                const array = keys.map(key => ({key: key, value: data[key]}));
+                const isOpen = array[0].value.isOpen;
+                console.log(isOpen);
+            }
+        });
+
+        /*
+            Get the current key slot of the key, 0 == not in box, else 1 to 8
+         */
+        const getKeySlotStatusRef = ref(db, 'keyboxes/' + "dkgC3kfhLpkKBysY_C-9" + '/keys/' + '24213714427' + '/keySlot');
+        onValue(getKeySlotStatusRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data != null) {
+                console.log(data);
+            }
+        });
+
+
+    }, []);
 
 
     return (
