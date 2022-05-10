@@ -5,12 +5,11 @@ import { Outlet, useLocation, useNavigate, useParams, generatePath } from "react
 import { useBasePath } from "../util"
 
 import BoxView from "../view/BoxView"
-
 import { db } from "../api/firebase"
 import { ref, get } from "firebase/database"
 import { getAuth } from "firebase/auth"
 import { useListVals } from "react-firebase-hooks/database"
-
+import Popup from "../components/PopupKeyForm";
 const TABS = [
 	{
 		label: "Overview",
@@ -39,6 +38,8 @@ export default function BoxPresenter() {
 	const [box, setBox] = useState(null)
 	const [boxes, setBoxes] = useState(null)
 	const [boxIds, , boxIdsError] = useListVals(ref(db, `users/${currentUser.uid}/boxes`))
+	const [openPopup, setOpenPopup] = useState(false)
+
 
 	// Fetch boxes
 	useEffect(() => {
@@ -72,7 +73,6 @@ export default function BoxPresenter() {
 				backAction={() => navigate("/")}
 				changeBox={boxId => navigate(generatePath(basePath, { boxId }))}
 				editAction={() => alert("Edit")}
-				newKeyAction={() => alert("new Key")}
 			/>
 			<Box sx={{ borderBottom: 1, borderColor: "divider" }}>
 				<Tabs value={tab.label} onChange={handleChange}>
