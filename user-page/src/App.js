@@ -3,11 +3,11 @@ import React, {useRef, useEffect, useState} from 'react';
 import Base from './presenters/basePresenter'
 import Model from './model';
 import ViewPresenter from './presenters/viewPresenter';
+import { useList } from "react-firebase-hooks/database"
+import { ref, get, onValue, child, query, orderByChild, limitToLast } from "firebase/database"
+import { db } from "./firebase"
+import loadingGif from './Loading_icon.gif'
 
-
-import {useList} from "react-firebase-hooks/database"
-import {ref, get, onValue, child, query, orderByChild, limitToLast} from "firebase/database"
-import {db} from "./firebase"
 
 import BeforeAccess from './presenters/beforeAccessPres';
 
@@ -15,47 +15,29 @@ import BeforeAccess from './presenters/beforeAccessPres';
 
 function App() {
     //http://localhost:3000/asodiaouio29186ey7gawd
+    const [loaded, setLoaded] = useState(false)
 
-    var pathArray = window.location.pathname.split('/');
-    let model = new Model(pathArray);
+    const [bookingId, setBookingId] = useState();
+    const [keyboxId, setKeyboxId] = useState();
 
+    //let model = new Model();
 
     useEffect(() => {
-
-        /*
-          Get the current door status
-       */
-        const isBoxOpenRef = query(ref(db, 'keyboxes/' + "dkgC3kfhLpkKBysY_C-9" + '/log'), orderByChild('time'), limitToLast(1));
-
-        onValue(isBoxOpenRef, (snapshot) => {
-            const data = snapshot.val();
-            if (data != null) {
-                const keys = Object.keys(data);
-                const array = keys.map(key => ({key: key, value: data[key]}));
-                const isOpen = array[0].value.isOpen;
-                console.log(isOpen);
-            }
-        });
-
-        /*
-            Get the current key slot of the key, 0 == not in box, else 1 to 8
-         */
-        const getKeySlotStatusRef = ref(db, 'keyboxes/' + "dkgC3kfhLpkKBysY_C-9" + '/keys/' + '24213714427' + '/keySlot');
-        onValue(getKeySlotStatusRef, (snapshot) => {
-            const data = snapshot.val();
-            if (data != null) {
-                console.log(data);
-            }
-        });
-
-
+      const starCountRef = ref(db, 'links/' + window.location.pathname.split('/')[1]);
+        get(starCountRef).then((snapshot) => {
+          const data = snapshot.val();
+          setKeyboxId(data.keyboxId);
+          setBookingId(data.bookingId);
+        }).catch((error) => {
+          console.error(error);
+      });
     }, []);
-
-
+  
+    if(!bookingId || !keyboxId) return <img src={loadingGif}></img>;
     return (
         <div>
-            <Base model={model}/>
-            <ViewPresenter model={model}/>
+            <Base keyboxId={keyboxId}/>
+            <ViewPresenter keyboxId={keyboxId} bookingId={bookingId}/>
         </div>
     )
 }

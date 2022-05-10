@@ -8,7 +8,7 @@ function StateView(props) {
             <div className="divOverMapContainer">
                 <div className="divOverMap">
                     <div className="lockIcon">
-                        <img src={props.icon} onClick={e => props.action()}></img>
+                        <img src={props.icon}></img>
                         {props.button ? <div className="openButton" onClick={e => props.action()}>OPEN</div> : <div className='retrieveKey'>{props.overMap}</div>}
                     </div>
                 </div>
