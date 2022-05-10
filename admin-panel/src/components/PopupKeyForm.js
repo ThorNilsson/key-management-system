@@ -8,7 +8,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import {Key} from "@mui/icons-material";
 import {db} from "../api/firebase"
-import {ref, get, set, push} from "firebase/database"
+import {ref, get, set, push, onValue} from "firebase/database"
 import {useParams} from "react-router-dom"
 
 export default function PopupKeyForm() {
@@ -18,41 +18,38 @@ export default function PopupKeyForm() {
     const [roomLongitude, setRoomLongitude] = React.useState('');
     const [roomLatitude, setRoomLatitude] = React.useState('');
     const [roomKeySlot, setRoomKeySlot] = React.useState('');
+    const [roomImage, setRoomImage] = React.useState('');
     const {boxId} = useParams()
+    const [scan, SetScan] = React.useState("")
     const handleClickOpen = () => {
         setOpen(true);
     };
 
+    const handleScan = () => {
+        set(ref(db, 'keyboxes/' + boxId + 'accessBooking/'
+        ), {
+            action: "getUid"
+        }).then(() => {
+            ref(db, 'keyboxes/' + boxId + 'accessBooking/action')
+            onValue(ref, snapshot => {
+                const data = snapshot.val()
+                console.log(data)
+            })
+        }).catch(error => alert("Something went wrong " + error.message))
+    }
     const handleClose = () => {
         setOpen(false);
     };
 
-    const handleOpenChange = () => {
-
-    }
-    const handleRoomNameChange = () => {
-
-    }
-    const handleRoomDescriptionChange = () => {
-
-    }
-    const handleRoomLongitudeChange = () => {
-
-    }
-    const handleRoomLatitudeChange = () => {
-
-    }
-    const handleRoomKeySlotChange = () => {
-
-    }
-
     const handleSubmit = (event) => {
-        push(ref(db, 'keyboxes/' + boxId + '/keys/'), {
+        set(ref(db, 'keyboxes/' + boxId + '/keys/' + scan
+        ), {
             name: roomName,
             description: roomDescription,
             longitude: roomLongitude,
             latitude: roomLatitude,
             keySlot: roomKeySlot,
+            image: roomImage,
             defaultCheckInTime: "12:00",
             defaultCheckOutTime: "11:00",
             preferredKeySlot: 6,
@@ -73,6 +70,11 @@ return (
                 <DialogContentText>
                     To add a new key, carefully fill in the text fields below followed by hitting the send button
                 </DialogContentText>
+                <Button onClick={handleScan}
+                        variant="contained"
+                        component="label">
+                    Click for scan
+                </Button>
                 <TextField
                     onInput={(e) => setRoomName(e.target.value)}
                     autoFocus
@@ -128,10 +130,17 @@ return (
                     variant="standard"
                     value={roomKeySlot}
                 />
-                <p></p>
-                <Button variant="contained" component="label">Upload Image
-                    <input type="file" hidden/>
-                </Button>
+                <TextField
+                    onInput={(e) => setRoomImage(e.target.value)}
+                    autoFocus
+                    margin="dense"
+                    id="roomImage"
+                    label="IMG URL"
+                    type="text"
+                    fullWidth
+                    variant="standard"
+                    value={roomImage}
+                />
 
             </DialogContent>
             <DialogActions>
