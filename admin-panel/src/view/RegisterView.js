@@ -23,6 +23,8 @@ function RegisterView(props) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('')
 
+    const [username, setUsername] = useState('');
+
     const [emailErrorText, setEmailErrorText] = useState('')
     const [passwordErrorText, setPasswordErrorText] = useState('')
 
@@ -60,7 +62,7 @@ function RegisterView(props) {
                     (async () => {
                         try {
                             await set(ref(db, 'users/' + userCredentials.user.uid), {
-                                username: "",
+                                username: username,
                                 email: email,
                             });
                         } catch (e) {
@@ -129,6 +131,18 @@ function RegisterView(props) {
                             autoFocus
                             helperText={emailErrorText}
                             error={emailError}
+                        />
+
+                            <TextField
+                            onChange={(e) => setUsername(e.target.value)}
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="username"
+                            label="Username (Optional)"
+                            type="username"
+                            id="username"
+                            autoComplete="current-password" 
                         />
 
                         <TextField
