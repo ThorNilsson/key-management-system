@@ -9,13 +9,15 @@ import {
 import { Button, Stack, Box, Typography, Select, MenuItem, Skeleton } from "@mui/material"
 import PopupKeyForm from "../components/PopupKeyForm";
 
+import { EventRounded } from "@mui/icons-material";
+
 const ICONS = {
 	apartment: ApartmentRounded,
 	house: HouseRounded,
 	cottage: CottageRounded,
 }
 
-export default function BoxView({ boxes, currentBox, backAction, changeBox, editAction,}) {
+export default function BoxView({ boxes, currentBox, backAction, changeBox, editAction, newBookingAction}) {
 	let Icon
 	if (currentBox) Icon = ICONS[currentBox.type] || HouseRounded
 
@@ -80,8 +82,9 @@ export default function BoxView({ boxes, currentBox, backAction, changeBox, edit
 					<Button variant="contained" size="small" sx={{ px: 2 }} endIcon={<Edit />} onClick={editAction}>
 						Edit box
 					</Button>
-					<PopupKeyForm>
-					</PopupKeyForm>
+					<Button variant="outlined" size="small" endIcon={<EventRounded />} onClick={newBookingAction}>
+                        New booking
+                    </Button>
 				</Stack>
 			</Box>
 		</Stack>

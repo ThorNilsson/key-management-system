@@ -70,6 +70,7 @@ export default function BoxPresenter() {
 				backAction={() => navigate("/")}
 				changeBox={boxId => navigate(generatePath(basePath, { boxId }))}
 				editAction={() => alert("Edit")}
+                newBookingAction={() => navigate(`/${boxId}/new-booking`)}
 			/>
 			<Box sx={{ borderBottom: 1, borderColor: "divider" }}>
 				<Tabs value={tab.label} onChange={handleChange}>

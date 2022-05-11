@@ -17,6 +17,7 @@ import { getAuth } from "firebase/auth"
 
 import { useAuthState } from "react-firebase-hooks/auth"
 import RegisterPresenter from "./presenter/RegisterPresenter"
+import NewKeyPresenter from "./presenter/key/New"
 
 const auth = getAuth()
 
@@ -42,6 +43,7 @@ export default function App() {
 						<Route path="events" element={<EventsPresenter/>} />
 						<Route path="key" element={<KeyPresenter/>} >
                             <Route path=":keyId/edit" element={<EditKeyPresenter />} />
+                            <Route path="new/:preferredKeySlot" element={<NewKeyPresenter />} />
                         </Route>
 						
 					</Route>

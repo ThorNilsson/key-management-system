@@ -17,7 +17,7 @@ export default function OverView({ keys, loading, editKey }) {
 				<Grid container columns={8} spacing={1} direction="row" alignItems="stretch">
 					{keys.map((key, index) => (
 						<Grid item xs={1} key={index}>
-							<ButtonBase onClick={() => editKey(key?.id)} sx={{ display: "block", height: "100%", width: "100%", textAlign: "left" }}>
+							<ButtonBase onClick={() => editKey({id: key?.id, preferredKeySlot: index + 1})} sx={{ display: "block", height: "100%", width: "100%", textAlign: "left" }}>
 								<Paper sx={{ p: 1, height: "100%" }}>
 									{key ? (
 										<Stack direction="column" sx={{ height: "100%" }}>
