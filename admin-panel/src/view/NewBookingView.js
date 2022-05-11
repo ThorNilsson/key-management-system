@@ -53,7 +53,7 @@ export default function NewBookingView() {
                 margin="dense"
                 id="longitude"
                 label="Guest E-Mail"
-                type="text"
+                type="email"
                 fullWidth
                 variant="standard"
                 value={email}
