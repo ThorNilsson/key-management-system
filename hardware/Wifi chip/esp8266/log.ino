@@ -1,10 +1,12 @@
 /*
- * Sends a new log to the database.
- */
+   Sends a new log to the database.
+*/
 void sendLog(String message, String userName, String bookingId, String userId) {
   String id = generateId();
   String logStr = "LOG: " + message + ", By " + userName + ", At: " + now + ", Door: " + isDoorOpen() + ", Booking: " + bookingId  + ", User:  " + userId;
+#if DEBUG
   Serial.println(logStr);
+#endif
   String logMessagePath = "/keyboxes/dkgC3kfhLpkKBysY_C-9/log/" + id;
 
   FirebaseJson json;
@@ -14,12 +16,13 @@ void sendLog(String message, String userName, String bookingId, String userId) {
   json.set("time", now);
   json.set("bookingId", bookingId);
   json.set("userId", userId);
-  Serial.println(Firebase.set(fbdo, logMessagePath, json) ? "Log deliverd." : fbdo.errorReason().c_str());
+  //Serial.println(
+  Firebase.set(fbdo, logMessagePath, json); // ? "Log deliverd." : fbdo.errorReason().c_str());
 }
 
 /*
- * Generates a random id that can be used when inserting new data in the database
- */
+   Generates a random id that can be used when inserting new data in the database
+*/
 String generateId() {
   byte randomValue;
   char temp[5];

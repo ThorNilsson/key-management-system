@@ -19,6 +19,8 @@
 #include <WiFiManager.h> // https://github.com/tzapu/WiFiManager
 #include "Nvm.h"
 
+#define DEBUG false
+
 #define NUM_LEDS 24
 CRGB leds[NUM_LEDS];
 #define BRIGHTNESS  100
@@ -54,6 +56,8 @@ char userPass  [NVM_MAX_LENZ];
 char keyboxId  [NVM_MAX_LENZ];
 char masterTag [NVM_MAX_LENZ];
 char wifiPass [NVM_MAX_LENZ];
+
+//mihmic49{1vqbhll58ue
 
 WiFiManagerParameter kms_user("KMS_user", "Enter your email here", "", 50);
 WiFiManagerParameter kms_pass("KMS_pass", "Enter your password here", "", 50);
@@ -109,17 +113,20 @@ unsigned long lastEntryTime;
 const int idLenght = 20;
 String tag;
 
+bool isDoorOpenVal = false;
+
 void setup()
 {
   FastLED.addLeds<NEOPIXEL, led_Pin>(leds, NUM_LEDS);
   FastLED.setBrightness(  BRIGHTNESS );
 
   WiFi.mode(WIFI_STA); // explicitly set mode, esp defaults to STA+AP
+  wm.setDebugOutput(DEBUG);
   wm.setConfigPortalTimeout(timeout);
   wm.addParameter(&kms_user);
   wm.addParameter(&kms_pass);
 
-  Serial.begin(115200);
+  Serial.begin(9600);
   SPI.begin();
   rfid.PCD_Init();
 
@@ -137,10 +144,12 @@ void setup()
   nvm.get("keyboxId", keyboxId);
   nvm.get("wifiPass", wifiPass);
 
+#if DEBUG
   Serial.println(masterTag);
   Serial.println(userMail);
   Serial.println(userPass);
   Serial.println(keyboxId);
+#endif
 
   //if no master tag is added, add one, notifies 5 beeps
   checkMastertagTag();
@@ -162,9 +171,10 @@ void setup()
   //WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 
   //wm.resetSettings();
-
   if (wm.autoConnect("KEY Managment System", wifiPass)) {
+#if DEBUG
     Serial.println("failed to auto connect to wifi");
+#endif
   }
   //setupFilesystemAndWiFi();
 
@@ -177,11 +187,12 @@ void setup()
     }
   */
   //Serial.println();
+#if DEBUG
   Serial.print("Connected with IP: ");
   Serial.println(WiFi.localIP());
   Serial.println();
   Serial.printf("Firebase Client v%s\n\n", FIREBASE_CLIENT_VERSION);
-
+#endif
   config.api_key = API_KEY;
   auth.user.email = userMail;
   auth.user.password = userPass;
@@ -196,13 +207,17 @@ void setup()
 
   if (getNTPtime(10)) {  // wait up to 10sec to sync
   } else {
+
+#if DEBUG
     Serial.println("Time not set");
+#endif
+
     ESP.restart();
   }
   showTime(timeinfo);
   lastNTPtime = time(&now);
   lastEntryTime = millis();
-  Serial.println();
+
   notify();
 }
 
@@ -213,14 +228,15 @@ void loop()
      - getKeyByBooking  //gäst öppnar via appen
      - getKeyByAdmin  //Admin öppnar via admin panel
      - getUid     //Läser uid och skickar till server
-     - addKey     //Läser UID uppdaterar server och lägger till nyckel i låda
   */
 
   if ( isOpenButtonPressed() && Firebase.ready() && (millis() - sendDataPrevMillis > 1000 || sendDataPrevMillis == 0)) {
     sendDataPrevMillis = millis();
     notify();
     String action = Firebase.getString(fbdo, F("/keyboxes/dkgC3kfhLpkKBysY_C-9/accessingBooking/action")) ? String(fbdo.to<String>()).c_str() : fbdo.errorReason().c_str();
+#if DEBUG
     Serial.println("Open Button Pressed, action is: " + action);
+#endif
 
     if (action.equals("getKeyByBooking")) {
       getKeyByBooking();
@@ -228,10 +244,6 @@ void loop()
       getKeyByAdmin();
     } else if (action.equals("getUid")) {
       getUid();
-    } else if (action.equals("addKey")) {
-      Serial.println("ADD KEY");
-
-      //returnKey(keySlot);
     } else {
       sendLog("Open button pressed, no valid action found on server.", "", "", "");
       notifyError();
@@ -254,7 +266,10 @@ void loop()
       tag += rfid.uid.uidByte[i];
     }
     notify(); //Give a short signal to indicate that the tag has been scanned.
+
+#if DEBUG
     Serial.println("A tag has been scanned: " + tag);
+#endif
 
     String accessTagPath = "/keyboxes/dkgC3kfhLpkKBysY_C-9/accessTags/" + tag + "/name";
     String keySlotPath = "/keyboxes/dkgC3kfhLpkKBysY_C-9/keys/" + tag + "/keySlot";
@@ -279,17 +294,23 @@ void loop()
     rfid.PCD_StopCrypto1();
   }
 
-  //if(ISdOORoPEN()){
-  //  sendLog("Someone tried to open the box by FOURCE and succeded, Door is open", "", "", "");
-  //}
-
-
-  static uint8_t startIndex = 0;
-  startIndex = startIndex + 1; /* motion speed */
-
-  if (i == 14) {
-    i = 6;
+  if (isDoorOpenVal != isDoorOpen()) {
+    isDoorOpenVal == !isDoorOpenVal;
+    if (isDoorOpenVal) {
+      sendLog("Someone tried to open the box by force and succeded, Door is now open", "", "", "");
+    }
+    else {
+      sendLog("Someone closed the door", "", "", "");
+    }
   }
+
+
+  //static uint8_t startIndex = 0;
+  //startIndex = startIndex + 1; /* motion speed */
+
+  //if (i == 14) {
+  //  i = 6;
+  // }
 
   /*
 
@@ -301,9 +322,9 @@ void loop()
     if(PALETTE == 4) {CloseBoxLed(startIndex);}
   */
 
-  SuccessLed(startIndex);
+  //SuccessLed(startIndex);
 
-  FastLED.show();
-  FastLED.delay(1000 / UPDATES_PER_SECOND);
+  //FastLED.show();
+  //FastLED.delay(1000 / UPDATES_PER_SECOND);
 
 } //Loop
