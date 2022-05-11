@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import BeforeAccess from "./beforeAccessPres";
 import StateView from "../views/openBoxView";
 import TooFarView from "../views/tooFarView";
@@ -7,7 +7,7 @@ import TooFar from './tooFarPresenter';
 import LockIcon from '../outline_lock_black_48dp.png'
 import unLockIcon from '../outline_lock_open_black_48dp.png'
 import Icon from '../successIcon.png'
-import { ref, get, onValue, child, query, orderByChild, limitToLast, set } from "firebase/database"
+import { ref, get, onValue, query, orderByChild, limitToLast, set } from "firebase/database"
 import { db } from "../firebase"
 
 
@@ -15,17 +15,23 @@ function ViewPresenter(props) {
     const [boxState, setBoxState] = useState();
     const [keyState, setKeyState] = useState();
     const [data, setData] = useState();
-    const [location, setLocation] = useState();
+    const [timeLeft, setTimeLeft] = useState(Date.now());
+    const [dist, setDist] = useState();
+    const locationWatchId = useRef(null);
+
+    useEffect(() => {
+        setInterval(() => setTimeLeft(Date.now()), 3000);
+    }, []);
 
     useEffect(() => {
 
         /*
           Get the current door status
        */
-        const isBoxOpenRef = query(ref(db, 'keyboxes/' + "dkgC3kfhLpkKBysY_C-9" + '/log'), orderByChild('time'), limitToLast(1));
-
+        const isBoxOpenRef = query(ref(db, 'keyboxes/' + props.keyboxId + '/log'), orderByChild('time'), limitToLast(1));
         onValue(isBoxOpenRef, (snapshot) => {
             const data = snapshot.val();
+            console.log('keyboxes/' + props.keyboxId + '/log')
             if (data != null) {
                 const keys = Object.keys(data);
                 const array = keys.map(key => ({ key: key, value: data[key] }));
@@ -34,36 +40,30 @@ function ViewPresenter(props) {
                 setBoxState(isOpen);
             }
         });
-
-        /*
-            Get the current key slot of the key, 0 == not in box, else 1 to 8
-         */
-        const getKeySlotStatusRef = ref(db, 'keyboxes/' + "dkgC3kfhLpkKBysY_C-9" + '/keys/' + '24213714427' + '/keySlot');
-        onValue(getKeySlotStatusRef, (snapshot) => {
-            const data = snapshot.val();
-            if (data != null) {
-                console.log(data);
-                setKeyState(data);
-            }
-        });
-
-
     }, []);
 
     useEffect(() => {
         const bookingRef = ref(db, 'keyboxes/' + props.keyboxId + '/bookings/' + props.bookingId);
-        console.log("burigeiu")
         get(bookingRef).then((snapshot) => {
             console.log(snapshot.val());
             const data = snapshot.val();
             setData({
                 startDate: new Date(data.checkIn * 1000),
-                returnDate: new Date(data.checkIn * 1000),
-                timeUntilAccess: getTimeUntilAccess(new Date(data.checkIn * 1000)),
-                timeUntilReturn: getTimeUntilReturn(new Date(data.checkIn * 1000)),
+                returnDate: new Date(data.checkOut * 1000),
                 name: data.name,
-                message: data.message,
+                message: data.privateMessage,
                 keyId: data.keyId
+            });
+            /*
+            Get the current key slot of the key, 0 == not in box, else 1 to 8
+         */
+            const getKeySlotStatusRef = ref(db, 'keyboxes/' + props.keyboxId + '/keys/' + data.keyId + '/keySlot');
+            onValue(getKeySlotStatusRef, (snapshot) => {
+                const data = snapshot.val();
+                if (data != null) {
+                    console.log(data);
+                    setKeyState(data);
+                }
             });
         }).catch((error) => {
             console.error(error);
@@ -73,46 +73,45 @@ function ViewPresenter(props) {
         get(infoRef).then((snapshot) => {
             console.log(snapshot.val());
             const data = snapshot.val();
-            setLocation({
-                lng: data.longitude,
-                lat: data.latitude,
-                distance: getDistanceToTarget(data.longtitude, data.latitude)
-            });
+            locationWatchId.current = navigator.geolocation.watchPosition((pos) => setDistanceToTarget(pos, data.longitude, data.latitude));
+
         }).catch((error) => {
             console.error(error);
         });
 
-
     }, []);
+    function setDistanceToTarget(pos, lng, lat) {
+        var crd = pos.coords;
+        setDist(Math.round(distance(crd.latitude, crd.longitude, lat, lng) * 1000))
+    }
 
 
     return (
         <div>
-            {!data || !location || currentView(props.keyboxId, props.bookingId, data, location, boxState, keyState)}
+            {!data || !dist || currentView(props.keyboxId, props.bookingId, timeLeft, data, boxState, keyState, dist)}
         </div>
     )
 }
 
-function currentView(keyboxId, bookingId, data, location, boxOpen, keyTaken) {
-    //console.log(data)
-    if (data.timeUntilAccess > 0) {
+function currentView(keyboxId, bookingId, timeLeft, data, boxOpen, keyTaken, dist) {
+    if (data.startDate - timeLeft > 0) {
         return (
-            <BeforeAccess date={data.timeUntilAccess} />
+            <BeforeAccess startTime={data.startDate} />
         )
     }
     if (data.timeUntilReturn > 0) {
         return (
-            <ReturnTimer date={data.timeUntilReturn} return={true}/>
+            <ReturnTimer returnTime={data.returnDate} />
         )
     }
-    if (location.distance > 100) {
+    if (dist > 100) {
         return (
-            <TooFarView dist={location.distance} />
+            <TooFarView dist={dist} />
         )
     }
-    if (!boxOpen && !keyTaken && location.distance != null) {
-        console.log("Box is ready to be opened")
-        const topText = `You are ${location.distance === undefined ? '0' : location.distance} meters from the box`
+    if (!boxOpen && !keyTaken && dist != undefined) {
+        //console.log("Box is ready to be opened")
+        const topText = `You are ${dist === undefined ? '0' : dist} meters from the box`
         const bottomText = 'Open Box!'
 
         return (
@@ -121,7 +120,7 @@ function currentView(keyboxId, bookingId, data, location, boxOpen, keyTaken) {
         )
     }
     if (boxOpen && !keyTaken) {
-        console.log("opened")
+        //console.log("opened")
         const topText = 'You have opened the box'
         const bottomText = 'Retrieve the indicated key!'
         const overMap = 'Retrieve Key'
@@ -131,7 +130,7 @@ function currentView(keyboxId, bookingId, data, location, boxOpen, keyTaken) {
         )
     }
     if (boxOpen && keyTaken) {
-        console.log("key is taken")
+        //console.log("key is taken")
         const topText = 'You have retrieved the key'
         const bottomText = 'Please close the door!'
         const overMap = 'Close Door'
@@ -141,9 +140,9 @@ function currentView(keyboxId, bookingId, data, location, boxOpen, keyTaken) {
         )
     }
     if (!boxOpen && keyTaken) {
-        console.log("success")
-        const topText = `Rental Period ends in ${data.timeUntilReturn.days} days`
-        const bottomText = 'Have a great stay!'
+        //console.log("success")
+        const topText = `Rental Period ends in ${getTimeUntilReturn(data.returnDate).days} days`
+        const bottomText = `Have a great stay! ${data.message}`
         const overMap = 'Success'
 
         return (
@@ -152,23 +151,6 @@ function currentView(keyboxId, bookingId, data, location, boxOpen, keyTaken) {
     }
 
     return <div className='topbar1'><div className='topbar_text2'>Loading...</div></div>
-}
-
-function getTimeUntilAccess(startTime) {
-    let difference = startTime - Date.now();
-    let timeLeft = {};
-    if (difference > -7000) {
-        this.timeUntilAccess = difference;
-        this.notifyObservers();
-    }
-    if (difference > 0) {
-        timeLeft = {
-            days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-            hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-            minutes: Math.floor((difference / 1000 / 60) % 60),
-        };
-    }
-    return timeLeft;
 }
 
 function getTimeUntilReturn(returnTime) {
@@ -185,24 +167,18 @@ function getTimeUntilReturn(returnTime) {
     return timeLeft;
 }
 
+
+
 function openBox(keyboxId, bookingId, nameOnBooking, keyId) {
     set(ref(db, 'keyboxes/' + keyboxId + '/accessingBooking'), {
         accessRequested: parseInt(Date.now() / 1000),
-        accessExpired: parseInt(Date.now() / 1000) + 60,
+        accessExpired: parseInt(Date.now() / 1000) + 60000,
         bookingId: bookingId,
         name: nameOnBooking,
         keyId: keyId,
         action: "getKeyByBooking",
     });
     console.log("timer started")
-}
-
-function getDistanceToTarget(lng, lat) {
-    return navigator.geolocation.watchPosition((pos) => setDistanceToTarget(pos, lng, lat));
-}
-function setDistanceToTarget(pos, lng, lat) {
-    var crd = pos.coords;
-    return Math.round(distance(crd.latitude, crd.longitude, lat, lng) * 1000)
 }
 
 function degreesToRadians(degrees) {
