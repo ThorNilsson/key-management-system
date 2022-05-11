@@ -3,17 +3,19 @@ import TextField from '@mui/material/TextField';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import Box from '@mui/material/Box';
-import {DateRangePicker} from 'react-date-range';
-import {db} from "../api/firebase"
-import {ref, get, set, push, onValue} from "firebase/database"
-import {resolvePath, useParams} from "react-router-dom"
+import { DateRangePicker } from 'react-date-range';
+import { db } from "../api/firebase"
+import { ref, get, set, push, onValue } from "firebase/database"
+import { resolvePath, useParams } from "react-router-dom"
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import Select, {SelectChangeEvent} from '@mui/material/Select';
-import {useList} from "react-firebase-hooks/database";
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import { useList } from "react-firebase-hooks/database";
 import Stack from '@mui/material/Stack';
 import { CardHeader } from '@mui/material';
+import { addDays } from 'date-fns';
+import { useState } from 'react';
 
 export default function NewBookingView() {
     const [value, setValue] = React.useState([null, null]);
@@ -24,24 +26,23 @@ export default function NewBookingView() {
     const [message, setMessage] = React.useState('');
     const [name, setName] = React.useState('');
     const [url, setUrl] = React.useState('');
-    const {boxId} = useParams()
+    const { boxId } = useParams()
     const [keys, loading, error] = useList(ref(db, `keyboxes/${boxId}/keys`))
     const [dateState, setDate] = React.useState(null)
 
-    const selectionRange = {
-        startDate: new Date(),
-        endDate: new Date(),
-        key: 'selection',
-    }
+    const [state, setState] = useState([
+        {
+            startDate: new Date(),
+            endDate: addDays(new Date(), 0),
+            key: 'selection'
+        }
+    ]);
 
-    const handleSelect = (date) => {
-
-        console.log(date); // native Date object
-    }
     if (error) return <div>Something went wrong</div>
     console.log(keys)
+
     const keyList = keys.map(key => {
-        const k = {...key.val(), id: key.key}
+        const k = { ...key.val(), id: key.key }
         return k
     })
 
@@ -85,7 +86,7 @@ export default function NewBookingView() {
                 value={message}
             />
             <p></p>
-            <Box sx={{minWidth: 120}}>
+            <Box sx={{ minWidth: 120 }}>
                 <FormControl fullWidth>
                     <InputLabel id="demo-simple-select-label">Booked room</InputLabel>
                     <Select
@@ -100,15 +101,17 @@ export default function NewBookingView() {
                     </Select>
                 </FormControl>
             </Box>
-            <Stack direction="row" spacing={2}>
-                <div>
-                    <CardHeader title="Booking dates"></CardHeader>
-                    <DateRangePicker
-                        ranges={[selectionRange]}
-                        onChange={handleSelect}
-                    />
-                </div>
-            </Stack>
+            <div>
+                <CardHeader title="Dates Booked"></CardHeader>
+                <DateRangePicker
+                    onChange={item => setState([item.selection])}
+                    showSelectionPreview={true}
+                    moveRangeOnFirstSelection={false}
+                    months={2}
+                    ranges={state}
+                    direction="horizontal"
+                />
+            </div>
         </div>
     )
         ;
