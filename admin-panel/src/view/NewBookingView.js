@@ -13,11 +13,12 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { Key } from "@mui/icons-material";
 import { db } from "../api/firebase"
 import { ref, get, set, push, onValue } from "firebase/database"
-import { useParams } from "react-router-dom"
+import {resolvePath, useParams} from "react-router-dom"
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
+import {useList} from "react-firebase-hooks/database";
 
 export default function NewBookingView() {
     const [value, setValue] = React.useState([null, null]);
@@ -29,6 +30,14 @@ export default function NewBookingView() {
     const [name, setName] = React.useState('');
     const [url, setUrl] = React.useState('');
     const {boxId} = useParams()
+    const [keys, loading, error] = useList(ref(db, `keyboxes/${boxId}/keys`))
+
+    if(error) return <div>Something went wrong</div>
+    console.log(keys)
+    const keyList = keys.map(key => {
+        const k = {...key.val(), id: key.key}
+        return k
+    })
 
     const handleChange = (event) => {
         setRoom(event.target.value);
@@ -80,9 +89,8 @@ export default function NewBookingView() {
                         label="Booked room"
                         onChange={handleChange}
                     >
-                        <MenuItem value={10}>Ten</MenuItem>
-                        <MenuItem value={20}>Twenty</MenuItem>
-                        <MenuItem value={30}>Thirty</MenuItem>
+                        {keyList.map(key => (
+                        <MenuItem value={key.id}>{key.name}</MenuItem>))}
                     </Select>
                 </FormControl>
             </Box>
