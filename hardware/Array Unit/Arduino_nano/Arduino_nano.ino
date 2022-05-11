@@ -24,6 +24,7 @@ void setup() {
   Serial.begin(9600);
   FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
   FastLED.setBrightness(  BRIGHTNESS ); FastLED.clear();
+  interrupts();
 }
 
 void loop() {
@@ -65,8 +66,11 @@ void accessKey(int slot) {
   roulette(slot);
   blinkGreen(slot, 3, 300);
 
-  int i = 0;
-  while (!isSlotFree(slot) && i < 10) {
+  unsigned long initialTime = millis();
+  unsigned long timeoutSeconds = 10;
+
+  while ( millis() - initialTime < timeoutSeconds * 1000) {
+    //while (!isSlotFree(slot) && i < 10) {
     bool isKeyTaken = isSlotFree(slot);
 
     unlock(slot);
@@ -74,12 +78,10 @@ void accessKey(int slot) {
     if (isKeyTaken  && isSlotFree(slot)) {
       freeSlots[slot] = true;
       Serial.print('k'); //k for ok
-      setGreen(slot);
-      delay(2000);
-      setBlack(slot);
+      blinkGreen(slot, 3, 300);
       return;
     }
-    i++;
+    //  i++;
   }
 
   Serial.print('t');
@@ -93,26 +95,36 @@ void accessKey(int slot) {
 void returnKey(int slot) {
   FastLED.clear();
   FastLED.show();
-  unsigned long initialTime = millis();
+  delay(1000);
   setGreen(slot);
 
-  while (initialTime + (60 * 1000) >  millis()) { // ca 41 sek
-    for (int i = 1; i <= 8; i++) {
-      bool isOpen = isSlotFree(i);
+  unsigned long initialTime = millis();
+  unsigned long timeoutSeconds = 60;
 
-      if ( i == slot && !isOpen) {
-        freeSlots[i] == false;
-        Serial.print('k'); //k for ok
-        blinkGreen(slot, 3, 500);
-        return;
+  while (millis() - initialTime < timeoutSeconds * 1000) {
+    for (int i = 1; i <= 8; i++) {
+
+      if ( i == slot && !isSlotFree(i) && freeSlots[i]) {
+        delay(50);
+
+        if (!isSlotFree(i)) {
+          freeSlots[i] = false;
+          Serial.print('k'); //k for ok
+          blinkGreen(slot, 3, 500);
+          return;
+        }
       }
 
-      if (!isSlotFree(i) && freeSlots[i] == true) {
+      if (!isSlotFree(i) && freeSlots[i]) {
         wrongHole(i);
         Serial.print('w');  //k for wrong hole
+        setGreen(slot);
       }
     }
   }
+  FastLED.clear();
+  FastLED.show();
+
   Serial.print('t'); //t for timeout
 }
 

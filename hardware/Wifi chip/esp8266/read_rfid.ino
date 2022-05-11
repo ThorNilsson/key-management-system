@@ -1,10 +1,8 @@
 
 String readRfidTag(int timeout) {
-#if DEBUG
-  Serial.println("Scan the tag you want to be the master RFID tag");
-#endif
   String newTag = "NotAdded";
   bool notScanned = true;
+  
   while (notScanned) {
     if (rfid.PICC_IsNewCardPresent()) {
       if (rfid.PICC_ReadCardSerial()) {
@@ -12,6 +10,7 @@ String readRfidTag(int timeout) {
           tag += rfid.uid.uidByte[i];
         }
         notify();
+        
 #if DEBUG
         Serial.println(tag);
 #endif

@@ -4,9 +4,8 @@
 void sendLog(String message, String userName, String bookingId, String userId) {
   String id = generateId();
   String logStr = "LOG: " + message + ", By " + userName + ", At: " + now + ", Door: " + isDoorOpen() + ", Booking: " + bookingId  + ", User:  " + userId;
-#if DEBUG
-  Serial.println(logStr);
-#endif
+  printDebug(logStr, "");
+
   String logMessagePath = "/keyboxes/dkgC3kfhLpkKBysY_C-9/log/" + id;
 
   FirebaseJson json;
@@ -16,8 +15,15 @@ void sendLog(String message, String userName, String bookingId, String userId) {
   json.set("time", now);
   json.set("bookingId", bookingId);
   json.set("userId", userId);
-  //Serial.println(
-  Firebase.set(fbdo, logMessagePath, json); // ? "Log deliverd." : fbdo.errorReason().c_str());
+
+  printDebug("Server: ", Firebase.set(fbdo, logMessagePath, json) ? "Log deliverd." : fbdo.errorReason().c_str());
+}
+
+void printDebug(String message, String variable) {
+#if DEBUG
+  Serial.print(message);
+  Serial.println(variable);
+#endif
 }
 
 /*

@@ -19,11 +19,11 @@
 #include <WiFiManager.h> // https://github.com/tzapu/WiFiManager
 #include "Nvm.h"
 
-#define DEBUG false
+#define DEBUG true
 
 #define NUM_LEDS 24
 CRGB leds[NUM_LEDS];
-#define BRIGHTNESS  100
+#define BRIGHTNESS  255
 #define UPDATES_PER_SECOND 100
 #define PALETTE 4
 
@@ -144,12 +144,10 @@ void setup()
   nvm.get("keyboxId", keyboxId);
   nvm.get("wifiPass", wifiPass);
 
-#if DEBUG
-  Serial.println(masterTag);
-  Serial.println(userMail);
-  Serial.println(userPass);
-  Serial.println(keyboxId);
-#endif
+  printDebug("Mastertag: ", masterTag);
+  printDebug("User mail: ", userMail);
+  printDebug("User password: ", userPass);
+  printDebug("Keybox Id: ", keyboxId);
 
   //if no master tag is added, add one, notifies 5 beeps
   checkMastertagTag();
@@ -158,41 +156,31 @@ void setup()
   //checkUser();
 
 
-  /*
-    initial setup -> scan master tag
-
-    //, open wifi configuration, enter wifi, email, password
-
-    wifi-OK -> user-OK -> Kör
-
-    masterTagScanned -> edit settings
-  */
-
-  //WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  //Scan nfc if mastertag is present to initiate wifi setup without password.
+  if (rfid.PICC_IsNewCardPresent() && rfid.PICC_ReadCardSerial()) {
+    for (byte i = 0; i < 4; i++) {
+      tag += rfid.uid.uidByte[i];
+    }
+    notifySuccess(); //Give a short signal to indicate that the tag has been scanned.
+    
+    if (strcmp(masterTag, tag.c_str()) == 0) {
+      printDebug("Master tag scanned on startup, configuring wifi: ", masterTag);
+      configureWifi();
+    }
+    tag = "";
+    rfid.PICC_HaltA();
+    rfid.PCD_StopCrypto1();
+  }
 
   //wm.resetSettings();
   if (wm.autoConnect("KEY Managment System", wifiPass)) {
-#if DEBUG
-    Serial.println("failed to auto connect to wifi");
-#endif
+    printDebug("Failed to auto connect to wifi, starting wifi config", "");
   }
-  //setupFilesystemAndWiFi();
 
-  //Serial.print("Connecting to Wi-Fi");
-  /*
-    while (WiFi.status() != WL_CONNECTED)
-    {
-    Serial.print(".");
-    delay(300);
-    }
-  */
-  //Serial.println();
-#if DEBUG
-  Serial.print("Connected with IP: ");
-  Serial.println(WiFi.localIP());
-  Serial.println();
-  Serial.printf("Firebase Client v%s\n\n", FIREBASE_CLIENT_VERSION);
-#endif
+  //printDebug("Connected with IP: ", String(WiFi.localIP()));
+  printDebug("Connected with IP: ", "");
+  printDebug("Firebase Client v % s\n\n", FIREBASE_CLIENT_VERSION);
+
   config.api_key = API_KEY;
   auth.user.email = userMail;
   auth.user.password = userPass;
@@ -205,39 +193,36 @@ void setup()
   configTime(0, 0, NTP_SERVER);  // See https://github.com/nayarsystems/posix_tz_db/blob/master/zones.csv for Timezone codes for your region
   setenv("TZ", TZ_INFO, 1);
 
-  if (getNTPtime(10)) {  // wait up to 10sec to sync
-  } else {
-
-#if DEBUG
-    Serial.println("Time not set");
-#endif
-
+  if (!getNTPtime(10)) {  // wait up to 10sec to sync
+    printDebug("Time not set", "");
     ESP.restart();
   }
+  
   showTime(timeinfo);
   lastNTPtime = time(&now);
   lastEntryTime = millis();
 
+  isDoorOpenVal = isDoorOpen();
+  
   notify();
+  printDebug("Setup done.", "");
 }
 
 void loop()
 {
   /*
     Actions defined by database that are triggerd by pressing the button on the fron side of the key box.
-     - getKeyByBooking  //gäst öppnar via appen
-     - getKeyByAdmin  //Admin öppnar via admin panel
-     - getUid     //Läser uid och skickar till server
+    - getKeyByBooking  //gäst öppnar via appen
+    - getKeyByAdmin  //Admin öppnar via admin panel
+    - getUid     //Läser uid och skickar till server
   */
 
   if ( isOpenButtonPressed() && Firebase.ready() && (millis() - sendDataPrevMillis > 1000 || sendDataPrevMillis == 0)) {
     sendDataPrevMillis = millis();
     notify();
     String action = Firebase.getString(fbdo, F("/keyboxes/dkgC3kfhLpkKBysY_C-9/accessingBooking/action")) ? String(fbdo.to<String>()).c_str() : fbdo.errorReason().c_str();
-#if DEBUG
-    Serial.println("Open Button Pressed, action is: " + action);
-#endif
-
+    printDebug("Open Button Pressed, action is: ", action);
+  
     if (action.equals("getKeyByBooking")) {
       getKeyByBooking();
     } else if (action.equals("getKeyByAdmin")) {
@@ -259,17 +244,15 @@ void loop()
     returnKey     //Läser UID och öppnar skåp om nyckel ska lämnas in.
     getKeyByNfc   //Läser UID och öppnar skåp om nyckel ska lämnas in.
   */
-  if ( ! rfid.PICC_IsNewCardPresent())
-    return;
-  if (rfid.PICC_ReadCardSerial()) {
+  //if ( !rfid.PICC_IsNewCardPresent())
+  //  return;
+  if (rfid.PICC_IsNewCardPresent() && rfid.PICC_ReadCardSerial()) {
     for (byte i = 0; i < 4; i++) {
       tag += rfid.uid.uidByte[i];
     }
     notify(); //Give a short signal to indicate that the tag has been scanned.
-
-#if DEBUG
-    Serial.println("A tag has been scanned: " + tag);
-#endif
+    
+    printDebug("A tag has been scanned: ", tag);
 
     String accessTagPath = "/keyboxes/dkgC3kfhLpkKBysY_C-9/accessTags/" + tag + "/name";
     String keySlotPath = "/keyboxes/dkgC3kfhLpkKBysY_C-9/keys/" + tag + "/keySlot";
@@ -283,7 +266,7 @@ void loop()
       returnKey(keySlot);
     }
     else if (Firebase.getString(fbdo, accessTagPath)) {
-      getKeyByNfc();
+      //getKeyByNfc();
     }
     else {
       sendLog("Someone tried to open the box by using an unregisterd nfc tag or a nfc tag that should be in the box, Access denied.", "", "", "");
@@ -295,7 +278,7 @@ void loop()
   }
 
   if (isDoorOpenVal != isDoorOpen()) {
-    isDoorOpenVal == !isDoorOpenVal;
+    isDoorOpenVal = isDoorOpen();
     if (isDoorOpenVal) {
       sendLog("Someone tried to open the box by force and succeded, Door is now open", "", "", "");
     }
@@ -304,27 +287,5 @@ void loop()
     }
   }
 
-
-  //static uint8_t startIndex = 0;
-  //startIndex = startIndex + 1; /* motion speed */
-
-  //if (i == 14) {
-  //  i = 6;
-  // }
-
-  /*
-
-
-    if(PALETTE == 0) {SuccessLed(startIndex);}
-    if(PALETTE == 1) {LoadingLed();}
-    if(PALETTE == 2) {NotifyLed(startIndex);}
-    if(PALETTE == 3) {ErrorLed(startIndex);}
-    if(PALETTE == 4) {CloseBoxLed(startIndex);}
-  */
-
-  //SuccessLed(startIndex);
-
-  //FastLED.show();
-  //FastLED.delay(1000 / UPDATES_PER_SECOND);
-
+  boolean catchLateResponses = getResponse();
 } //Loop

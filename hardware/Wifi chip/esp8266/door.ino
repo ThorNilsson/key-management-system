@@ -1,33 +1,33 @@
-/*
-   Unlocks the door that secures all the keys.
-*/
+//Unlocks the door that secures all the keys.
 void unlockDoor() {
+  printDebug("Opening door. ", "");
   /*
      Implement check if door magnet is opened.
   */
-#if DEBUG
-  Serial.println("Opening door");
-#endif
-
   tone(buzzer_Pin, 1000);
   digitalWrite(lock_Pin, HIGH);
-  delay(2000);
+  delay(1000);
   noTone(buzzer_Pin);
   digitalWrite(lock_Pin, LOW);
-
   sendLog("Box door was opened.", "", "", "");
 }
 
-/*
-   Checks if the door is open.
-*/
+void closeDoor() {
+  /*
+     Implement check if door magnet is opened.
+  */
+  printDebug("Close door now", "");
+
+  sendLog("Box door closed", "", "", "");
+}
+
+
+//Checks if the door is open.
 boolean isDoorOpen() {
   return digitalRead(sensor_Pin);
 }
 
-/*
-   Checks if front button in the ksy box is pressed.
-*/
+//Checks if front button in the ksy box is pressed.
 boolean isOpenButtonPressed() {
   return analogRead(button_Pin) > 300;
 }
