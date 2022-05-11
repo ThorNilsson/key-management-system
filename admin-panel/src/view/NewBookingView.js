@@ -3,7 +3,7 @@ import TextField from '@mui/material/TextField';
 import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import Box from '@mui/material/Box';
-import {Calendar} from 'react-date-range';
+import {DateRangePicker} from 'react-date-range';
 import {db} from "../api/firebase"
 import {ref, get, set, push, onValue} from "firebase/database"
 import {resolvePath, useParams} from "react-router-dom"
@@ -26,8 +26,16 @@ export default function NewBookingView() {
     const [url, setUrl] = React.useState('');
     const {boxId} = useParams()
     const [keys, loading, error] = useList(ref(db, `keyboxes/${boxId}/keys`))
+    const [dateState, setDate] = React.useState(null)
+
+    const selectionRange = {
+        startDate: new Date(),
+        endDate: new Date(),
+        key: 'selection',
+    }
 
     const handleSelect = (date) => {
+
         console.log(date); // native Date object
     }
     if (error) return <div>Something went wrong</div>
@@ -94,16 +102,9 @@ export default function NewBookingView() {
             </Box>
             <Stack direction="row" spacing={2}>
                 <div>
-                    <CardHeader title="Start date"></CardHeader>
-                    <Calendar
-                        date={new Date()}
-                        onChange={handleSelect}
-                    />
-                </div>
-                <div>
-                    <CardHeader title="End date"></CardHeader>
-                    <Calendar
-                        date={new Date()}
+                    <CardHeader title="Booking dates"></CardHeader>
+                    <DateRangePicker
+                        ranges={[selectionRange]}
                         onChange={handleSelect}
                     />
                 </div>
