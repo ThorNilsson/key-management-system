@@ -23,7 +23,7 @@ export default function BookingsPresenter() {
                 setKeyInfo(keys.reduce((acc, key, index) => ({...acc, [keysBooked[index]]: key.val()}), {}))
             })
 			.catch(error => console.error(error))
-	}, [bookings])
+	}, [bookings, boxId])
 
 	if (error) return <div>Something went wrong</div>
 

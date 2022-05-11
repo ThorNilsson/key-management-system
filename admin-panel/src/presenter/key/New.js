@@ -39,6 +39,8 @@ export default function NewKeyPresenter() {
 					nfcUnsub()
 				})
 				return
+            default:
+                console.error("Unknown status: ", data)
 		}
 	}
 
