@@ -6,16 +6,16 @@ import Box from '@mui/material/Box';
 import { DateRangePicker } from 'react-date-range';
 import { db } from "../api/firebase"
 import { ref, get, set, push, onValue } from "firebase/database"
-import { resolvePath, useParams } from "react-router-dom"
+import { resolvePath, useParams, useNavigate } from "react-router-dom"
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useList } from "react-firebase-hooks/database";
-import Stack from '@mui/material/Stack';
 import { CardHeader } from '@mui/material';
 import { addDays } from 'date-fns';
 import { useState } from 'react';
+import Button from '@mui/material/Button';
 
 export default function NewBookingView() {
     const [value, setValue] = React.useState([null, null]);
@@ -29,6 +29,7 @@ export default function NewBookingView() {
     const { boxId } = useParams()
     const [keys, loading, error] = useList(ref(db, `keyboxes/${boxId}/keys`))
     const [dateState, setDate] = React.useState(null)
+    const navigate = useNavigate()
 
     const [state, setState] = useState([
         {
@@ -49,6 +50,19 @@ export default function NewBookingView() {
     const handleChange = (event) => {
         setRoom(event.target.value);
     };
+
+    const handleSubmit = (event) => {
+        push(ref(db, 'keyboxes/' + boxId + '/bookings/'
+        ), {
+            name: name,
+            email: email,
+            keyId: keys,
+            message: message,
+            checkIn: checkIn,
+            checkOut: checkOut,
+            url: 'https://firebasesomething.kms.com/uiy3249e6ysfdugsd987f37'
+        }).then(() => navigate("/" + boxId)).catch(error => alert("Something went wrong " + error.message))
+    }
 
     return (
         <div>
@@ -112,7 +126,7 @@ export default function NewBookingView() {
                     direction="horizontal"
                 />
             </div>
+            <Button onClick={handleSubmit}> CONFIRM BOOKING </Button>
         </div>
-    )
-        ;
+    );
 }
