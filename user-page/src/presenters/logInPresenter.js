@@ -6,19 +6,25 @@ import { db } from "../firebase"
 import loadingGif from '../Loading_icon.gif'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { getAuth, isSignInWithEmailLink, signInWithEmailLink, sendSignInLinkToEmail, signOut } from 'firebase/auth';
+import { LoginView } from '../views/loginView';
 export function LoginPresenter() {
     //http://localhost:3000/asodiaouio29186ey7gawd
     //const email = "keymanagementsystemKMS@gmail.com"
     const [loaded, setLoaded] = useState(false)
     const [email, setEmail] = useState();
-
+    const [bookingEmail, setBookingEmail] = useState();
     const [bookingId, setBookingId] = useState();
     const [keyboxId, setKeyboxId] = useState();
     const [counter, setCounter] = useState(5);
-    const [loginDisable, setLoginDisable] = useState(false);
+    const [loginDisable, setLoginDisable] = useState();
+    const [errorText, setErrorText] = useState("");
     const auth = getAuth()
     const [user, loading, error] = useAuthState(auth)
-    let emailSent = false;
+
+    const handleSubmit = event => {
+        event.preventDefault()
+        logIn()
+    }
 
     if (loading) return <img src={loadingGif}></img>
 
@@ -28,8 +34,7 @@ export function LoginPresenter() {
         const logOut = () => {
             signOut(auth)
         }
-        //return <div>Logged in as {user.email} <button onClick={logOut}>Sign out</button></div>
-        const starCountRef = ref(db, 'links/' + window.location.pathname.split('/')[1]);
+        const starCountRef = ref(db, 'guests/' + window.location.pathname.split('/')[1]);
         console.log(window.location.pathname.split('/')[1])
         get(starCountRef).then((snapshot) => {
             const data = snapshot.val();
@@ -57,29 +62,28 @@ export function LoginPresenter() {
                 console.log(counter)
                 if (error.code === 'auth/invalid-email') {
                     if (counter === 0) {
-                        alert("Too many tries, send a new link and try again")
+                        setErrorText("Too many tries, send a new link and try again")
                         setLoginDisable(true);
                         return;
                     } else {
-                        alert("Email is not correct")
+                        setErrorText("Email is not correct")
                         setCounter(counter - 1)
                     }
                 }
             })
         } else {
-            alert("Not a correct link, send a new link and try again")
+            setErrorText("Not a correct link, send a new link and try again")
             setLoginDisable(true);
         }
     }
 
-    const sendEmail = () => {
+    const sendEmail = (event) => {
+        event.preventDefault()
         const actionCodeSettings = {
-            // URL you want to redirect back to. The domain (www.example.com) for this
-            // URL must be in the authorized domains list in the Firebase Console.
             url: 'http://localhost:3000/asodiaouio29186ey7gawd',
-            // This must be true.
             handleCodeInApp: true,
         };
+
         sendSignInLinkToEmail(auth, email, actionCodeSettings)
             .then(() => {
                 console.log("email sent")
@@ -90,13 +94,12 @@ export function LoginPresenter() {
                 const errorMessage = error.message;
                 // ...
             });
+
     }
 
     return (
-        <div>Not logged in
-            <input onInput={(e) => setEmail(e.target.value)}></input>
-            <button onClick={logIn} disabled={loginDisable}>Login</button>
-            <button onClick={sendEmail}>Send email</button>
-        </div>
+        <LoginView logIn={logIn} loginDisable={loginDisable} sendEmail={sendEmail}
+            setEmail={setEmail} emailErrorText={errorText} handleSubmit={handleSubmit}
+        />
     )
 }
