@@ -1,11 +1,11 @@
+import { Container } from "@mui/material";
 import { Outlet } from "react-router-dom";
 
 
 export default function KeyPresenter() {
   return (
-    <div>
-        Key
+    <Container maxWidth="sm" >
         <Outlet />
-    </div>
+    </Container>
   )
 }

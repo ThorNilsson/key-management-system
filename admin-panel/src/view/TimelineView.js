@@ -5,7 +5,6 @@ import Timeline, {
     TimelineHeaders,
     SidebarHeader,
     DateHeader,
-    CustomHeader,
     TodayMarker
 } from 'react-calendar-timeline'
 import { Typography } from '@mui/material';
