@@ -1,5 +1,5 @@
-import { Tabs, Tab, Box } from "@mui/material"
-import { useEffect, useState } from "react"
+import { Tabs, Tab, Box, Modal, Dialog } from "@mui/material"
+import { useEffect, useState, useMemo } from "react"
 import { Outlet, useLocation, useNavigate, useParams, generatePath } from "react-router-dom"
 
 import { useBasePath } from "../util"
@@ -11,6 +11,7 @@ import { getAuth } from "firebase/auth"
 import { useListVals } from "react-firebase-hooks/database"
 const TABS = [
 	{
+		link: "",
 		label: "Overview",
 	},
 	{
@@ -34,6 +35,8 @@ export default function BoxPresenter() {
 	const navigate = useNavigate()
 	const basePath = useBasePath()
 
+	const adminPage = useMemo(() => getAdminTabFromBasePath(basePath), [basePath])
+
 	const [box, setBox] = useState(null)
 	const [boxes, setBoxes] = useState(null)
 	const [boxIds, , boxIdsError] = useListVals(ref(db, `users/${currentUser.uid}/boxes`))
@@ -55,11 +58,11 @@ export default function BoxPresenter() {
 
 	if (box === null) return <div>Not found</div>
 
-	const tab = TABS.find(tab => location.pathname.indexOf(tab.link) !== -1) || TABS[0]
+	const tab = TABS.find(tab => tab.link === adminPage)
 
 	const handleChange = (_, newValue) => {
 		const { link } = TABS.find(tab => tab.label === newValue)
-		navigate(`/${boxId}/${link || ""}`)
+		navigate(`/${boxId}/${link}`)
 	}
 
 	return (
@@ -70,18 +73,30 @@ export default function BoxPresenter() {
 				backAction={() => navigate("/")}
 				changeBox={boxId => navigate(generatePath(basePath, { boxId }))}
 				editAction={() => alert("Edit")}
-                newBookingAction={() => navigate(`/${boxId}/new-booking`)}
+				newBookingAction={() => navigate(`/${boxId}/new-booking`)}
 			/>
-			<Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-				<Tabs value={tab.label} onChange={handleChange}>
-					{TABS.map(tab => (
-						<Tab key={tab.label} value={tab.label} label={tab.label} />
-					))}
-				</Tabs>
-			</Box>
-			<Box sx={{ py: 2 }}>
-				<Outlet />
-			</Box>
+			{tab ? (
+				<>
+					<Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+						<Tabs value={tab?.label} onChange={handleChange}>
+							{TABS.map(tab => (
+								<Tab key={tab.label} value={tab.label} label={tab.label} />
+							))}
+						</Tabs>
+					</Box>
+					<Box sx={{ py: 2 }}>
+						<Outlet />
+					</Box>
+				</>
+			) : (
+				<Dialog open={true} onClose={() => navigate(`/${boxId}`)}>
+                    <Outlet />
+				</Dialog>
+			)}
 		</div>
 	)
+}
+
+function getAdminTabFromBasePath(basePath) {
+	return basePath.split("/").join("").replace(":boxId", "")
 }

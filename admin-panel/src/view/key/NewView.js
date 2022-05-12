@@ -1,10 +1,11 @@
-import { Stepper, Button, Typography, Step, StepLabel, CircularProgress, Stack } from "@mui/material"
+import { Stepper, Button, Typography, Step, StepLabel, CircularProgress, Stack, DialogContent } from "@mui/material"
 
 import { ArrowBackIosNewRounded } from "@mui/icons-material"
 
 import { RadioButtonCheckedRounded } from "@mui/icons-material"
 import { SensorsRounded } from "@mui/icons-material"
 import { DoneAllRounded } from "@mui/icons-material"
+import BoxPopupHeader from "../../components/BoxPopupHeader"
 
 export const NFC_SCAN_STEPS = {
 	LOADING: "0",
@@ -87,33 +88,32 @@ export default function NewKeyView({ back, startScanProcess, currentStep, nfcSca
 			</Button>
 		</>,
 		<ShowNfcScanStep />,
-        <>
-            <Typography variant="h3">Enter additional information</Typography>
-            <Typography variant="body1">NFC uid: {uid}</Typography>
-            {children}
-            <Button onClick={save} fullWidth variant="contained">Save</Button>
-        </>
+		<>
+			<Typography variant="h3">Enter additional information</Typography>
+			<Typography variant="body1">NFC uid: {uid}</Typography>
+			{children}
+			<Button onClick={save} fullWidth variant="contained">
+				Save
+			</Button>
+		</>,
 	]
 	return (
 		<>
-			<Button variant="text" onClick={back} startIcon={<ArrowBackIosNewRounded />}>
-				Back
-			</Button>
-			<Typography variant="h3" element="h4" sx={{ my: 2 }}>
-				Add new key
-			</Typography>
-			<Stepper activeStep={currentStep} sx={{ mb: 3 }}>
-				<Step>
-					<StepLabel>Get ready</StepLabel>
-				</Step>
-				<Step>
-					<StepLabel>Scan nfc</StepLabel>
-				</Step>
-				<Step>
-					<StepLabel>Fill information</StepLabel>
-				</Step>
-			</Stepper>
-			{steps[currentStep]}
+			<BoxPopupHeader title="Add new key" close={back} />
+			<DialogContent>
+				<Stepper activeStep={currentStep} sx={{ mb: 3 }}>
+					<Step>
+						<StepLabel>Get ready</StepLabel>
+					</Step>
+					<Step>
+						<StepLabel>Scan nfc</StepLabel>
+					</Step>
+					<Step>
+						<StepLabel>Fill information</StepLabel>
+					</Step>
+				</Stepper>
+				{steps[currentStep]}
+			</DialogContent>
 		</>
 	)
 }

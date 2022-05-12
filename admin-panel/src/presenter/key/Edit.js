@@ -54,7 +54,7 @@ export default function EditKeyPresenter() {
     }
 
 	return (
-        <EditKeyView save={save} name={roomName} back={() => navigate(`/${boxId}`)}>
+        <EditKeyView save={save} name={roomName} close={() => navigate(`/${boxId}`)} uid={keyId}>
 			<KeyFormView
 				roomName={roomName}
 				setRoomName={setRoomName}
