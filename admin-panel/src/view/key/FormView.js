@@ -1,6 +1,7 @@
 import React from "react"
 
-import { TextField } from "@mui/material"
+import { TextField, Typography } from "@mui/material"
+import LocationPicker from "../../components/LocationPicker"
 
 export default function KeyFormView({
 	roomName,
@@ -24,7 +25,6 @@ export default function KeyFormView({
 				onInput={e => setRoomName(e.target.value)}
 				autoFocus
 				margin="normal"
-				id="name"
 				label="Room name"
 				type="text"
 				fullWidth
@@ -35,7 +35,6 @@ export default function KeyFormView({
 				onInput={e => setRoomDescription(e.target.value)}
 				autoFocus
 				margin="normal"
-				id="description"
 				label="Room description"
 				type="text"
 				fullWidth
@@ -43,32 +42,9 @@ export default function KeyFormView({
 				value={roomDescription}
 			/>
 			<TextField
-				onInput={e => setRoomLongitude(e.target.value)}
-				autoFocus
-				margin="normal"
-				id="longitude"
-				label="Longitude"
-				type="text"
-				fullWidth
-				variant="outlined"
-				value={roomLongitude}
-			/>
-			<TextField
-				onInput={e => setRoomLatitude(e.target.value)}
-				autoFocus
-				margin="normal"
-				id="latitude"
-				label="Latitude"
-				type="text"
-				fullWidth
-				variant="outlined"
-				value={roomLatitude}
-			/>
-			<TextField
 				onInput={e => setRoomImage(e.target.value)}
 				autoFocus
 				margin="normal"
-				id="roomImage"
 				label="Image url"
 				type="text"
 				fullWidth
@@ -79,7 +55,6 @@ export default function KeyFormView({
 				onInput={e => setDefaultCheckInTime(e.target.value)}
 				autoFocus
 				margin="normal"
-				id="roomImage"
 				label="Default check in time"
 				type="text"
 				fullWidth
@@ -90,12 +65,19 @@ export default function KeyFormView({
 				onInput={e => setDefaultCheckOutTime(e.target.value)}
 				autoFocus
 				margin="normal"
-				id="roomImage"
 				label="Default check out time"
 				type="text"
 				fullWidth
 				variant="outlined"
 				value={defaultCheckOutTime}
+			/>
+            <Typography variant="h5">Pick location of room</Typography>
+			<LocationPicker
+				lng={roomLongitude}
+				lat={roomLatitude}
+				setLng={setRoomLongitude}
+				setLat={setRoomLatitude}
+				sx={{ mb: 3, mt: 1 }}
 			/>
 		</>
 	)

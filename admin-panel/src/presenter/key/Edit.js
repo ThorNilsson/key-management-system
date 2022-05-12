@@ -18,6 +18,7 @@ export default function EditKeyPresenter() {
 	const [roomLongitude, setRoomLongitude] = useState("")
 	const [roomLatitude, setRoomLatitude] = useState("")
 	const [roomImage, setRoomImage] = useState("")
+    const [loading, setLoading] = useState(true)
 
 	useEffect(() => {
 		const keyRef = ref(db, `keyboxes/${boxId}/keys/${keyId}`)
@@ -30,6 +31,7 @@ export default function EditKeyPresenter() {
             setRoomLongitude(data.longitude)
             setRoomLatitude(data.latitude)
             setRoomImage(data.image)
+            setLoading(false)
             lastReadData = data
         }
 		const unsub = onValue(keyRef, handleValue)
@@ -37,7 +39,7 @@ export default function EditKeyPresenter() {
         return () => unsub()
 	}, [boxId, keyId])
 
-    const save = shouldExit => {
+    const save = () => {
 		const keyRef = ref(db, `keyboxes/${boxId}/keys/${keyId}`)
         set(keyRef, {
             ...lastReadData,
@@ -49,12 +51,12 @@ export default function EditKeyPresenter() {
             defaultCheckInTime,
             defaultCheckOutTime,
         }).then(() => {
-            if(shouldExit) navigate(`/${boxId}`)
+            navigate(`/${boxId}`)
         }).catch(error => alert("Something went wrong " + error.message))
     }
 
 	return (
-        <EditKeyView save={save} name={roomName} close={() => navigate(`/${boxId}`)} uid={keyId}>
+        <EditKeyView save={save} name={roomName} close={() => navigate(`/${boxId}`)} uid={keyId} loading={loading}>
 			<KeyFormView
 				roomName={roomName}
 				setRoomName={setRoomName}
