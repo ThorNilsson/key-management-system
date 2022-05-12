@@ -75,9 +75,8 @@ export default function NewBookingView() {
             message: message,
             keyId: room,
             checkIn: checkedInUnix,
-            checkOut: checkedOutUnix,
-            url: 'https://firebasesomething.kms.com/uiy3249e6ysfdugsd987f37'
-        }).then(() => navigate("/" + boxId)).catch(error => alert("Something went wrong " + error.message))
+            checkOut: checkedOutUnix
+        }).then(() => navigate("/" + boxId + "/bookings")).catch(error => alert("Something went wrong " + error.message))
     }
 
     return (
