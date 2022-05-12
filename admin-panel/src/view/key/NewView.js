@@ -1,7 +1,5 @@
 import { Stepper, Button, Typography, Step, StepLabel, CircularProgress, Stack, DialogContent } from "@mui/material"
 
-import { ArrowBackIosNewRounded } from "@mui/icons-material"
-
 import { RadioButtonCheckedRounded } from "@mui/icons-material"
 import { SensorsRounded } from "@mui/icons-material"
 import { DoneAllRounded } from "@mui/icons-material"

@@ -1,6 +1,6 @@
-import { Tabs, Tab, Box, Modal, Dialog } from "@mui/material"
+import { Tabs, Tab, Box, Dialog } from "@mui/material"
 import { useEffect, useState, useMemo } from "react"
-import { Outlet, useLocation, useNavigate, useParams, generatePath } from "react-router-dom"
+import { Outlet, useNavigate, useParams, generatePath } from "react-router-dom"
 
 import { useBasePath } from "../util"
 
@@ -31,7 +31,6 @@ const TABS = [
 export default function BoxPresenter() {
 	const { currentUser } = getAuth()
 	const { boxId } = useParams()
-	const location = useLocation()
 	const navigate = useNavigate()
 	const basePath = useBasePath()
 
