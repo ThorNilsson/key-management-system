@@ -92,6 +92,7 @@ export default function NewBookingView() {
                     fullWidth
                     variant="outlined"
                     value={name}
+                    required
                 />
                 <TextField
                     onInput={(e) => setEmail(e.target.value)}
@@ -103,6 +104,7 @@ export default function NewBookingView() {
                     fullWidth
                     variant="outlined"
                     value={email}
+                    required
                 />
                 <TextField
                     onInput={(e) => setMessage(e.target.value)}
@@ -114,9 +116,10 @@ export default function NewBookingView() {
                     fullWidth
                     variant="outlined"
                     value={message}
+                    required
                 />
                 <p></p>
-                <FormControl fullWidth>
+                <FormControl required fullWidth>
                     <InputLabel id="demo-simple-select-label">Booked room</InputLabel>
                     <Select
                         labelId="demo-simple-select-label"
@@ -176,7 +179,9 @@ export default function NewBookingView() {
 
                 </div>
             </Stack>
+            <FormControl required fullWidth>
             <Button onClick={handleSubmit}> CONFIRM BOOKING </Button>
+            </FormControl>
         </div>
     );
 }
