@@ -81,41 +81,41 @@ export default function NewBookingView() {
 
     return (
         <div>
-            <TextField
-                onInput={(e) => setName(e.target.value)}
-                autoFocus
-                margin="dense"
-                id="description"
-                label="Guest name"
-                type="text"
-                fullWidth
-                variant="standard"
-                value={name}
-            />
-            <TextField
-                onInput={(e) => setEmail(e.target.value)}
-                autoFocus
-                margin="dense"
-                id="longitude"
-                label="Guest E-Mail"
-                type="email"
-                fullWidth
-                variant="standard"
-                value={email}
-            />
-            <TextField
-                onInput={(e) => setMessage(e.target.value)}
-                autoFocus
-                margin="dense"
-                id="name"
-                label="Message for guest"
-                type="text"
-                fullWidth
-                variant="standard"
-                value={message}
-            />
-            <p></p>
-            <Box sx={{ minWidth: 120 }}>
+            <Box sx={{ flexDirection: 'row' }}>
+                <TextField
+                    onInput={(e) => setName(e.target.value)}
+                    autoFocus
+                    margin="dense"
+                    id="description"
+                    label="Guest name"
+                    type="text"
+                    fullWidth
+                    variant="outlined"
+                    value={name}
+                />
+                <TextField
+                    onInput={(e) => setEmail(e.target.value)}
+                    autoFocus
+                    margin="dense"
+                    id="longitude"
+                    label="Guest E-Mail"
+                    type="email"
+                    fullWidth
+                    variant="outlined"
+                    value={email}
+                />
+                <TextField
+                    onInput={(e) => setMessage(e.target.value)}
+                    autoFocus
+                    margin="dense"
+                    id="name"
+                    label="Message for guest"
+                    type="text"
+                    fullWidth
+                    variant="outlined"
+                    value={message}
+                />
+                <p></p>
                 <FormControl fullWidth>
                     <InputLabel id="demo-simple-select-label">Booked room</InputLabel>
                     <Select
@@ -129,6 +129,29 @@ export default function NewBookingView() {
                             <MenuItem value={key.id}>{key.name}</MenuItem>))}
                     </Select>
                 </FormControl>
+                <p></p>
+                <LocalizationProvider dateAdapter={AdapterDateFns} locale={frLocale}>
+                    <TimePicker
+                        label="Time for check in"
+                        value={checkInTime}
+                        onChange={(newValue) => {
+                            setCheckInTime(newValue);
+                            console.log(checkInTime);
+                        }}
+                        renderInput={(params) => <TextField {...params} />}
+                    />
+                </LocalizationProvider>
+                <LocalizationProvider dateAdapter={AdapterDateFns} locale={frLocale}>
+                    <TimePicker
+                        label="Time for check out"
+                        value={checkOutTime}
+                        onChange={(newValue) => {
+                            setCheckOutTime(newValue);
+                            console.log(checkOutTime);
+                        }}
+                        renderInput={(params) => <TextField {...params} />}
+                    />
+                </LocalizationProvider>
             </Box>
             <Stack direction={'row'}>
                 <div>
@@ -145,33 +168,12 @@ export default function NewBookingView() {
                         months={2}
                         ranges={state}
                         direction="horizontal"
+                        staticRanges={[]}
+                        inputRanges={[]}
                     />
                 </div>
                 <div>
-                    <p></p>
-                    <LocalizationProvider dateAdapter={AdapterDateFns} locale={frLocale}>
-                        <TimePicker
-                            label="Time for check in"
-                            value={checkInTime}
-                            onChange={(newValue) => {
-                                setCheckInTime(newValue);
-                                console.log(checkInTime);
-                            }}
-                            renderInput={(params) => <TextField {...params} />}
-                        />
-                    </LocalizationProvider>
-                    <p></p>
-                    <LocalizationProvider dateAdapter={AdapterDateFns} locale={frLocale}>
-                        <TimePicker
-                            label="Time for check out"
-                            value={checkOutTime}
-                            onChange={(newValue) => {
-                                setCheckOutTime(newValue);
-                                console.log(checkOutTime);
-                            }}
-                            renderInput={(params) => <TextField {...params} />}
-                        />
-                    </LocalizationProvider>
+
                 </div>
             </Stack>
             <Button onClick={handleSubmit}> CONFIRM BOOKING </Button>
