@@ -71,7 +71,7 @@ export default function BoxPresenter() {
 				currentBox={box}
 				backAction={() => navigate("/")}
 				changeBox={boxId => navigate(generatePath(basePath, { boxId }))}
-				editAction={() => alert("Edit")}
+				editAction={() => navigate(`/${boxId}/edit`)}
 				newBookingAction={() => navigate(`/${boxId}/new-booking`)}
 			/>
 			{tab ? (
