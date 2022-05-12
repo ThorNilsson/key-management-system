@@ -12,15 +12,21 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { useList } from "react-firebase-hooks/database";
-import { CardHeader } from '@mui/material';
-import { addDays } from 'date-fns';
+import { CardHeader, Stack } from '@mui/material';
+import { addDays, getHours, setHours, getMinutes, setMinutes } from 'date-fns';
 import { useState } from 'react';
 import Button from '@mui/material/Button';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import frLocale from 'date-fns/locale/fr';
+
 
 export default function NewBookingView() {
-    const [value, setValue] = React.useState([null, null]);
-    const [checkIn, setCheckIn] = React.useState('');
-    const [checkOut, setCheckOut] = React.useState('');
+    const [checkIn, setCheckIn] = React.useState(new Date(Date.now()));
+    const [checkInTime, setCheckInTime] = React.useState(new Date('2022-01-01 12:00'));
+    const [checkOut, setCheckOut] = React.useState(new Date(Date.now()));
+    const [checkOutTime, setCheckOutTime] = React.useState(new Date('2022-01-01 11:00'));
     const [email, setEmail] = React.useState('');
     const [room, setRoom] = React.useState('');
     const [message, setMessage] = React.useState('');
@@ -29,6 +35,7 @@ export default function NewBookingView() {
     const { boxId } = useParams()
     const [keys, loading, error] = useList(ref(db, `keyboxes/${boxId}/keys`))
     const [dateState, setDate] = React.useState(null)
+    const [locale, setLocale] = React.useState('fr');
     const navigate = useNavigate()
 
     const [state, setState] = useState([
@@ -52,14 +59,23 @@ export default function NewBookingView() {
     };
 
     const handleSubmit = (event) => {
+        const checkedIn = setHours(checkIn, getHours(checkInTime))
+        setMinutes(checkedIn, getMinutes(checkInTime))
+
+        const checkedOut = setHours(checkOut, getHours(checkOutTime))
+        setMinutes(checkedOut, getMinutes(checkOutTime))
+
+        const checkedInUnix = parseInt((checkedIn.getTime() / 1000).toFixed(0))
+        const checkedOutUnix = parseInt((checkedOut.getTime() / 1000).toFixed(0))
+
         push(ref(db, 'keyboxes/' + boxId + '/bookings/'
         ), {
             name: name,
             email: email,
-            keyId: keys,
             message: message,
-            checkIn: checkIn,
-            checkOut: checkOut,
+            keyId: room,
+            checkIn: checkedInUnix,
+            checkOut: checkedOutUnix,
             url: 'https://firebasesomething.kms.com/uiy3249e6ysfdugsd987f37'
         }).then(() => navigate("/" + boxId)).catch(error => alert("Something went wrong " + error.message))
     }
@@ -115,17 +131,50 @@ export default function NewBookingView() {
                     </Select>
                 </FormControl>
             </Box>
-            <div>
-                <CardHeader title="Dates Booked"></CardHeader>
-                <DateRangePicker
-                    onChange={item => setState([item.selection])}
-                    showSelectionPreview={true}
-                    moveRangeOnFirstSelection={false}
-                    months={2}
-                    ranges={state}
-                    direction="horizontal"
-                />
-            </div>
+            <Stack direction={'row'}>
+                <div>
+                    <CardHeader title="Dates Booked"></CardHeader>
+                    <DateRangePicker
+                        onChange={({selection}) => {
+                            setState([selection])
+                            const {startDate, endDate} = selection
+                            setCheckIn(startDate)
+                            setCheckOut(endDate)
+                        }}
+                        showSelectionPreview={true}
+                        moveRangeOnFirstSelection={false}
+                        months={2}
+                        ranges={state}
+                        direction="horizontal"
+                    />
+                </div>
+                <div>
+                    <p></p>
+                    <LocalizationProvider dateAdapter={AdapterDateFns} locale={frLocale}>
+                        <TimePicker
+                            label="Time for check in"
+                            value={checkInTime}
+                            onChange={(newValue) => {
+                                setCheckInTime(newValue);
+                                console.log(checkInTime);
+                            }}
+                            renderInput={(params) => <TextField {...params} />}
+                        />
+                    </LocalizationProvider>
+                    <p></p>
+                    <LocalizationProvider dateAdapter={AdapterDateFns} locale={frLocale}>
+                        <TimePicker
+                            label="Time for check out"
+                            value={checkOutTime}
+                            onChange={(newValue) => {
+                                setCheckOutTime(newValue);
+                                console.log(checkOutTime);
+                            }}
+                            renderInput={(params) => <TextField {...params} />}
+                        />
+                    </LocalizationProvider>
+                </div>
+            </Stack>
             <Button onClick={handleSubmit}> CONFIRM BOOKING </Button>
         </div>
     );
