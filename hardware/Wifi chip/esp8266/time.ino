@@ -2,8 +2,8 @@
    Checks if current time is in the time period provided by the accessing booking object on database.
 */
 bool isWithinTimePeriod() {
-  int requestedTime = Firebase.getInt(fbdo, F("/keyboxes/dkgC3kfhLpkKBysY_C-9/accessingBooking/accessRequested")) ? fbdo.to<int>() : 0;
-  int expiredTime = Firebase.getInt(fbdo, F("/keyboxes/dkgC3kfhLpkKBysY_C-9/accessingBooking/accessExpired")) ? fbdo.to<int>() : 0;
+  int requestedTime = Firebase.getInt(fbdo, getAccessRequestedPath()) ? fbdo.to<int>() : 0;
+  int expiredTime   = Firebase.getInt(fbdo, getAccessExpiredPath()) ? fbdo.to<int>() : 0;
   getNTPtime(10);
   return now > requestedTime && now < expiredTime;
 }

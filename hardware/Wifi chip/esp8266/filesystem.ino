@@ -45,7 +45,13 @@ void checkWifiPass() {
 
 void checkKeyboxId() {
   char newKeyboxId[NVM_MAX_LENZ];
-
+  
+  String id = "dkgC3kfhLpkKBysY_C-9";
+  id.toCharArray(newKeyboxId, NVM_MAX_LENZ);
+  
+  nvm.put("keyboxId", newKeyboxId);
+  nvm.get("keyboxId", keyboxId);
+  
   if (!strcmp(keyboxId, "NotAdded") == 0) {
     printDebug("A keybox Id has already been generated: ", keyboxId);
     return;

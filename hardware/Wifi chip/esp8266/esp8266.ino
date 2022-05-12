@@ -19,7 +19,7 @@
 #include <WiFiManager.h> // https://github.com/tzapu/WiFiManager
 #include "Nvm.h"
 
-#define DEBUG true
+#define DEBUG false
 
 #define NUM_LEDS 24
 CRGB leds[NUM_LEDS];
@@ -157,12 +157,17 @@ void setup()
 
 
   //Scan nfc if mastertag is present to initiate wifi setup without password.
+  if (strcmp(masterTag, checkRFID().c_str()) == 0) {
+    printDebug("Master tag scanned on startup, configuring wifi: ", masterTag);
+    configureWifi();
+  }
+  /*
   if (rfid.PICC_IsNewCardPresent() && rfid.PICC_ReadCardSerial()) {
     for (byte i = 0; i < 4; i++) {
       tag += rfid.uid.uidByte[i];
     }
     notifySuccess(); //Give a short signal to indicate that the tag has been scanned.
-    
+
     if (strcmp(masterTag, tag.c_str()) == 0) {
       printDebug("Master tag scanned on startup, configuring wifi: ", masterTag);
       configureWifi();
@@ -171,6 +176,7 @@ void setup()
     rfid.PICC_HaltA();
     rfid.PCD_StopCrypto1();
   }
+   */
 
   //wm.resetSettings();
   if (wm.autoConnect("KEY Managment System", wifiPass)) {
@@ -197,13 +203,13 @@ void setup()
     printDebug("Time not set", "");
     ESP.restart();
   }
-  
+
   showTime(timeinfo);
   lastNTPtime = time(&now);
   lastEntryTime = millis();
 
   isDoorOpenVal = isDoorOpen();
-  
+
   notify();
   printDebug("Setup done.", "");
 }
@@ -220,9 +226,9 @@ void loop()
   if ( isOpenButtonPressed() && Firebase.ready() && (millis() - sendDataPrevMillis > 1000 || sendDataPrevMillis == 0)) {
     sendDataPrevMillis = millis();
     notify();
-    String action = Firebase.getString(fbdo, F("/keyboxes/dkgC3kfhLpkKBysY_C-9/accessingBooking/action")) ? String(fbdo.to<String>()).c_str() : fbdo.errorReason().c_str();
+    String action = Firebase.getString(fbdo, getActionPath() ) ? String(fbdo.to<String>()).c_str() : fbdo.errorReason().c_str();
     printDebug("Open Button Pressed, action is: ", action);
-  
+
     if (action.equals("getKeyByBooking")) {
       getKeyByBooking();
     } else if (action.equals("getKeyByAdmin")) {
@@ -244,29 +250,21 @@ void loop()
     returnKey     //Läser UID och öppnar skåp om nyckel ska lämnas in.
     getKeyByNfc   //Läser UID och öppnar skåp om nyckel ska lämnas in.
   */
-  //if ( !rfid.PICC_IsNewCardPresent())
-  //  return;
   if (rfid.PICC_IsNewCardPresent() && rfid.PICC_ReadCardSerial()) {
     for (byte i = 0; i < 4; i++) {
       tag += rfid.uid.uidByte[i];
     }
-    notify(); //Give a short signal to indicate that the tag has been scanned.
     
+    notify();
     printDebug("A tag has been scanned: ", tag);
-
-    String accessTagPath = "/keyboxes/dkgC3kfhLpkKBysY_C-9/accessTags/" + tag + "/name";
-    String keySlotPath = "/keyboxes/dkgC3kfhLpkKBysY_C-9/keys/" + tag + "/keySlot";
 
     // If master tag is scanned -> configureWifi (and login)
     if (strcmp(masterTag, tag.c_str()) == 0) {
       configureWifi();
     }
-    else if (Firebase.getString(fbdo, keySlotPath) && fbdo.to<int>() == 0) {
+    else if (Firebase.getString(fbdo, getKeySlotPath(tag)) && fbdo.to<int>() == 0) {
       int keySlot = fbdo.to<int>();
       returnKey(keySlot);
-    }
-    else if (Firebase.getString(fbdo, accessTagPath)) {
-      //getKeyByNfc();
     }
     else {
       sendLog("Someone tried to open the box by using an unregisterd nfc tag or a nfc tag that should be in the box, Access denied.", "", "", "");
@@ -276,6 +274,8 @@ void loop()
     rfid.PICC_HaltA();
     rfid.PCD_StopCrypto1();
   }
+
+
 
   if (isDoorOpenVal != isDoorOpen()) {
     isDoorOpenVal = isDoorOpen();

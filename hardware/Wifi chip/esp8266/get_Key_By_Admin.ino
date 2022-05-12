@@ -2,9 +2,29 @@
 void getKeyByAdmin() {
   printDebug("Get key by admin", "");
 
-  String keyId = Firebase.getString(fbdo, F("/keyboxes/dkgC3kfhLpkKBysY_C-9/accessingBooking/keyId")) ? String(fbdo.to<String>()).c_str() : fbdo.errorReason().c_str();
-  String userId = Firebase.getString(fbdo, F("/keyboxes/dkgC3kfhLpkKBysY_C-9/accessingBooking/userId")) ? String(fbdo.to<String>()).c_str() : fbdo.errorReason().c_str();
-  String username = Firebase.getString(fbdo, F("/keyboxes/dkgC3kfhLpkKBysY_C-9/accessingBooking/name")) ? String(fbdo.to<String>()).c_str() : fbdo.errorReason().c_str();
+  if (!isWithinTimePeriod()) {
+    sendLog("The time has run out.", "", "", "");
+    notifyError();
+    return;
+  }
 
-  //sendLog("Box opened to return key.", "", "", "");
+  String keyId =  Firebase.getString(fbdo, getKeyIdPath()) ? String(fbdo.to<String>()).c_str() : fbdo.errorReason().c_str();
+  String userId = Firebase.getString(fbdo, getUserIdPath()) ? String(fbdo.to<String>()).c_str() : fbdo.errorReason().c_str();
+ 
+  if (!Firebase.getString(fbdo,  getUserNamePath(userId))) {
+    String errorMessage =  "The user do not have a admin account." + String(fbdo.errorReason().c_str());
+    sendLog(errorMessage, "", "", "");
+    notifyError();
+    return;
+  }
+  String username = String(fbdo.to<String>()).c_str();
+  //String keySlotPath = "/keyboxes/dkgC3kfhLpkKBysY_C-9/keys/" + keyId + "/keySlot";
+  int keySlot = Firebase.getInt(fbdo, getKeySlotPath(keyId)) ? fbdo.to<int>() : 0;
+  
+  printDebug("The KeyId: ", keyId);
+  printDebug("The User ID: ", userId);
+  printDebug("The Username: ", username);
+  printDebug("The Key slot: ", String(keySlot));
+
+  accessKey(keySlot, "Accessing key by admin failed", username, "", getKeySlotPath(keyId));
 }
