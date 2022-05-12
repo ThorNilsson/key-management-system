@@ -1,6 +1,5 @@
 import { Button, DialogContent, Stack } from "@mui/material"
 import { Typography } from "@mui/material";
-import { ArrowBackIosNewRounded } from "@mui/icons-material";
 import BoxPopupHeader from "../../components/BoxPopupHeader";
 
 export default function EditKeyView({ children, save, name, close, uid }) {
