@@ -6,6 +6,7 @@ import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-load
 mapboxgl.accessToken = 'pk.eyJ1Ijoia2Fyb2xpbmE5OSIsImEiOiJjbDFvejYxOGMwOGdzM2NucXB3bWk4dzB0In0.O_nYe5G8ZDN_jc6B6dT1aQ';
 
 function Base(props) {
+    console.log(props.keyboxId)
     const mapContainer = useRef(null);
     const map = useRef(null);
     const [zoom, setZoom] = useState(15);
@@ -65,7 +66,7 @@ function Base(props) {
 
     return (
         <div>
-            <BaseView mapContainer={mapContainer} />
+            <BaseView mapContainer={mapContainer} logOut={props.logOut}/>
         </div>
     );
 }

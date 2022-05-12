@@ -1,8 +1,10 @@
+import Button from '@mui/material/Button';
 function BaseView(props) {
     return (
         <div>
             <div className='header'>
-                <p>Retrieve Key from Box</p>
+                <p className='headerText' >Retrieve Key from Box</p>
+                <Button size='small' sx={{ mt: 0.5, ml: '80%'}} onClick={props.logOut}>Sign Out</Button>
             </div>
             <div className='topbar' >
                 {/* {props.element[0]} */}

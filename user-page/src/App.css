@@ -117,12 +117,20 @@
 
 .header {
   height: 10vh;
+  width: 100vw;
   background-color: #dddddd;
   display: flex;
   justify-content: center;
   align-items: center;
   color: #616161;
 }
+
+.headerText{
+  position:absolute;
+  left: 42%;
+}
+
+
 
 .divOverMapContainer{
   display: flex;

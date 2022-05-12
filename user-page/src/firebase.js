@@ -12,5 +12,5 @@ const firebaseConfig = {
 }
 
 initializeApp(firebaseConfig)
-
+console.log("initialize")
 export const db = getDatabase()

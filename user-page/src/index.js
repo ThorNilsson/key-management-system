@@ -4,6 +4,7 @@ import './index.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { emailTest } from './emailTest';
 
 ReactDOM.render(
   <React.StrictMode>

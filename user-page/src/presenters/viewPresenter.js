@@ -12,6 +12,7 @@ import { db } from "../firebase"
 
 
 function ViewPresenter(props) {
+    //console.log(props.bookingId)
     const [boxState, setBoxState] = useState();
     const [keyState, setKeyState] = useState();
     const [data, setData] = useState();
@@ -73,14 +74,15 @@ function ViewPresenter(props) {
         get(infoRef).then((snapshot) => {
             console.log(snapshot.val());
             const data = snapshot.val();
-            locationWatchId.current = navigator.geolocation.watchPosition((pos) => setDistanceToTarget(pos, data.longitude, data.latitude));
-
+            //locationWatchId.current = navigator.geolocation.watchPosition((pos) => setDistanceToTarget(pos, data.longitude, data.latitude));
+            
         }).catch((error) => {
             console.error(error);
         });
-
+        
     }, []);
     function setDistanceToTarget(pos, lng, lat) {
+        console.log("recount")
         var crd = pos.coords;
         setDist(Math.round(distance(crd.latitude, crd.longitude, lat, lng) * 1000))
     }
@@ -88,12 +90,15 @@ function ViewPresenter(props) {
 
     return (
         <div>
-            {!data || !dist || currentView(props.keyboxId, props.bookingId, timeLeft, data, boxState, keyState, dist)}
+            {/* {!data || !dist || currentView(props.keyboxId, props.bookingId, timeLeft, data, boxState, keyState, dist)} */}
+            {!data || currentView(props.keyboxId, props.bookingId, timeLeft, data, boxState, keyState, 5)}
+
         </div>
     )
 }
 
 function currentView(keyboxId, bookingId, timeLeft, data, boxOpen, keyTaken, dist) {
+    //console.log(dist)
     if (data.startDate - timeLeft > 0) {
         return (
             <BeforeAccess startTime={data.startDate} />
