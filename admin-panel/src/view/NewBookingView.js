@@ -58,12 +58,12 @@ export default function NewBookingView() {
         setRoom(event.target.value);
     };
 
-    const handleSubmit = (event) => {
-        const checkedIn = setHours(checkIn, getHours(checkInTime))
-        setMinutes(checkedIn, getMinutes(checkInTime))
+    const handleSubmit = () => {
+        let checkedIn = setHours(checkIn, getHours(checkInTime))
+        checkedIn = setMinutes(checkedIn, getMinutes(checkInTime))
 
-        const checkedOut = setHours(checkOut, getHours(checkOutTime))
-        setMinutes(checkedOut, getMinutes(checkOutTime))
+        let checkedOut = setHours(checkOut, getHours(checkOutTime))
+        checkedOut = setMinutes(checkedOut, getMinutes(checkOutTime))
 
         const checkedInUnix = parseInt((checkedIn.getTime() / 1000).toFixed(0))
         const checkedOutUnix = parseInt((checkedOut.getTime() / 1000).toFixed(0))
