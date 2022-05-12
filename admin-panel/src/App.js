@@ -11,7 +11,6 @@ import EventsPresenter from "./presenter/Events"
 import EditProfilePresenter from "./presenter/EditProfile"
 import NewBookingPresenter from "./presenter/NewBooking";
 import EditKeyPresenter from "./presenter/key/Edit"
-import KeyPresenter from "./presenter/key/Key"
 
 import { Route, Routes } from "react-router-dom" 
 import { getAuth } from "firebase/auth"
@@ -44,10 +43,8 @@ export default function App() {
 						<Route path="events" element={<EventsPresenter />} />
 						<Route path="new-booking" element={<NewBookingPresenter/>} />
 						<Route path="edit" element={<EditBoxPresenter/>} />
-						<Route path="key" element={<KeyPresenter/>} >
-                            <Route path=":keyId/edit" element={<EditKeyPresenter />} />
-                            <Route path="new/:preferredKeySlot" element={<NewKeyPresenter />} />
-                        </Route>
+                            <Route path="key/:keyId/edit" element={<EditKeyPresenter />} />
+                            <Route path="key/new/:preferredKeySlot" element={<NewKeyPresenter />} />
 						
 					</Route>
                     <Route path="/edit" element={<EditProfilePresenter />} />

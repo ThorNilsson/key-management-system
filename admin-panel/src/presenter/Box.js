@@ -88,7 +88,7 @@ export default function BoxPresenter() {
 					</Box>
 				</>
 			) : (
-				<Dialog open={true} onClose={() => navigate(`/${boxId}`)}>
+				<Dialog scroll="paper" open={true} onClose={() => navigate(`/${boxId}`)} maxWidth={window.innerWidth}>
                     <Outlet />
 				</Dialog>
 			)}

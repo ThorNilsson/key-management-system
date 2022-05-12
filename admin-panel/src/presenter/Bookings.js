@@ -46,6 +46,6 @@ const columns = [
 	{ field: "checkOut", headerName: "Check out", width: 140 },
 	{ field: "name", headerName: "Name", width: 130 },
 	{ field: "role", headerName: "Role", width: 70 },
-	{ field: "privateMessage", headerName: "Message", width: 500 },
+	{ field: "message", headerName: "Message", width: 500 },
 	{ field: "url", headerName: "Link", width: 400 },
 ]
