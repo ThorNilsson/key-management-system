@@ -9,7 +9,7 @@ void unlockDoor() {
   delay(1000);
   noTone(buzzer_Pin);
   digitalWrite(lock_Pin, LOW);
-  sendLog("Box door was opened.", "", "", "");
+  sendLog("Box door was unlocked.", "", "", "");
 }
 
 void closeDoor() {

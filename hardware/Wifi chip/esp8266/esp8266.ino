@@ -1,14 +1,11 @@
 #define ESP_DRD_USE_SPIFFS true
-
 #if defined(ESP32)
 #include <WiFi.h>
 #include <FirebaseESP32.h>
-
 #elif defined(ESP8266)
 #include <ESP8266WiFi.h>
 #include <FirebaseESP8266.h>
 #endif
-
 #include <FastLED.h>
 #include <time.h>
 #include <SoftwareSerial.h>
@@ -57,29 +54,29 @@ char keyboxId  [NVM_MAX_LENZ];
 char masterTag [NVM_MAX_LENZ];
 char wifiPass [NVM_MAX_LENZ];
 
-//mihmic49{1vqbhll58ue
+const char* kmsLoginText = "<div style='clear: both; display: table;'> <img src='http://cdn.discordapp.com/attachments/955491126272458772/974605285752717342/Logo-croped.png' alt='Key Managment System Logo' style='width:50%; float: left;'><h3 style='padding: 10px;'>Log in with your Key Management System account. </h3></div>";
+const char* idText = "<hr><h4>Your keybox secret: </h4>";
+const char* passText = "<h4>The wifi password to access this page without the wifi-tag:</h4>";
+const char* printThisPageButton = "<div><button onClick='window.print()' style='width:50%;'>Print this page</button></div>";
 
+WiFiManagerParameter kms_login_text(kmsLoginText);
 WiFiManagerParameter kms_user("KMS_user", "Enter your email here", "", 50);
 WiFiManagerParameter kms_pass("KMS_pass", "Enter your password here", "", 50);
-const char* idText = "<H1>Your keybox secret: </H1>";
-const char* passText = "<H1>The wifi password to change the settings:</H1>";
-WiFiManagerParameter custom_text(idText);
-//WiFiManagerParameter custom_text(keyboxId);
-WiFiManagerParameter custom_text2(passText);
-//WiFiManagerParameter custom_text(wifiPass);
+WiFiManagerParameter kms_id_text(idText);
+WiFiManagerParameter kms_id(keyboxId);
+WiFiManagerParameter kms_wifi_pass_text(passText);
+WiFiManagerParameter kms_wifi_pass(wifiPass);
+WiFiManagerParameter kms_print_page(printThisPageButton);
 
 
 #define API_KEY "AIzaSyAUsPBPy1B5cr_U0xeB1xPU8T_7S-x_dyg"
 #define DATABASE_URL "key-management-system-40057-default-rtdb.europe-west1.firebasedatabase.app"
-//#define KEYBOX_ID = "dkgC3kfhLpkKBysY_C-9";
 
 //Define Pins
 const int button_Pin = A0;//A0 BUTTON DATA PIN
-
 const int lock_Pin = 16;   //D0 LEDS DATA 5V GND
 const int led_Pin = 5;   //D1 LOCK DATA -> Transistor -> 12V GND
 const int sensor_Pin = 4; //D2 DOOR DATA GND
-
 const int RST_Pin = 0;    //D3  ORANGE
 const int SDA_Pin = 2;    //D4  YELLOW
 //                          3V  RED
@@ -87,7 +84,6 @@ const int SDA_Pin = 2;    //D4  YELLOW
 const int SCK_Pin = 14;   //D5  PURPLE
 const int MISO_Pin = 12;  //D6  GREEN
 const int MOSI_Pin = 13;  //D7  BLUE
-
 const int buzzer_Pin = 15;//D8 SOUND DATA GND
 
 //Define Data objects
@@ -123,8 +119,14 @@ void setup()
   WiFi.mode(WIFI_STA); // explicitly set mode, esp defaults to STA+AP
   wm.setDebugOutput(DEBUG);
   wm.setConfigPortalTimeout(timeout);
+  wm.addParameter(&kms_login_text);
   wm.addParameter(&kms_user);
   wm.addParameter(&kms_pass);
+  wm.addParameter(&kms_id_text);
+  wm.addParameter(&kms_id);
+  wm.addParameter(&kms_wifi_pass_text);
+  wm.addParameter(&kms_wifi_pass);
+  wm.addParameter(&kms_print_page);
 
   Serial.begin(9600);
   SPI.begin();
@@ -162,7 +164,7 @@ void setup()
     configureWifi();
   }
   /*
-  if (rfid.PICC_IsNewCardPresent() && rfid.PICC_ReadCardSerial()) {
+    if (rfid.PICC_IsNewCardPresent() && rfid.PICC_ReadCardSerial()) {
     for (byte i = 0; i < 4; i++) {
       tag += rfid.uid.uidByte[i];
     }
@@ -175,8 +177,8 @@ void setup()
     tag = "";
     rfid.PICC_HaltA();
     rfid.PCD_StopCrypto1();
-  }
-   */
+    }
+  */
 
   //wm.resetSettings();
   if (wm.autoConnect("KEY Managment System", wifiPass)) {
@@ -217,10 +219,10 @@ void setup()
 void loop()
 {
   /*
-    Actions defined by database that are triggerd by pressing the button on the fron side of the key box.
-    - getKeyByBooking  //gäst öppnar via appen
-    - getKeyByAdmin  //Admin öppnar via admin panel
-    - getUid     //Läser uid och skickar till server
+    Actions defined by database that are triggerd by pressing the button on the front side of the key box.
+    - getKeyByBooking   Used when a guest want to get a key by using the guest page
+    - getKeyByAdmin     Used when admin user wants to get a key by the admin panel or guest page
+    - getUid            Used to return a key by scanning the nfc tag
   */
 
   if ( isOpenButtonPressed() && Firebase.ready() && (millis() - sendDataPrevMillis > 1000 || sendDataPrevMillis == 0)) {
@@ -242,27 +244,17 @@ void loop()
   }
 
   /*
-    When key identified by nfc is found in database and it´s current key slot is 0 (not in box) the key can be inserted into the key box.
-    If the nfc tag is found in the array of allowed nfc tags any avaliable key can be taken out of box.
-    If the nfc tag is not found anywhere in the database no access is granted.
-
-    setupWifi     //Läser UID och öppnar skåp om nyckel ska lämnas in.
-    returnKey     //Läser UID och öppnar skåp om nyckel ska lämnas in.
-    getKeyByNfc   //Läser UID och öppnar skåp om nyckel ska lämnas in.
+    Scan nfc tags and configure wifi or return a kee
+    - configureWifi   Used to open the wifi configuration without wifi password.
+    - returnKey       Used to return a key by scanning the nfc tag.
   */
-  if (rfid.PICC_IsNewCardPresent() && rfid.PICC_ReadCardSerial()) {
-    for (byte i = 0; i < 4; i++) {
-      tag += rfid.uid.uidByte[i];
-    }
-    
-    notify();
-    printDebug("A tag has been scanned: ", tag);
-
-    // If master tag is scanned -> configureWifi (and login)
-    if (strcmp(masterTag, tag.c_str()) == 0) {
+  String newTag = checkRFID();
+  
+  if (!newTag.equals("NotAdded")) {
+    if (strcmp(masterTag, newTag.c_str()) == 0) {
       configureWifi();
     }
-    else if (Firebase.getString(fbdo, getKeySlotPath(tag)) && fbdo.to<int>() == 0) {
+    else if (Firebase.getString(fbdo, getKeySlotPath(newTag)) && fbdo.to<int>() == 0) {
       int keySlot = fbdo.to<int>();
       returnKey(keySlot);
     }
@@ -270,13 +262,11 @@ void loop()
       sendLog("Someone tried to open the box by using an unregisterd nfc tag or a nfc tag that should be in the box, Access denied.", "", "", "");
       notifyError();
     }
-    tag = "";
-    rfid.PICC_HaltA();
-    rfid.PCD_StopCrypto1();
   }
 
-
-
+  /*
+    Check if the state of the door changes and if so send a log to the database to update the value.
+  */
   if (isDoorOpenVal != isDoorOpen()) {
     isDoorOpenVal = isDoorOpen();
     if (isDoorOpenVal) {
@@ -286,6 +276,9 @@ void loop()
       sendLog("Someone closed the door", "", "", "");
     }
   }
-
+  
+  /*
+    Check any incomming commands that might be late or if something happends with the array at a unknown point.
+  */
   boolean catchLateResponses = getResponse();
 } //Loop

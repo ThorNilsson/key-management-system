@@ -1,11 +1,7 @@
 void returnKey(int keySlot) {
   printDebug("Returning key: ", String(keySlot));
-
-  //String keySlotPath = "/keyboxes/dkgC3kfhLpkKBysY_C-9/keys/" + tag + "/keySlot";
-  //String preferredKeySlotPath = "/keyboxes/dkgC3kfhLpkKBysY_C-9/keys/" + tag + "/preferredKeySlot";
   
   int preferredKeySlot = Firebase.getString(fbdo, getPreferredKeySlotPath(tag)) ? fbdo.to<int>() : 0;
-
   unsigned long initialTime = millis();
   bool isKeyPresentInSlot = isKeyInSlot(preferredKeySlot);
 

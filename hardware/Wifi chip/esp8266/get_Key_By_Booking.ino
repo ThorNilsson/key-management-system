@@ -10,8 +10,6 @@ void getKeyByBooking() {
   String keyId =      Firebase.getString(fbdo, getKeyIdPath())  ? String(fbdo.to<String>()).c_str() : fbdo.errorReason().c_str();
   String bookingId =  Firebase.getString(fbdo, getBookingId())  ? String(fbdo.to<String>()).c_str() : fbdo.errorReason().c_str();
   String username =   Firebase.getString(fbdo, getNamePath())   ? String(fbdo.to<String>()).c_str() : fbdo.errorReason().c_str();
-  //String keySlotPath = "/keyboxes/dkgC3kfhLpkKBysY_C-9/keys/" + keyId + "/keySlot";
-  //String keySlotPath = "/keyboxes/dkgC3kfhLpkKBysY_C-9/keys/24213714427/keySlot";
   int keySlot = Firebase.getInt(fbdo, getKeySlotPath(keyId)) ? fbdo.to<int>() : 0;
 
   printDebug("The KeyId: ", keyId);

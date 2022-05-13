@@ -1,17 +1,4 @@
 /*
-  "accessingBooking": {
-      //"action" : "getKeyByBooking",
-      //"bookingId" : "kOc3bjffGdfbHjzBy21X",
-      //"userId" : "b7KrKKOyjkcn6TcjPvgqLt0h5Mm2",
-      //"accessRequested": 1649610624,
-      //"accessExpired": 1649956224,
-      //"name" : "Olle Karlsson",
-      "keyId" : "24213714427",
-      "uid" : ""
-    }
-*/
-
-/*
    Get paths for values in the accessingBooking object.
 */
 String getActionPath() {

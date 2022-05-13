@@ -18,7 +18,6 @@ void getKeyByAdmin() {
     return;
   }
   String username = String(fbdo.to<String>()).c_str();
-  //String keySlotPath = "/keyboxes/dkgC3kfhLpkKBysY_C-9/keys/" + keyId + "/keySlot";
   int keySlot = Firebase.getInt(fbdo, getKeySlotPath(keyId)) ? fbdo.to<int>() : 0;
   
   printDebug("The KeyId: ", keyId);
