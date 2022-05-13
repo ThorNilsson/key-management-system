@@ -1,10 +1,7 @@
 void returnKey(int keySlot) {
   printDebug("Returning key: ", String(keySlot));
-
-  String keySlotPath = "/keyboxes/dkgC3kfhLpkKBysY_C-9/keys/" + tag + "/keySlot";
-  String preferredKeySlotPath = "/keyboxes/dkgC3kfhLpkKBysY_C-9/keys/" + tag + "/preferredKeySlot";
-  int preferredKeySlot = Firebase.getString(fbdo, preferredKeySlotPath) ? fbdo.to<int>() : 0;
-
+  
+  int preferredKeySlot = Firebase.getString(fbdo, getPreferredKeySlotPath(tag)) ? fbdo.to<int>() : 0;
   unsigned long initialTime = millis();
   bool isKeyPresentInSlot = isKeyInSlot(preferredKeySlot);
 
@@ -31,7 +28,7 @@ void returnKey(int keySlot) {
     return;
   }
 
-  if (!Firebase.setInt(fbdo, keySlotPath, preferredKeySlot)) {
+  if (!Firebase.setInt(fbdo, getKeySlotPath(tag), preferredKeySlot)) {
     sendLog("Returning key failed, the key was inserted but lost connection to database.", String(preferredKeySlot), tag, "");
     return;
   }

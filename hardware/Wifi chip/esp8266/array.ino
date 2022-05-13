@@ -31,17 +31,22 @@ boolean isKeyInSlot(int slot) {
   return getWaitForResponse(slot, 5);
 }
 
-
 bool getWaitForResponse(int slot, int seconds) {
   unsigned long initialTime = millis();
 
   unsigned long initialLedTime = millis();
   unsigned long interval = 40;
 
+  unsigned long initialErrorTime = millis();
+  boolean doNotifyError = false;
+
   while (initialTime + (seconds * 1000) >  millis())
   {
     if (millis() - initialLedTime > interval) {
-      LoadingLed();
+      if (doNotifyError)
+        doNotifyError = notifyErrorNoDelay(millis() - initialErrorTime);
+      else
+        LoadingLed();
       initialLedTime = millis();
     }
 
@@ -51,7 +56,7 @@ bool getWaitForResponse(int slot, int seconds) {
 
       switch (incomingByte) {
         case 'k': return true;    break;    // k for ok
-        case 'w': notifyError();  break;    // w for wrong hole
+        case 'w': doNotifyError = true; initialErrorTime = millis();  break;    // w for wrong hole
         case 't': return false;  break;     // t for true
         case 'f': return false;  break;     // f for false
         default:  break;

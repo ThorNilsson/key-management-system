@@ -15,7 +15,6 @@ void notify() {
 
   fill_solid(leds, 24, CRGB(0, 0 , 0));
   FastLED.show();
-
 }
 
 /*
@@ -59,6 +58,35 @@ void notifyError() {
     fill_solid(leds, 24, CRGB(brightness, 0 , 0));
     FastLED.show();
   }
-  
+
   noTone(buzzer_Pin);
+}
+
+bool notifyErrorNoDelay(int currentTime) {
+  if (currentTime > 800) {
+    noTone(buzzer_Pin);
+    return false;
+  }
+
+  if (currentTime > 400) {
+    int brightness = sin(map(currentTime, 400, 800, 0, 3.1415)) * 255;
+    fill_solid(leds, 24, CRGB(brightness, 0 , 0));
+    FastLED.show();
+    return true;
+  }
+
+  if (currentTime > 350) {
+    fill_solid(leds, 24, CRGB(0, 0 , 0));
+    FastLED.show();
+    tone(buzzer_Pin, 300);
+    return true;
+  }
+
+  if (currentTime > 10) {
+    int brightness = sin(map(currentTime, 10, 350, 0, 3.1415)) * 255;
+    fill_solid(leds, 24, CRGB(brightness, 0 , 0));
+    FastLED.show();
+    return true;
+  }
+  tone(buzzer_Pin, 400);
 }

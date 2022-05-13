@@ -1,4 +1,33 @@
 
+void LoadingLed()
+{
+  fadeToBlackBy( leds, NUM_LEDS, 50);
+  leds[i] = CRGB::White;
+  i = i >= NUM_LEDS ? 0 : i+1;
+  FastLED.show();
+}
+
+void CloseBoxLed( uint8_t colorIndex)
+{
+  uint8_t brightness = 255;
+  leds[i] = CRGB::Purple;
+  leds[24 - i] = CRGB::Purple;
+  leds[13 - i] = CRGB::Purple;
+  leds[13 + i] = CRGB::Purple;
+  i += 1;
+  fadeToBlackBy( leds, NUM_LEDS, 130);
+  delay(100);
+}
+
+void clearLeds(){
+  FastLED.clear();
+  FastLED.show();
+}
+
+
+
+
+
 void SuccessLed(uint8_t colorIndex)
 {
   j += 1;
@@ -35,37 +64,6 @@ void ErrorLed( uint8_t colorIndex)
     leds[i] = ColorFromPalette( currentPalette, colorIndex, brightness, LINEARBLEND);
   }
 }
-
-
-
-void LoadingLed()
-{
-  fadeToBlackBy( leds, NUM_LEDS, 50);
-  leds[i] = CRGB::White;
-  i = i >= NUM_LEDS ? 0 : i+1;
-  FastLED.show();
-}
-
-void CloseBoxLed( uint8_t colorIndex)
-{
-  uint8_t brightness = 255;
-  leds[i] = CRGB::Purple;
-  leds[24 - i] = CRGB::Purple;
-  leds[13 - i] = CRGB::Purple;
-  leds[13 + i] = CRGB::Purple;
-  i += 1;
-  fadeToBlackBy( leds, NUM_LEDS, 130);
-  delay(100);
-}
-
-void clearLeds(){
-  FastLED.clear();
-  FastLED.show();
-}
-
-
-
-
 
 void SetupGreenAndBlackPalette()
 {

@@ -6,7 +6,7 @@ void sendLog(String message, String userName, String bookingId, String userId) {
   String logStr = "LOG: " + message + ", By " + userName + ", At: " + now + ", Door: " + isDoorOpen() + ", Booking: " + bookingId  + ", User:  " + userId;
   printDebug(logStr, "");
 
-  String logMessagePath = "/keyboxes/dkgC3kfhLpkKBysY_C-9/log/" + id;
+  //String logMessagePath = "/keyboxes/dkgC3kfhLpkKBysY_C-9/log/" + id;
 
   FirebaseJson json;
   json.set("isOpen", isDoorOpen());
@@ -16,7 +16,7 @@ void sendLog(String message, String userName, String bookingId, String userId) {
   json.set("bookingId", bookingId);
   json.set("userId", userId);
 
-  printDebug("Server: ", Firebase.set(fbdo, logMessagePath, json) ? "Log deliverd." : fbdo.errorReason().c_str());
+  printDebug("Server: ", Firebase.set(fbdo, getLogPath(id), json) ? "Log deliverd." : fbdo.errorReason().c_str());
 }
 
 void printDebug(String message, String variable) {
