@@ -23,18 +23,28 @@ export default function EditBoxView(props, { close }) {
 					value={props.name}
 					required
 				/>
-				<TextField
-					onInput={(e) => props.setColor(e.target.value)}
-					autoFocus
-					margin="dense"
-					id="color"
-					label="Box color"
-					type="text"
-					fullWidth
-					variant="outlined"
-					value={props.color}
-					required
-				/>
+				<FormControl required fullWidth>
+                    <InputLabel id="demo-simple-select-label">Box color</InputLabel>
+                    <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={props.color}
+                        label="Booked room"
+                        onChange={(e) => props.setColor(e.target.value)}
+                    >
+
+					<MenuItem value={'#FFFFFF'}>White</MenuItem>
+					<MenuItem value={'#9C9C9C'}>Grey</MenuItem>
+                    <MenuItem value={'#DA1A1A'}>Red</MenuItem>
+					<MenuItem value={'#3953F0'}>Blue</MenuItem>
+					<MenuItem value={'#32a852'}>Green</MenuItem>
+					<MenuItem value={'#FDF928'}>Yellow</MenuItem>
+					<MenuItem value={'#873CAB'}>Purple</MenuItem>
+					<MenuItem value={'#FB80BA'}>Pink</MenuItem>
+					<MenuItem value={'#3F361E'}>Brown</MenuItem>
+					<MenuItem value={'#000000'}>Black</MenuItem>
+                    </Select>
+                </FormControl>
 				<TextField
 					onInput={(e) => props.setDescription(e.target.value)}
 					autoFocus
