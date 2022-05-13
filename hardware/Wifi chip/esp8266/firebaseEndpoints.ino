@@ -62,7 +62,7 @@ String getPreferredKeySlotPath(String keyId) {
 }
 
 String getUserNamePath(String userId) {
-  String path = "/keyboxes/" + String(keyboxId) + "/users" + userId + "/username";
+  String path = "/users/" + userId + "/username";
   return path;
 }
 

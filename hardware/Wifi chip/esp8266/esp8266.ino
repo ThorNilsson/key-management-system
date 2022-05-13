@@ -163,22 +163,6 @@ void setup()
     printDebug("Master tag scanned on startup, configuring wifi: ", masterTag);
     configureWifi();
   }
-  /*
-    if (rfid.PICC_IsNewCardPresent() && rfid.PICC_ReadCardSerial()) {
-    for (byte i = 0; i < 4; i++) {
-      tag += rfid.uid.uidByte[i];
-    }
-    notifySuccess(); //Give a short signal to indicate that the tag has been scanned.
-
-    if (strcmp(masterTag, tag.c_str()) == 0) {
-      printDebug("Master tag scanned on startup, configuring wifi: ", masterTag);
-      configureWifi();
-    }
-    tag = "";
-    rfid.PICC_HaltA();
-    rfid.PCD_StopCrypto1();
-    }
-  */
 
   //wm.resetSettings();
   if (wm.autoConnect("KEY Managment System", wifiPass)) {
