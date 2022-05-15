@@ -47,9 +47,9 @@ export default function TimelinePresenter() {
                 style:
                     moment(b.checkOut * 1000) < moment() ?
                         {
-                            background: '#ff0073',
+                            background: selectedBooking.id === b.id ? '#41d31f' : '#ff0073',
                             backgroundColor: '#ff0073',
-                            border: '#ff0073',
+                            border: '#ff0073', //#ff0073
                             'color': 'white',
                             'font-family': 'Source Sans Pro, sans-serif',
                             'font-size': 14,
@@ -57,9 +57,9 @@ export default function TimelinePresenter() {
                             'border-radius': '8px',
                         }
                         : {
-                            background: '#04AA6D',
-                            backgroundColor: '#04AA6D',
-                            border: '#04AA6D',
+                            background: selectedBooking.id === b.id ? '#41d31f' : '#1976d2',
+                            backgroundColor: '#1976d2',
+                            border: '#1976d2',
                             'color': 'white',
                             'font-family': 'Source Sans Pro, sans-serif',
                             'font-size': 14,
@@ -129,12 +129,13 @@ export default function TimelinePresenter() {
             alert("Canceled");
         }
     }
+
     const handleDeSelectingBooking = () => {
         setSelectedBooking({});
     }
+
     const handleSelectingBooking = (itemId) => {
         let sel = items.find(booking => booking.id === itemId);
-        console.log(sel)
         setSelectedBooking({
             ...sel,
             start_time: sel.start_time.format("hh:mm"),
