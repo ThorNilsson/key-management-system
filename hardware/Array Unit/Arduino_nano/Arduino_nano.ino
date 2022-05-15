@@ -10,7 +10,7 @@
 
 CRGB leds[NUM_LEDS];
 
-int keys[]    = {0, 9, 10, 13, 12, 5, 6, 7, 8};       //Digital pins for the key lock solenoids
+int keys[]    = {0, 9, 10, 3, 12, 5, 6, 7, 8};       //Digital pins for the key lock solenoids
 int sensors[] = {0, A0, A1, A2, A3, A4, A5, A6, A7};  //Analog pins for the tactile sensors
 bool freeSlots[] = {0, 0, 0, 0, 0, 0, 0, 0, 0};       //State of the tactile sensors
 
