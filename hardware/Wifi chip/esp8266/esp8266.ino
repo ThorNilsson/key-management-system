@@ -240,7 +240,7 @@ void loop()
     }
     else if (Firebase.getString(fbdo, getKeySlotPath(newTag)) && fbdo.to<int>() == 0) {
       int keySlot = fbdo.to<int>();
-      returnKey(keySlot);
+      returnKey(keySlot, newTag);
     }
     else {
       sendLog("Someone tried to open the box by using an unregisterd nfc tag or a nfc tag that should be in the box, Access denied.", "", "", "");
