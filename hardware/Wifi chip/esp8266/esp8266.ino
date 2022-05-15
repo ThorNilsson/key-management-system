@@ -74,10 +74,10 @@ WiFiManagerParameter kms_print_page(printThisPageButton);
 
 //Define Pins
 const int button_Pin = A0;//A0 BUTTON DATA PIN
-const int lock_Pin = 16;   //D0 LEDS DATA 5V GND
+const int lock_Pin = 0;   //D0 LEDS DATA 5V GND
 const int led_Pin = 5;   //D1 LOCK DATA -> Transistor -> 12V GND
 const int sensor_Pin = 4; //D2 DOOR DATA GND
-const int RST_Pin = 0;    //D3  ORANGE
+const int RST_Pin = 16;    //D3  ORANGE
 const int SDA_Pin = 2;    //D4  YELLOW
 //                          3V  RED
 //                          GND BLACK
