@@ -59,35 +59,39 @@ class KMS_test_class(unittest.TestCase):
         press_add_case_2 = driver.find_element_by_xpath("//*[@id='root']/div/div[2]/div/div[3]/div/div/div[6]/button").click()
         time.sleep(2)
 
-        #Clears text in element
-        driver.find_element_by_xpath("/html/body/div[3]/div[3]/div/div/div/div[2]/div/input").send_keys(Keys.CONTROL + 'a' + Keys.BACK_SPACE)
+        # press /html/body/div[3]/div[3]/div/div[2]/button[2]
+        press_add_case_3 = driver.find_element_by_xpath("/html/body/div[3]/div[3]/div/div[2]/button[2]").click()
         time.sleep(2)
 
+        #Clears text in element
+        driver.find_element_by_xpath("/html/body/div[3]/div[3]/div/div[1]/div[2]/div/textarea[1]").send_keys(Keys.CONTROL + 'a' + Keys.BACK_SPACE)
+        time.sleep(2)
 
         # change text in  /html/body/div[3]/div[3]/div/div/div/div[2]/div/input to "Worst view ever"
-        driver.find_element_by_xpath("/html/body/div[3]/div[3]/div/div/div/div[2]/div/input").send_keys("Worst view in town")
+        driver.find_element_by_xpath("/html/body/div[3]/div[3]/div/div[1]/div[2]/div/textarea[1]").send_keys("Worst view in town")
         time.sleep(2)
 
         #change_checkin_time in /html/body/div[3]/div[3]/div/div/div/div[4]/div/input to 10:00
-        driver.find_element_by_xpath("/html/body/div[3]/div[3]/div/div/div/div[4]/div/input").send_keys(Keys.CONTROL + 'a' + Keys.BACK_SPACE)
-        change_checkin_time = driver.find_element_by_xpath("/html/body/div[3]/div[3]/div/div/div/div[4]/div/input").send_keys("10:00")
+        driver.find_element_by_xpath("/html/body/div[3]/div[3]/div/div[1]/div[4]/div/input").send_keys(Keys.CONTROL + 'a' + Keys.BACK_SPACE)
+        change_checkin_time = driver.find_element_by_xpath("/html/body/div[3]/div[3]/div/div[1]/div[4]/div/input").send_keys("10:00")
         time.sleep(2)
 
         #change check out time to 14:00 in //*[@id=":r6l:"]
-        driver.find_element_by_xpath("/html/body/div[3]/div[3]/div/div/div/div[5]/div/input").send_keys(Keys.CONTROL + 'a' + Keys.BACK_SPACE)
-        change_time_out = driver.find_element_by_xpath("/html/body/div[3]/div[3]/div/div/div/div[5]/div/input").send_keys("14:00")
+        driver.find_element_by_xpath("/html/body/div[3]/div[3]/div/div[1]/div[5]/div/input").send_keys(Keys.CONTROL + 'a' + Keys.BACK_SPACE)
+        change_time_out = driver.find_element_by_xpath("/html/body/div[3]/div[3]/div/div[1]/div[5]/div/input").send_keys("14:00")
         time.sleep(2)
 
         #click on /html/body/div[3]/div[3]/div/div/div/div[6] 
-        driver.find_element_by_xpath("/html/body/div[3]/div[3]/div/div/div/div[6]").click()
+        driver.find_element_by_xpath("/html/body/div[3]/div[3]/div/div[1]/div[6]").click()
         time.sleep(2)
 
         #click /html/body/div[3]/div[3]/div/div/div/div[7]/button
-        driver.find_element_by_xpath("/html/body/div[3]/div[3]/div/div/div/div[7]/button").click()
+        driver.find_element_by_xpath("/html/body/div[3]/div[3]/div/div[2]/button").click()
         time.sleep(2)
         
         assert "Overview" in driver.page_source
         return
+
 
     # cleanup method called after every test performed
     def tearDown(self):
