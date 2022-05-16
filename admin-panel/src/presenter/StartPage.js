@@ -4,7 +4,7 @@ import { useListVals } from "react-firebase-hooks/database"
 import { ref } from "firebase/database"
 import { db } from "../api/firebase"
 import { get } from "firebase/database"
-import { Box, Button, Grid, Paper, Stack, Typography } from "@mui/material"
+import { Button, Grid, Paper, Stack, Typography } from "@mui/material"
 import { useNavigate } from "react-router-dom"
 
 import { ArrowForwardIos } from "@mui/icons-material"

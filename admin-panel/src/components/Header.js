@@ -24,7 +24,7 @@ export default function Header() {
         const handleUsername = snapshot => setUsername(snapshot.val())
         onValue(usernameRef, handleUsername)
         return () => off(usernameRef, 'value', handleUsername)
-    }, [])
+    }, [auth.currentUser.uid])
 	const navigate = useNavigate()
 
 	const [anchorElUser, setAnchorElUser] = useState(null)
