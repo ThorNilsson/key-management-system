@@ -52,7 +52,7 @@ function ViewPresenter(props) {
                 startDate: new Date(data.checkIn * 1000),
                 returnDate: new Date(data.checkOut * 1000),
                 name: data.name,
-                message: data.privateMessage,
+                message: data.message,
                 keyId: data.keyId
             });
             /*
@@ -146,8 +146,8 @@ function currentView(keyboxId, bookingId, timeLeft, data, boxOpen, keyTaken, dis
     }
     if (!boxOpen && keyTaken) {
         //console.log("success")
-        const topText = `Rental Period ends in ${getTimeUntilReturn(data.returnDate).days} days`
-        const bottomText = `Have a great stay! ${data.message}`
+        const topText = `Welcome ${data.name}, have a great stay! `
+        const bottomText = data.message
         const overMap = 'Success'
 
         return (

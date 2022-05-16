@@ -7,6 +7,7 @@ import loadingGif from '../Loading_icon.gif'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { getAuth, isSignInWithEmailLink, signInWithEmailLink, sendSignInLinkToEmail, signOut } from 'firebase/auth';
 import { LoginView } from '../views/loginView';
+import StartPagePresenter from './startPage';
 export function LoginPresenter() {
     //http://localhost:3000/asodiaouio29186ey7gawd
     //const email = "keymanagementsystemKMS@gmail.com"
@@ -34,7 +35,7 @@ export function LoginPresenter() {
         const logOut = () => {
             signOut(auth)
         }
-        const starCountRef = ref(db, 'guests/' + window.location.pathname.split('/')[1]);
+        const starCountRef = ref(db, 'links/' + window.location.pathname.split('/')[1]);
         console.log(window.location.pathname.split('/')[1])
         get(starCountRef).then((snapshot) => {
             const data = snapshot.val();
@@ -47,8 +48,9 @@ export function LoginPresenter() {
         console.log(bookingId)
         return (!bookingId ||
             <div>
-                <Base keyboxId={keyboxId} logOut={logOut} />
-                <ViewPresenter keyboxId={keyboxId} bookingId={bookingId} />
+                {/* <Base keyboxId={keyboxId} logOut={logOut} />
+                <ViewPresenter keyboxId={keyboxId} bookingId={bookingId} /> */}
+                <StartPagePresenter/>
             </div>
         )
     }
