@@ -64,6 +64,7 @@ export default function EditBoxView({
 	setKeySlots,
 	handleSubmit,
 	loading,
+	deleteBox
 }) {
 	return (
 		<>
@@ -146,6 +147,9 @@ export default function EditBoxView({
 						/>
 					</DialogContent>
 					<DialogActions>
+						<Button variant="contained" onClick={deleteBox} color="error" sx={{mr: 64}}>
+							Delete Box{" "}
+						</Button>
 						<Button variant="contained" onClick={handleSubmit}>
 							Confirm changes{" "}
 						</Button>
