@@ -55,7 +55,7 @@ export default function EditBoxPresenter() {
 	}
 
 	const deleteBox = () => {
-		if (window.confirm("are u sure?") == true) {
+		if (window.confirm("Are you sure?")) {
 			set(ref(db, "users/" + auth.currentUser.uid + "/boxes/" + boxId), null)
 				.then(() => navigate("/" + boxId))
 				.catch(error => alert("Something went wrong " + error.message))
