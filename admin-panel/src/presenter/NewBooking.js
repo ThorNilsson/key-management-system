@@ -1,18 +1,19 @@
 import "react-date-range/dist/styles.css" // main style file
 import "react-date-range/dist/theme/default.css" // theme css file
 
-import { useState, useEffect, useMemo } from "react"
+import { useState, useMemo } from "react"
 import { addDays, getHours, setHours, getMinutes, setMinutes } from "date-fns"
 import { useList } from "react-firebase-hooks/database"
 
 import { db } from "../api/firebase"
-import { ref, get, set, push, onValue } from "firebase/database"
-import { resolvePath, useParams, useNavigate } from "react-router-dom"
+import { ref, push } from "firebase/database"
+import { useParams, useNavigate } from "react-router-dom"
 
 import NewBookingView from "../view/NewBookingView"
-import { KeyboardSharp } from "@mui/icons-material"
+import useTitle from "../hooks/useTitle"
 
 export default function NewBookingPresenter() {
+    useTitle("New booking")
 	const { boxId } = useParams()
 	const navigate = useNavigate()
 

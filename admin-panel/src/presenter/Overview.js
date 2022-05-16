@@ -1,15 +1,17 @@
 import { useList } from "react-firebase-hooks/database"
-import { resolvePath, useLocation, useParams, useNavigate } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import { onValue, ref } from "firebase/database"
 import { db } from "../api/firebase"
 
 import OverView from "../view/OverView"
 import { useEffect, useState } from "react"
+import useRelativeNavigation from "../hooks/useRelativeNavigation"
+import useTitle from "../hooks/useTitle"
 
 export default function OverviewPresenter() {
+    useTitle("Overview")
 	const { boxId } = useParams()
-	const { pathname } = useLocation()
-	const navigate = useNavigate()
+    const relativeNavigate = useRelativeNavigation()
 	const [numberOfKeySlots, setNumberOfKeySlots] = useState()
 	const [keys, loading, error] = useList(ref(db, `keyboxes/${boxId}/keys`))
 
@@ -35,8 +37,8 @@ export default function OverviewPresenter() {
 
 	const editKey = ({id, preferredKeySlot}) => {
 		console.log(id)
-		if (!id) return navigate(resolvePath(`key/new/${preferredKeySlot}`, pathname))
-		navigate(resolvePath(`key/${id}`, pathname))
+		if (!id) return relativeNavigate(`key/new/${preferredKeySlot}`)
+		relativeNavigate(`key/${id}`)
 	}
 
 	return <OverView keys={slots} loading={loading || !numberOfKeySlots} editKey={editKey} />

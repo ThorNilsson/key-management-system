@@ -4,20 +4,14 @@ import { useListVals } from "react-firebase-hooks/database"
 import { ref } from "firebase/database"
 import { db } from "../api/firebase"
 import { get } from "firebase/database"
-import { Button, Grid, Paper, Stack, Typography } from "@mui/material"
+
 import { useNavigate } from "react-router-dom"
 
-import { ArrowForwardIos } from "@mui/icons-material"
-
-import { ApartmentRounded, CottageRounded, HouseRounded } from "@mui/icons-material"
-
-const ICONS = {
-	apartment: ApartmentRounded,
-	house: HouseRounded,
-	cottage: CottageRounded,
-}
+import StartPageView from "../view/StartPageView"
+import useTitle from "../hooks/useTitle"
 
 export default function StartPagePresenter() {
+    useTitle("Start page")
 	const navigate = useNavigate()
 	const { currentUser } = getAuth()
 
@@ -33,50 +27,6 @@ export default function StartPagePresenter() {
 			.catch(error => console.error(error))
 	}, [boxIds, boxIdsError])
 
-	useEffect(() => {
-		document.title = "Keyboxes"
-	  }, [])
-//endIcon={<Edit />} onClick={editAction}
-	return (
-		<div>
-            <Typography variant="h1" >Manage your keyboxes</Typography>
-			<Button variant="contained" size="small" sx={{ px: 2, mt: 2 }} onClick={() => navigate(`/add-box`)} >
-						Add Box
-			</Button>
-			<Grid container spacing={2} columns={{ xs: 2, md: 4 }} sx={{mt: 3}}>
-				{boxes.map(box => {
-					const Icon = ICONS[box.type] || HouseRounded
-					return (
-						<Grid item xs={1} key={box.id}>
-							<Paper sx={{ overflow: "hidden" }}>
-								{box.image && box.image !== "" ? (
-									<img
-										src={box.image}
-										width={"100%"}
-										height={200}
-										alt={"image for " + box.name}
-										className="cover"
-									/>
-								) : (
-									<Icon sx={{ fontSize: 100, color: box.color }} />
-								)}
-								<Stack sx={{ p: 3 }} spacing={2} direction="column">
-									<Typography variant="h4">{box.name}</Typography>
-									<Stack direction="row" justifyContent="flex-end" >
-										<Button
-											onClick={() => navigate(`/${box.id}`)}
-											variant="outlined"
-											endIcon={<ArrowForwardIos />}
-										>
-											Visit
-										</Button>
-									</Stack>
-								</Stack>
-							</Paper>
-						</Grid>
-					)
-				})}
-			</Grid>
-		</div>
-	)
+
+	return <StartPageView navigate={navigate} boxes={boxes} />
 }

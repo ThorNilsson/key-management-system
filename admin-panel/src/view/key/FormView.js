@@ -34,10 +34,12 @@ export default function KeyFormView({
 			<TextField
 				onInput={e => setRoomDescription(e.target.value)}
 				autoFocus
-				margin="normal"
+				fullWidth
+				multiline
+				minRows={3}
+				margin="dense"
 				label="Room description"
 				type="text"
-				fullWidth
 				variant="outlined"
 				value={roomDescription}
 			/>
@@ -71,7 +73,7 @@ export default function KeyFormView({
 				variant="outlined"
 				value={defaultCheckOutTime}
 			/>
-            <Typography variant="h5">Pick location of room</Typography>
+			<Typography variant="h5">Pick location of room</Typography>
 			<LocationPicker
 				lng={roomLongitude}
 				lat={roomLatitude}
