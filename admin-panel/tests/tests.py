@@ -4,7 +4,7 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import time
 # inherit TestCase Class and create a new test class
-class PythonOrgSearch(unittest.TestCase):
+class KMS_test_class(unittest.TestCase):
 
     # initialization of webdriver
     def setUp(self):
