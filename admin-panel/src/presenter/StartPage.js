@@ -8,8 +8,10 @@ import { get } from "firebase/database"
 import { useNavigate } from "react-router-dom"
 
 import StartPageView from "../view/StartPageView"
+import useTitle from "../hooks/useTitle"
 
 export default function StartPagePresenter() {
+    useTitle("Start page")
 	const navigate = useNavigate()
 	const { currentUser } = getAuth()
 
