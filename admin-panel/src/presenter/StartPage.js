@@ -32,7 +32,10 @@ export default function StartPagePresenter() {
                 setBoxes(data.map((snap, i) => ({ ...snap.val(), id: boxIds[i] })))
                 setLoading(false)
             })
-			.catch(error => console.error(error))
+			.catch(error => {
+                setBoxesError(error)
+                console.error(error)
+            })
 	}, [boxIds, boxIdsError])
 
     if(boxIdsError || boxesError) return <div>Something went wrong</div>
