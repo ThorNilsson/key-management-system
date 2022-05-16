@@ -6,6 +6,7 @@ import { db } from "../api/firebase"
 import LockOpenIcon from "@mui/icons-material/LockOpen"
 import LockIcon from "@mui/icons-material/Lock"
 import Tooltip from "@mui/material/Tooltip"
+import { format } from "date-fns"
 
 import useTitle from "../hooks/useTitle"
 
@@ -15,10 +16,8 @@ const columns = [
 	{
 		field: "time",
 		headerName: "Time",
-		width: 100,
-		renderCell: cellValues => {
-			return convertTime(cellValues.row.time)
-		},
+		width: 120,
+		renderCell: cellValues => format(new Date(cellValues.row.time * 1000), "yy-MM-dd HH:mm:ss"),
 	},
 	{
 		field: "isOpen",
@@ -77,18 +76,4 @@ export default function EventsPresenter() {
 	}
 
 	return <EventsView columns={columns} loading={loading} rows={events} handleEventsDelete={handleEventsDelete} />
-}
-
-function convertTime(time) {
-	let unix_timestamp = time
-	var date = new Date(unix_timestamp * 1000)
-	var years = date.getFullYear()
-	var months = date.getMonth() + 1
-	var days = date.getDate()
-	var hours = date.getHours()
-	var minutes = "0" + date.getMinutes()
-	var seconds = "0" + date.getSeconds()
-	var formattedTime =
-		days + "/" + months + "-" + years + " " + hours + ":" + minutes.substr(-2) + ":" + seconds.substr(-2)
-	return formattedTime
 }
