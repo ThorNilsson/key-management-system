@@ -1,10 +1,13 @@
 import { ButtonBase, Grid, Paper, Stack, Typography } from "@mui/material"
-
+import React, { useEffect } from 'react'
 import { Key } from "@mui/icons-material"
-
 import { CircularProgress } from "@mui/material"
 
 export default function OverView({ keys, loading, editKey }) {
+	useEffect(() => {
+		document.title = "Overview"
+	  }, [])
+
 	return (
 		<div>
 			<Typography variant="h3" sx={{ mb: 3 }}>

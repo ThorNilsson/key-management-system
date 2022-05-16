@@ -1,9 +1,13 @@
 import { Typography } from "@mui/material"
 import { DataGrid } from "@mui/x-data-grid"
-
+import React, { useEffect } from 'react'
 import CircularProgress from "@mui/material/CircularProgress"
 
 export default function EventsView({ rows, loading, columns }) {
+	useEffect(() => {
+		document.title = "Events"
+	}, [])
+
 	return (
 		<div>
 			<Typography variant="h3" sx={{ mb: 3 }}>

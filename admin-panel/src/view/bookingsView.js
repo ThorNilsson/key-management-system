@@ -1,10 +1,15 @@
 import { DataGrid } from "@mui/x-data-grid"
 import { Typography } from "@mui/material"
 import CircularProgress from '@mui/material/CircularProgress';
+import React, { useEffect } from 'react'
 
 
 
 export default function BookingsView({rows, columns, loading}) {
+	useEffect(() => {
+		document.title = "Bookings"
+	  }, [])
+
 	return (
 		<div>
 			<Typography variant="h3" sx={{ mb: 3 }}>
