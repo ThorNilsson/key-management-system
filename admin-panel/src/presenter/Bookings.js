@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom"
 import { ref, get } from "firebase/database"
 import { useState, useEffect } from "react"
 import { db } from "../api/firebase"
+import Button from "@mui/material/Button"
 
 export default function BookingsPresenter() {
 	const { boxId } = useParams()
@@ -13,6 +14,10 @@ export default function BookingsPresenter() {
 
 	const FormatDate = (event) => {
 		return new Date(event * 1000).toLocaleTimeString([], {year: 'numeric', day: '2-digit', month: '2-digit', hour: 'numeric', minute:'numeric', timezone: 'GMT+2'});
+	}
+
+	const handleEdit = () => {
+		
 	}
 
 	useEffect(() => {
@@ -33,19 +38,21 @@ export default function BookingsPresenter() {
 
 	const populatedBookings = bookings
 		.map(b => ({ ...b.val(), id: b.key}))
-		.map(b => ({ ...b, room: keyInfo[b.keyId]?.name, checkIn: FormatDate(b.checkIn), checkOut: FormatDate(b.checkOut)}))
+		.map(b => ({ ...b, room: keyInfo[b.keyId]?.name, checkIn: FormatDate(b.checkIn), checkOut: FormatDate(b.checkOut), 
+			renderCell: () => {<Button>h</Button>}}))
 
 
 	return <BookingsView columns={columns} loading={loading} rows={populatedBookings} />
 }
 
 const columns = [
-	{ field: "id", headerName: "Booking id", width: 200 },
+	{ field: "id", headerName: "Booking id", width: 50 },
 	{ field: 'room', headerName: 'Room', width: 70 },
 	{ field: "checkIn", headerName: "Check in", width: 140 },
 	{ field: "checkOut", headerName: "Check out", width: 140 },
 	{ field: "name", headerName: "Name", width: 130 },
 	{ field: "role", headerName: "Role", width: 70 },
-	{ field: "message", headerName: "Message", width: 500 },
-	{ field: "url", headerName: "Link", width: 400 },
+	{ field: "message", headerName: "Message", width: 250 },
+	{ field: "url", headerName: "Link", width: 180 },
+	{ field: "editDelete", headerName: "Edit/Delete", width: 100}
 ]
