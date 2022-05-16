@@ -4,24 +4,46 @@ import "react-calendar-timeline/lib/Timeline.css"
 import moment from "moment"
 
 import {useList} from "react-firebase-hooks/database"
-import {push, ref, set} from "firebase/database"
+import {onValue, push, ref, set} from "firebase/database"
 import {db} from "../api/firebase.js"
 
 import {useNavigate, useParams} from "react-router-dom"
 import {getHours, getMinutes, setHours, setMinutes} from "date-fns";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 export default function TimelinePresenter() {
     const {boxId} = useParams()
     const navigate = useNavigate()
+    const [bookings, setBookings] = useState([])
+    const [loading, setLoading] = useState(true);
 
-    const [bookings, loadingBookings, errorBookings] = useList(ref(db, `keyboxes/${boxId}/bookings`))
+
+    useEffect(() => {
+        const bookingsRef = ref(db, `keyboxes/${boxId}/bookings`)
+        const handleValue = snapshot => {
+            const data = snapshot.val()
+            console.log(data)
+            const bookings = Object.keys(data).map(id => ({
+                id,
+                ...data[id]
+            }))
+            setBookings(bookings)
+            setLoading(false)
+        }
+        const unsub = onValue(bookingsRef, handleValue)
+
+        return () => unsub()
+    }, [boxId])
+
+    //const [bookings, loading, error] = useList(ref(db, `keyboxes/${boxId}/bookings`))
     const [keys, loadingKeys, errorKeys] = useList(ref(db, `keyboxes/${boxId}/keys`))
 
     const [selectedBooking, setSelectedBooking] = useState({});
 
+    console.log(bookings)
 
-    if (errorBookings || errorKeys) return <div>Something went wrong</div>
+
+    if (errorKeys) return <div>Something went wrong</div>
 
     const groups = keys
         .map(key => ({...key.val(), id: key.key}))
@@ -31,7 +53,6 @@ export default function TimelinePresenter() {
         }))
 
     const items = bookings
-        .map(b => ({...b.val(), id: b.key}))
         .map(b => ({
             ...b, group: b.keyId, title: b.name,
             start_time: moment(b.checkIn * 1000),
@@ -154,7 +175,7 @@ export default function TimelinePresenter() {
 
     return <TimelineView groups={groups}
                          items={items}
-                         loading={loadingBookings || loadingKeys}
+                         loading={loading || loadingKeys}
                          selectedBooking={selectedBooking}
 
                          handleBookingMove={handleBookingMove}

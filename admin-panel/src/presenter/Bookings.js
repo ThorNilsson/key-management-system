@@ -10,6 +10,7 @@ export default function BookingsPresenter() {
 
 	const [bookings, loading, error] = useList(ref(db, `keyboxes/${boxId}/bookings`))
 	const [keyInfo, setKeyInfo] = useState({})
+	console.log(bookings)
 
 	const FormatDate = (event) => {
 		return new Date(event * 1000).toLocaleTimeString([], {year: 'numeric', day: '2-digit', month: '2-digit', hour: 'numeric', minute:'numeric', timezone: 'GMT+2'});

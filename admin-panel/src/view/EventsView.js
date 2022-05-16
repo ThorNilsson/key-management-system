@@ -14,6 +14,11 @@ export default function EventsView({ rows, loading, columns }) {
 			) : (
 				<div style={{ height: 800, width: "100%" }}>
 					<DataGrid
+						initialState={{
+							sorting: {
+								sortModel: [{ field: 'time', sort: 'desc' }],
+							},
+						}}
 						rows={rows}
 						columns={columns}
 						proleSize={10}
