@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react"
 import EventsView from "../view/EventsView"
 import {useParams} from "react-router-dom"
-import {onValue, ref, orderByChild, query, limitToLast} from "firebase/database"
+import {onValue, ref, orderByChild, query, limitToLast, set} from "firebase/database"
 import {db} from "../api/firebase"
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import LockIcon from '@mui/icons-material/Lock';
@@ -56,11 +56,23 @@ export default function EventsPresenter() {
         });
     }, [boxId]);
 
+    const handleEventsDelete = () => {
+        let confirmAction = window.confirm("Please confirm that you want to delete all events.");
+        if (confirmAction) {
+            set(ref(db, "keyboxes/" + boxId + "/log"), {})
+                .then(() => {setLoading(true)})
+                .catch(error => alert("Something went wrong " + error.message))
+        } else {
+            alert("Canceled");
+        }
+    }
+
     return (
         <EventsView
             columns={columns}
             loading={loading}
             rows={events}
+            handleEventsDelete={handleEventsDelete}
         />
     )
 }

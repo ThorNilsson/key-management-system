@@ -30,33 +30,11 @@ class TimelineView extends React.Component {
         )
     }
 
-    /*
-        intervalRenderer = ({getIntervalProps, intervalContext}) => {
-            const {style, key} = getIntervalProps();
-            const day = intervalContext.interval.startTime;
-            const weekday = day.isoWeekday();
-            const isWeekend = weekday === 6 || weekday === 7;
-            const isMonday = weekday === 1;
-            const isToday = moment().isSame(day, "day");
-
-            console.log(style)
-
-            return (
-                <div style={{...style, background: 'white'}} key={key}>
-                    <Stack direction="column" spacing={0} style={{alignItems: 'center',}}>
-                        {isMonday ? <span>Mon</span> : null}
-                        {intervalContext.intervalText}
-                    </Stack>
-                </div>
-            );
-        };
-     */
-
     render() {
         return (
-            <>
+            <div>
                 <Typography variant="h3" sx={{my: 3}}>Timeline</Typography>
-                <Stack direction="row" spacing={2}>
+                <Stack direction="row" spacing={2} justifyContent={"space-between"}>
                     {
                         this.props.selectedBooking.start_time === undefined ?
                             <>
@@ -66,16 +44,16 @@ class TimelineView extends React.Component {
                                 <Skeleton variant="rectangular" width={50} height={37}/>
                             </> :
                             <>
+                                <Stack direction="row" spacing={2}>
+                                    <Chip label={"Check in: " + this.props.selectedBooking.start_time}
+                                          icon={<EastIcon/>} variant="outlined"/>
 
-                                <Chip label={"Check in: " + this.props.selectedBooking.start_time}
-                                      icon={<EastIcon/>} variant="outlined"/>
+                                    <Chip label={"Check out: " + this.props.selectedBooking.end_time}
+                                          icon={<CallMissedOutgoingIcon/>}/>
 
-                                <Chip label={"Check out: " + this.props.selectedBooking.end_time}
-                                      icon={<CallMissedOutgoingIcon/>}/>
-
-                                <Chip label={this.props.selectedBooking.message} color={'primary'}
-                                      icon={<MessageIcon/>} variant="outlined"/>
-
+                                    <Chip label={this.props.selectedBooking.message} color={'primary'}
+                                          icon={<MessageIcon/>} variant="outlined"/>
+                                </Stack>
                                 <Button variant="outlined" startIcon={<DeleteIcon/>}
                                         onClick={this.props.handleBookingDelete}
                                         style={{'align-self': 'left'}}
@@ -150,7 +128,7 @@ class TimelineView extends React.Component {
                         </TimelineHeaders>
                     </Timeline>
                 </div>
-            </>
+            </div>
         );
     }
 }
