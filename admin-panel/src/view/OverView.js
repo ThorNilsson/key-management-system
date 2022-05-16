@@ -4,9 +4,6 @@ import { Key } from "@mui/icons-material"
 import { CircularProgress } from "@mui/material"
 
 export default function OverView({ keys, loading, editKey }) {
-	useEffect(() => {
-		document.title = "Overview"
-	  }, [])
 
 	return (
 		<div>

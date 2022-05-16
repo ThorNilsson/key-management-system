@@ -78,12 +78,12 @@ export default function BoxView({ boxes, currentBox, backAction, changeBox, edit
 			</Box>
 			<Box>
 				<Stack direction="column" spacing={1}>
-					<Button variant="contained" size="small" sx={{ px: 2 }} endIcon={<Edit />} onClick={editAction}>
-						Edit box
-					</Button>
-					<Button variant="outlined" size="small" endIcon={<EventRounded />} onClick={newBookingAction}>
+					<Button variant="contained" size="small" endIcon={<EventRounded />} onClick={newBookingAction}>
                         New booking
                     </Button>
+					<Button variant="outlined" size="small" sx={{ px: 2 }} endIcon={<Edit />} onClick={editAction}>
+						Edit box
+					</Button>
 				</Stack>
 			</Box>
 		</Stack>
