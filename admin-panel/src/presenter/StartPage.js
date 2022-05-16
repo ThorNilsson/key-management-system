@@ -36,10 +36,13 @@ export default function StartPagePresenter() {
 	useEffect(() => {
 		document.title = "Keyboxes"
 	  }, [])
-
+//endIcon={<Edit />} onClick={editAction}
 	return (
 		<div>
             <Typography variant="h1" >Manage your keyboxes</Typography>
+			<Button variant="contained" size="small" sx={{ px: 2, mt: 2 }} onClick={() => navigate(`/add-box`)} >
+						Add Box
+			</Button>
 			<Grid container spacing={2} columns={{ xs: 2, md: 4 }} sx={{mt: 3}}>
 				{boxes.map(box => {
 					const Icon = ICONS[box.type] || HouseRounded
