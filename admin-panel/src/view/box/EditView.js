@@ -1,126 +1,157 @@
 import BoxPopupHeader from "../../components/BoxPopupHeader"
-import * as React from 'react';
-import {TextField, Box, FormControl, InputLabel, MenuItem, Select, Button} from '@mui/material';
-import 'react-date-range/dist/styles.css'; // main style file
-import 'react-date-range/dist/theme/default.css'; // theme css file
+import * as React from "react"
+import { TextField, MenuItem, Button, DialogContent, DialogActions, Typography, Stack, Paper } from "@mui/material"
+import "react-date-range/dist/styles.css" // main style file
+import "react-date-range/dist/theme/default.css" // theme css file
+import LocationPicker from "../../components/LocationPicker"
 
+import { CircularProgress } from "@mui/material"
 
-export default function EditBoxView(props, { close }) {
-	
+const AVAILABLE_COLORS = [
+	{
+		name: "gray",
+		hex: "9C9C9C",
+	},
+	{
+		name: "Red",
+		hex: "#DA1A1A",
+	},
+	{
+		name: "Blue",
+		hex: "#3920F0",
+	},
+	{
+		name: "Green",
+		hex: "#32a852",
+	},
+	{
+		name: "Yellow",
+		hex: "#FDF928",
+	},
+	{
+		name: "Purple",
+		hex: "#873CAB",
+	},
+	{
+		name: "Pink",
+		hex: "#FB80BA",
+	},
+	{
+		name: "Brown",
+		hex: "#3F361E",
+	},
+	{
+		name: "Black",
+		hex: "#000000",
+	},
+]
+
+export default function EditBoxView({
+	close,
+	name,
+	setName,
+	color,
+	setColor,
+	description,
+	setDescription,
+	image,
+	setImage,
+	latitude,
+	setLatitude,
+	longitude,
+	setLongitude,
+	keySlots,
+	setKeySlots,
+	handleSubmit,
+	loading,
+}) {
 	return (
-		<div>
-			<BoxPopupHeader title={`Update information about`} close={close} />
-			<Box sx={{ flexDirection: 'row' }}>
-				<TextField
-					onInput={(e) => props.setName(e.target.value)}
-					autoFocus
-					margin="dense"
-					id="name"
-					label="Box name"
-					type="text"
-					fullWidth
-					variant="outlined"
-					value={props.name}
-					required
-				/>
-				<FormControl required fullWidth>
-                    <InputLabel id="demo-simple-select-label">Box color</InputLabel>
-                    <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        value={props.color}
-                        label="Booked room"
-                        onChange={(e) => props.setColor(e.target.value)}
-                    >
-
-					<MenuItem value={'#FFFFFF'}>White</MenuItem>
-					<MenuItem value={'#9C9C9C'}>Grey</MenuItem>
-                    <MenuItem value={'#DA1A1A'}>Red</MenuItem>
-					<MenuItem value={'#3953F0'}>Blue</MenuItem>
-					<MenuItem value={'#32a852'}>Green</MenuItem>
-					<MenuItem value={'#FDF928'}>Yellow</MenuItem>
-					<MenuItem value={'#873CAB'}>Purple</MenuItem>
-					<MenuItem value={'#FB80BA'}>Pink</MenuItem>
-					<MenuItem value={'#3F361E'}>Brown</MenuItem>
-					<MenuItem value={'#000000'}>Black</MenuItem>
-                    </Select>
-                </FormControl>
-				<TextField
-					onInput={(e) => props.setDescription(e.target.value)}
-					autoFocus
-					margin="dense"
-					id="description"
-					label="Box description"
-					type="text"
-					fullWidth
-					variant="outlined"
-					value={props.description}
-					required
-				/>
-				<TextField
-					onInput={(e) => props.setImage(e.target.value)}
-					autoFocus
-					margin="dense"
-					id="image"
-					label="Box image link"
-					type="text"
-					fullWidth
-					variant="outlined"
-					value={props.image}
-					required
-				/>
-				<TextField
-					onInput={(e) => props.setLatitude(e.target.value)}
-					autoFocus
-					margin="dense"
-					id="latitude"
-					label="Latitude"
-					type="text"
-					fullWidth
-					variant="outlined"
-					value={props.latitude}
-					required
-				/>
-				<TextField
-					onInput={(e) => props.setLongitude(e.target.value)}
-					autoFocus
-					margin="dense"
-					id="longitude"
-					label="Longitude"
-					type="text"
-					fullWidth
-					variant="outlined"
-					value={props.longitude}
-					required
-				/>
-				<TextField
-					onInput={(e) => props.setKeySlots(e.target.value)}
-					autoFocus
-					margin="dense"
-					id="nrOfKeySlots"
-					label="Number of keyslots"
-					type="text"
-					fullWidth
-					variant="outlined"
-					value={props.keySlots}
-					required
-				/>
-				<FormControl required fullWidth>
-                    <InputLabel id="demo-simple-select-label">Box status</InputLabel>
-                    <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        value={props.open}
-                        label="Booked room"
-                        onChange={(e) => props.setOpen(e.target.value)}
-                    >
-
-                    <MenuItem value={true}>Open</MenuItem>
-					<MenuItem value={false}>Closed</MenuItem>
-                    </Select>
-                </FormControl>
-			</Box>
-			<Button onClick={props.handleSubmit}> CONFIRM CHANGES </Button>
-		</div>
+		<>
+			<BoxPopupHeader title={`Update information about ${name} keybox`} close={close} />
+			{loading ? (
+				<CircularProgress />
+			) : (
+				<>
+					<DialogContent>
+						<TextField
+							onInput={e => setName(e.target.value)}
+							autoFocus
+							margin="normal"
+							id="name"
+							label="Box name"
+							type="text"
+							fullWidth
+							variant="outlined"
+							value={name}
+							required
+						/>
+                        <TextField
+                            margin="normal"
+                            select
+                            fullWidth
+                            variant="outlined"
+                            label="Color"
+                            value={color}
+                            onChange={e => setColor(e.target.value)}
+                        >
+                            {AVAILABLE_COLORS.map(({ name, hex }) => (
+                                <MenuItem value={hex}>
+                                    <Stack direction={"row"} sx={{ width: "100%" }} justifyContent="space-between">
+                                        {name} <Paper sx={{ backgroundColor: hex, width: 20, height: 20 }} />
+                                    </Stack>
+                                </MenuItem>
+                            ))}
+                        </TextField>
+						<TextField
+							onInput={e => setDescription(e.target.value)}
+							autoFocus
+							margin="normal"
+							id="description"
+							label="Box description"
+							type="text"
+							fullWidth
+							variant="outlined"
+							value={description}
+							required
+						/>
+						<TextField
+							onInput={e => setImage(e.target.value)}
+							autoFocus
+							margin="normal"
+							label="Box image link"
+							type="text"
+							fullWidth
+							variant="outlined"
+							value={image}
+							required
+						/>
+						<TextField
+							onInput={e => setKeySlots(Number(e.target.value))}
+							autoFocus
+							margin="normal"
+							label="Number of keyslots"
+							type="text"
+							fullWidth
+							variant="outlined"
+							value={keySlots}
+							required
+						/>
+						<Typography variant="h5">Pick location of box</Typography>
+						<LocationPicker
+							lng={longitude}
+							lat={latitude}
+							setLng={setLongitude}
+							setLat={setLatitude}
+							sx={{ mb: 3, mt: 1 }}
+						/>
+					</DialogContent>
+					<DialogActions>
+						<Button variant="contained" onClick={handleSubmit}>
+							Confirm changes{" "}
+						</Button>
+					</DialogActions>
+				</>
+			)}
+		</>
 	)
 }
