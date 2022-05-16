@@ -1,7 +1,9 @@
-import { useLocation, useNavigate, resolvePath, useParams } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import KeyView from "../../view/key/KeyView"
 import { onValue, ref, set } from "firebase/database"
 import { db } from "../../api/firebase"
+
+import useRelativeNavigation from "../../hooks/useRelativeNavigation"
 
 import { useEffect, useState } from "react"
 import { getAuth } from "firebase/auth"
@@ -10,15 +12,14 @@ import moment from 'moment';
 export default function KeyPresenter() {
 	const { boxId, keyId } = useParams()
 	const { currentUser } = getAuth()
-	const navigate = useNavigate()
-	const { pathname } = useLocation()
+    const relativeNavigate = useRelativeNavigation()
 	const [loading, setLoading] = useState(true)
-	const [name, setName] = useState("")
+	const [info, setInfo] = useState({})
 
 	useEffect(() => {
-		const keyRef = ref(db, `keyboxes/${boxId}/keys/${keyId}/name`)
+		const keyRef = ref(db, `keyboxes/${boxId}/keys/${keyId}`)
 		const handleValue = snapshot => {
-			setName(snapshot.val())
+			setInfo(snapshot.val())
 			setLoading(false)
 		}
 		const unsub = onValue(keyRef, handleValue)
@@ -40,10 +41,10 @@ export default function KeyPresenter() {
 
 	return (
 		<KeyView
-			edit={() => navigate(resolvePath(`edit`, pathname))}
-			close={() => navigate(resolvePath(`../../`, pathname))}
+			edit={() => relativeNavigate("edit")}
+			close={() => relativeNavigate("../../")}
 			loading={loading}
-			name={name}
+			info={info}
 			release={releaseKey}
 		/>
 	)
