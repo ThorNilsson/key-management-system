@@ -1,54 +1,68 @@
-#coding: utf-8
-#to be used for testing different parts of the front-end code, WIP.
-from selenium.webdriver.common.by import By
-from selenium import webdriver
+# lambdatest_test.py
+
+import os
 import unittest
-import time
+import sys
+from selenium import webdriver
 
-def setup_module(module):
-    WebKitFeatureStatusTest.driver = webdriver.Safari()
-
-def teardown_module(module):
-    WebKitFeatureStatusTest.driver.quit()
+username = os.environ.get("LT_USERNAME")
+access_key = os.environ.get("LT_ACCESS_KEY")
 
 
-class WebKitFeatureStatusTest(unittest.TestCase):
+class FirstSampleTest(unittest.TestCase):
 
-    def test_feature_status_page_search(self):
-        self.driver.get("https://webkit.org/status/")
+    # setUp runs before each test case
+    def setUp(self):
+        desired_caps = {
+            'LT:Options': {
+                "user": username,
+                "accessKey": access_key,
+                "build": "UnitTest-Selenium-Sample",
+                "name": "UnitTest-Selenium-Test",
+                "platformName": "Windows 11",
+                "selenium_version": "4.0.0"
+            },
+            "browserName": "Chrome",
+            "browserVersion": "latest",
+        }
 
-        # Enter "CSS" into the search box.
-        # Ensures that at least one result appears in search
-        search_box = self.driver.find_element_by_id("search")
-        search_box.send_keys("CSS")
-        value = search_box.get_attribute("value")
-        self.assertTrue(len(value) > 0)
-        search_box.submit()
-        time.sleep(1)
-        # Count the visible results when filters are applied
-        # so one result shows up in at most one filter
-        feature_count = self.shown_feature_count()
-        self.assertTrue(feature_count > 0)
+        self.driver = webdriver.Remote(
+            command_executor="http://hub.lambdatest.com:80/wd/hub",
+            desired_capabilities=desired_caps)
 
-    def test_feature_status_page_filters(self):
-        self.driver.get("https://webkit.org/status/")
 
-        time.sleep(1)
-        filters = self.driver.execute_script("return document.querySelectorAll('.filter-toggle')")
-        self.assertTrue(len(filters) is 7)
+# tearDown runs after each test case
 
-        # Make sure every filter is turned off.
-        for checked_filter in filter(lambda f: f.is_selected(), filters):
-            checked_filter.click()
+    def tearDown(self):
+        self.driver.quit()
 
-        # Make sure you can select every filter.
-        for filt in filters:
-            filt.click()
-            self.assertTrue(filt.is_selected())
-            filt.click()
+    def test_unit_user_should_able_to_add_item(self):
+        # try:
+        driver = self.driver
 
-    def shown_feature_count(self):
-                return len(self.driver.execute_script("return document.querySelectorAll('li.feature:not(.is-hidden)')"))
+        # Url
+        driver.get("https://lambdatest.github.io/sample-todo-app/")
+
+        # Click on check box
+        check_box_one = driver.find_element_by_name("li1")
+        check_box_one.click()
+
+        # Click on check box
+        check_box_two = driver.find_element_by_name("li2")
+        check_box_two.click()
+
+        # Enter item in textfield
+        textfield = driver.find_element_by_id("sampletodotext")
+        textfield.send_keys("Yey, Let's add it to list")
+
+        # Click on add button
+        add_button = driver.find_element_by_id("addbutton")
+        add_button.click()
+
+        # Verified added item
+        added_item = driver.find_element_by_xpath(
+            "//span[@class='done-false']").text
+        print(added_item)
 
 
 if __name__ == "__main__":
