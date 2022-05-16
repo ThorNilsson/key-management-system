@@ -5,10 +5,12 @@ import { db } from "../../api/firebase"
 import { ref, set, get } from "firebase/database"
 import KeyFormView from "../../view/key/FormView"
 import NewKeyView, { NFC_SCAN_STEPS } from "../../view/key/NewView"
+import useTitle from "../../hooks/useTitle"
 
 let nfcUnsub
 
 export default function NewKeyPresenter() {
+    useTitle("New key")
 	const { boxId, preferredKeySlot } = useParams()
 	const navigate = useNavigate()
 

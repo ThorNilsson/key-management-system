@@ -5,6 +5,7 @@ import { useList } from "react-firebase-hooks/database"
 import { useParams } from "react-router-dom"
 import { ref } from "firebase/database"
 import { db } from "../api/firebase"
+import useTitle from "../hooks/useTitle"
 
 const columns = [
 	{ field: "id", headerName: "ID", width: 50 },
@@ -17,6 +18,7 @@ const columns = [
 ]
 
 export default function EventsPresenter() {
+    useTitle("Event log")
 	const { boxId } = useParams()
 
 	const [events, loading, error] = useList(ref(db, `keyboxes/${boxId}/log`))

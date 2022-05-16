@@ -5,11 +5,14 @@ import { db } from "../../api/firebase"
 
 import useRelativeNavigation from "../../hooks/useRelativeNavigation"
 
+import useTitle from "../../hooks/useTitle"
+
 import { useEffect, useState } from "react"
 import { getAuth } from "firebase/auth"
 import moment from 'moment';
 
 export default function KeyPresenter() {
+    useTitle("View key")
 	const { boxId, keyId } = useParams()
 	const { currentUser } = getAuth()
     const relativeNavigate = useRelativeNavigation()

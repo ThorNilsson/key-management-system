@@ -6,10 +6,12 @@ import EditKeyView from "../../view/key/EditView"
 import KeyFormView from "../../view/key/FormView"
 
 import useRelativeNavigation from "../../hooks/useRelativeNavigation"
+import useTitle from "../../hooks/useTitle"
 
 let lastReadData = {}
 
 export default function EditKeyPresenter() {
+    useTitle("Edit key")
 	const { boxId, keyId } = useParams()
 	const navigate = useNavigate()
 	const relativeNavigate = useRelativeNavigation()

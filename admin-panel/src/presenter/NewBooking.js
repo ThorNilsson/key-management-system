@@ -11,8 +11,10 @@ import { resolvePath, useParams, useNavigate } from "react-router-dom"
 
 import NewBookingView from "../view/NewBookingView"
 import { KeyboardSharp } from "@mui/icons-material"
+import useTitle from "../hooks/useTitle"
 
 export default function NewBookingPresenter() {
+    useTitle("New booking")
 	const { boxId } = useParams()
 	const navigate = useNavigate()
 

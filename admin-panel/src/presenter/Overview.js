@@ -6,8 +6,10 @@ import { db } from "../api/firebase"
 import OverView from "../view/OverView"
 import { useEffect, useState } from "react"
 import useRelativeNavigation from "../hooks/useRelativeNavigation"
+import useTitle from "../hooks/useTitle"
 
 export default function OverviewPresenter() {
+    useTitle("Overview")
 	const { boxId } = useParams()
     const relativeNavigate = useRelativeNavigation()
 	const [numberOfKeySlots, setNumberOfKeySlots] = useState()
