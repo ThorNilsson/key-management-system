@@ -1,41 +1,29 @@
-# lambdatest_test.py
-
-import os
 import unittest
 import sys
 from selenium import webdriver
-
-username = os.environ.get("LT_USERNAME")
-access_key = os.environ.get("LT_ACCESS_KEY")
-
+from selenium.webdriver.chrome.options import options
 
 class FirstSampleTest(unittest.TestCase):
-
     # setUp runs before each test case
     def setUp(self):
         desired_caps = {
-            'LT:Options': {
-                "user": username,
-                "accessKey": access_key,
-                "build": "UnitTest-Selenium-Sample",
-                "name": "UnitTest-Selenium-Test",
-                "platformName": "Windows 11",
-                "selenium_version": "4.0.0"
-            },
-            "browserName": "Chrome",
-            "browserVersion": "latest",
+            "build": 'PyunitTest sample build', # Change your build name here
+            "name": 'Py-unittest', # Change your test name here
+            "browserName": 'Chrome',
+            "version": '92.0',
+            "platform": 'Windows 10',
+            "resolution": '1024x768',
+            "console": 'true', # Enable or disable console logs
+            "network":'true'   # Enable or disable network logs
         }
-
-        self.driver = webdriver.Remote(
-            command_executor="http://hub.lambdatest.com:80/wd/hub",
-            desired_capabilities=desired_caps)
+        self.driver = webdriver.Chrome
 
 
 # tearDown runs after each test case
-
     def tearDown(self):
         self.driver.quit()
 
+    # """ You can write the test cases here """
     def test_unit_user_should_able_to_add_item(self):
         # try:
         driver = self.driver
@@ -60,10 +48,8 @@ class FirstSampleTest(unittest.TestCase):
         add_button.click()
 
         # Verified added item
-        added_item = driver.find_element_by_xpath(
-            "//span[@class='done-false']").text
-        print(added_item)
-
+        added_item = driver.find_element_by_xpath("//span[@class='done-false']").text
+        print (added_item)
 
 if __name__ == "__main__":
     unittest.main()
