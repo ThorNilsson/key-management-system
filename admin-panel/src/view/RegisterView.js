@@ -7,6 +7,7 @@ import Box from "@mui/material/Box"
 import Typography from "@mui/material/Typography"
 import Container from "@mui/material/Container"
 import { Stack } from "@mui/material"
+import React, { useEffect } from 'react'
 
 function RegisterView({
 	email,
@@ -24,6 +25,10 @@ function RegisterView({
 	setRemember,
     forgotPassword
 }) {
+	useEffect(() => {
+		document.title = "Login"
+	  }, [])
+
 	return (
 		<Container component="main" maxWidth="xs">
 			<CssBaseline />

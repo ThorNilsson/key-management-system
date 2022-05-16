@@ -7,6 +7,8 @@ import LockOpenIcon from '@mui/icons-material/LockOpen';
 import LockIcon from '@mui/icons-material/Lock';
 import Tooltip from '@mui/material/Tooltip';
 
+import useTitle from "../hooks/useTitle"
+
 const columns = [
     {field: "id", headerName: "ID", width: 100},
     {field: "index", headerName: "Index", width: 30},
@@ -42,9 +44,11 @@ const columns = [
 ]
 
 export default function EventsPresenter() {
+    useTitle("Event log")
     const {boxId} = useParams()
     const [events, setEvents] = useState([])
     const [loading, setLoading] = useState(true);
+	const { boxId } = useParams()
 
     useEffect(() => {
         const logsRef = query(ref(db, `keyboxes/${boxId}/log`), orderByChild('time'), limitToLast(100));

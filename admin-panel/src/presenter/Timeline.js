@@ -7,11 +7,14 @@ import {useList} from "react-firebase-hooks/database"
 import {onValue, push, ref, set} from "firebase/database"
 import {db} from "../api/firebase.js"
 
+import useTitle from "../hooks/useTitle"
+
 import {useNavigate, useParams} from "react-router-dom"
 import {getHours, getMinutes, setHours, setMinutes} from "date-fns";
 import {useEffect, useState} from "react";
 
 export default function TimelinePresenter() {
+    useTitle("Timeline")
     const {boxId} = useParams()
     const navigate = useNavigate()
     const [bookings, setBookings] = useState([])

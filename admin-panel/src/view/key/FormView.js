@@ -1,7 +1,12 @@
 import React from "react"
 
-import { TextField, Typography } from "@mui/material"
+import { TextField, Typography, Stack } from "@mui/material"
 import LocationPicker from "../../components/LocationPicker"
+
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
+import { TimePicker } from "@mui/x-date-pickers/TimePicker"
+import frLocale from "date-fns/locale/fr"
 
 export default function KeyFormView({
 	roomName,
@@ -34,10 +39,12 @@ export default function KeyFormView({
 			<TextField
 				onInput={e => setRoomDescription(e.target.value)}
 				autoFocus
-				margin="normal"
+				fullWidth
+				multiline
+				minRows={3}
+				margin="dense"
 				label="Room description"
 				type="text"
-				fullWidth
 				variant="outlined"
 				value={roomDescription}
 			/>
@@ -51,27 +58,23 @@ export default function KeyFormView({
 				variant="outlined"
 				value={roomImage}
 			/>
-			<TextField
-				onInput={e => setDefaultCheckInTime(e.target.value)}
-				autoFocus
-				margin="normal"
-				label="Default check in time"
-				type="text"
-				fullWidth
-				variant="outlined"
-				value={defaultCheckInTime}
-			/>
-			<TextField
-				onInput={e => setDefaultCheckOutTime(e.target.value)}
-				autoFocus
-				margin="normal"
-				label="Default check out time"
-				type="text"
-				fullWidth
-				variant="outlined"
-				value={defaultCheckOutTime}
-			/>
-            <Typography variant="h5">Pick location of room</Typography>
+			<Stack direction="row" spacing={2} sx={{my: 2}}>
+				<LocalizationProvider dateAdapter={AdapterDateFns} locale={frLocale}>
+					<TimePicker
+						label="Default check in time"
+						value={defaultCheckInTime}
+						onChange={setDefaultCheckInTime}
+						renderInput={params => <TextField fullWidth {...params} />}
+					/>
+					<TimePicker
+						label="Default check out time"
+						value={defaultCheckOutTime}
+						onChange={setDefaultCheckOutTime}
+						renderInput={params => <TextField fullWidth {...params} />}
+					/>
+				</LocalizationProvider>
+			</Stack>
+			<Typography variant="h5">Pick location of room</Typography>
 			<LocationPicker
 				lng={roomLongitude}
 				lat={roomLatitude}

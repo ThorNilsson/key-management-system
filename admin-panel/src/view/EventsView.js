@@ -5,7 +5,6 @@ import CircularProgress from "@mui/material/CircularProgress"
 import DeleteIcon from "@mui/icons-material/Delete";
 import React from "react";
 
-
 export default function EventsView({rows, loading, columns, handleEventsDelete}) {
     return (
         <div>

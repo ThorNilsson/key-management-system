@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect }  from 'react';
 import 'react-calendar-timeline/lib/Timeline.css';
 import moment from 'moment';
 import Timeline, {
@@ -15,8 +15,11 @@ import EastIcon from '@mui/icons-material/East';
 import MessageIcon from '@mui/icons-material/Message';
 
 class TimelineView extends React.Component {
-
     groupRenderer = ({group}) => {
+        useEffect(() => {
+            document.title = "Timeline"
+          }, [])
+          
         return (
             <div className='custom-group'>
                 <Stack direction="row" spacing={2} style={{alignItems: 'center',}}>
