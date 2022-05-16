@@ -2,7 +2,7 @@
 import unittest
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-
+import time
 # inherit TestCase Class and create a new test class
 class PythonOrgSearch(unittest.TestCase):
 
@@ -16,20 +16,23 @@ class PythonOrgSearch(unittest.TestCase):
         # get driver
         driver = self.driver
         # get python.org using selenium
-        driver.get("http://www.python.org")
+        driver.get("http://localhost:3000/")
 
         # assertion to confirm if title has python keyword in it
-        self.assertIn("Python", driver.title)
+        self.assertIn("TITLE", driver.title)
+        time.sleep(2)
+
 
         # locate element using name
-        elem = driver.find_element_by_name("q")
+        go_to_case = driver.find_element_by_xpath("//*[@id='root']/main/div/form/div[4]/button").click()
+        time.sleep(2)
+        fill_in_email = driver.find_element_by_xpath("//*[@id='email']").send_keys("mariuskungen@gmail.com")
+        fill_in_pass = driver.find_element_by_xpath("//*[@id='password']").send_keys("123456")
 
-        # send data
-        elem.send_keys("pycon")
+        login = driver.find_element_by_xpath("//*[@id='root']/main/div/form/button").click()
+        time.sleep(5)
 
-        # receive data
-        elem.send_keys(Keys.RETURN)
-        assert "No results found." not in driver.page_source
+        assert "SIGN UP" not in driver.page_source
 
     # cleanup method called after every test performed
     def tearDown(self):
