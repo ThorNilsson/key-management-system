@@ -1,4 +1,4 @@
-import { ApartmentRounded, CottageRounded, HouseRounded, ArrowForwardIos } from "@mui/icons-material"
+import { ApartmentRounded, CottageRounded, HouseRounded, ArrowForwardIos, Add } from "@mui/icons-material"
 import { Button, Grid, Paper, Stack, Typography } from "@mui/material"
 
 const ICONS = {
@@ -11,9 +11,6 @@ export default function StartPageView({ navigate, boxes }) {
 	return (
 		<div>
 			<Typography variant="h1">Manage your keyboxes</Typography>
-			<Button variant="contained" size="small" sx={{ px: 2, mt: 2 }} onClick={() => navigate(`/add-box`)} >
-						Add Box
-			</Button>
 			<Grid container spacing={2} columns={{ xs: 2, md: 4 }} sx={{ mt: 3 }}>
 				{boxes.map(box => {
 					const Icon = ICONS[box.type] || HouseRounded
@@ -48,6 +45,17 @@ export default function StartPageView({ navigate, boxes }) {
 					)
 				})}
 			</Grid>
+			<Stack direction="row" alignItems="center" justifyContent="center">
+				<Button
+					variant="outlined"
+					size="large"
+					sx={{ px: 2, mt: 2 }}
+					onClick={() => navigate(`/add-box`)}
+					endIcon={<Add />}
+				>
+					Add Box
+				</Button>
+			</Stack>
 		</div>
 	)
 }
