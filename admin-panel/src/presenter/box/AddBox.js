@@ -1,21 +1,13 @@
-import BoxPopupHeader from "../../components/BoxPopupHeader"
-import * as React from "react"
 import {
 	TextField,
-	MenuItem,
 	Button,
-	DialogContent,
-	DialogActions,
 	Typography,
-	Stack,
-	Paper,
 	Container,
 } from "@mui/material"
 import "react-date-range/dist/styles.css" // main style file
 import "react-date-range/dist/theme/default.css" // theme css file
-import LocationPicker from "../../components/LocationPicker"
 import { getAuth } from "firebase/auth"
-import { push, ref, set } from "firebase/database"
+import { ref, set } from "firebase/database"
 import { db } from "../../api/firebase"
 import { useState } from "react"
 import { ArrowBackIosNewRounded } from "@mui/icons-material"
@@ -24,7 +16,7 @@ import { useNavigate } from "react-router-dom"
 export default function AddBoxPresenter() {
 	const auth = getAuth()
 	const navigate = useNavigate()
-	const [boxId, setBoxId] = useState()
+	const [boxId, setBoxId] = useState("")
 	const handleSubmit = () => {
 		set(ref(db, "users/" + auth.currentUser.uid + "/boxes/" + boxId), boxId)
 			.then(() => navigate("/" + boxId))
