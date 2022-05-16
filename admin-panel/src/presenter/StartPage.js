@@ -27,5 +27,6 @@ export default function StartPagePresenter() {
 			.catch(error => console.error(error))
 	}, [boxIds, boxIdsError])
 
+
 	return <StartPageView navigate={navigate} boxes={boxes} />
 }

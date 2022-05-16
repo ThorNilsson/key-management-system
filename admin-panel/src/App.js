@@ -20,6 +20,7 @@ import RegisterPresenter from "./presenter/RegisterPresenter"
 import NewKeyPresenter from "./presenter/key/New"
 import EditBoxPresenter from "./presenter/box/Edit"
 import KeyPresenter from "./presenter/key/Key"
+import AddBoxPresenter from "./presenter/box/AddBox"
 
 const auth = getAuth()
 
@@ -49,6 +50,7 @@ export default function App() {
 						<Route path="key/new/:preferredKeySlot" element={<NewKeyPresenter />} />
 					</Route>
 					<Route path="/edit" element={<EditProfilePresenter />} />
+					<Route path="/add-box" element={<AddBoxPresenter />} />
 					<Route
 						path="*"
 						element={
