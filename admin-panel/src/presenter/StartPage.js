@@ -16,17 +16,27 @@ export default function StartPagePresenter() {
 	const { currentUser } = getAuth()
 
 	const [boxes, setBoxes] = useState([])
+    const [boxesError, setBoxesError] = useState()
+    const [loading, setLoading] = useState(true)
 	const [boxIds, , boxIdsError] = useListVals(ref(db, `users/${currentUser.uid}/boxes`))
 
 	// Fetch boxes
 	useEffect(() => {
 		if (!boxIds || boxIdsError) return
+
+        if(boxIds.length === 0) return setLoading(false)
+
 		const promises = boxIds.map(id => get(ref(db, "keyboxes/" + id + "/info")))
 		Promise.all(promises)
-			.then(data => setBoxes(data.map((snap, i) => ({ ...snap.val(), id: boxIds[i] }))))
+			.then(data => {
+                setBoxes(data.map((snap, i) => ({ ...snap.val(), id: boxIds[i] })))
+                setLoading(false)
+            })
 			.catch(error => console.error(error))
 	}, [boxIds, boxIdsError])
 
+    if(boxIdsError || boxesError) return <div>Something went wrong</div>
 
-	return <StartPageView navigate={navigate} boxes={boxes} />
+
+	return <StartPageView navigate={navigate} boxes={boxes} loading={loading} />
 }
