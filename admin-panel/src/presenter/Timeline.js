@@ -3,187 +3,189 @@ import TimelineView from "../view/TimelineView.js"
 import "react-calendar-timeline/lib/Timeline.css"
 import moment from "moment"
 
-import {useList} from "react-firebase-hooks/database"
-import {onValue, push, ref, set} from "firebase/database"
-import {db} from "../api/firebase.js"
+import { useList } from "react-firebase-hooks/database"
+import { onValue, push, ref, set } from "firebase/database"
+import { db } from "../api/firebase.js"
 
 import useTitle from "../hooks/useTitle"
 
-import {useNavigate, useParams} from "react-router-dom"
-import {getHours, getMinutes, setHours, setMinutes} from "date-fns";
-import {useEffect, useState} from "react";
+import { useNavigate, useParams } from "react-router-dom"
+import { getHours, getMinutes, setHours, setMinutes } from "date-fns"
+import { useEffect, useState } from "react"
 
 export default function TimelinePresenter() {
-    useTitle("Timeline")
-    const {boxId} = useParams()
-    const navigate = useNavigate()
-    const [bookings, setBookings] = useState([])
-    const [loading, setLoading] = useState(true);
+	useTitle("Timeline")
+	const { boxId } = useParams()
+	const navigate = useNavigate()
+	const [bookings, setBookings] = useState([])
+	const [loading, setLoading] = useState(true)
 
+	useEffect(() => {
+		const bookingsRef = ref(db, `keyboxes/${boxId}/bookings`)
+		const handleValue = snapshot => {
+			const data = snapshot.val()
+			console.log(data)
+			const bookings = Object.keys(data).map(id => ({
+				id,
+				...data[id],
+			}))
+			setBookings(bookings)
+			setLoading(false)
+		}
+		const unsub = onValue(bookingsRef, handleValue)
 
-    useEffect(() => {
-        const bookingsRef = ref(db, `keyboxes/${boxId}/bookings`)
-        const handleValue = snapshot => {
-            const data = snapshot.val()
-            console.log(data)
-            const bookings = Object.keys(data).map(id => ({
-                id,
-                ...data[id]
-            }))
-            setBookings(bookings)
-            setLoading(false)
-        }
-        const unsub = onValue(bookingsRef, handleValue)
+		return () => unsub()
+	}, [boxId])
 
-        return () => unsub()
-    }, [boxId])
+	//const [bookings, loading, error] = useList(ref(db, `keyboxes/${boxId}/bookings`))
+	const [keys, loadingKeys, errorKeys] = useList(ref(db, `keyboxes/${boxId}/keys`))
 
-    //const [bookings, loading, error] = useList(ref(db, `keyboxes/${boxId}/bookings`))
-    const [keys, loadingKeys, errorKeys] = useList(ref(db, `keyboxes/${boxId}/keys`))
+	const [selectedBooking, setSelectedBooking] = useState({})
 
-    const [selectedBooking, setSelectedBooking] = useState({});
+	console.log(bookings)
 
-    console.log(bookings)
+	if (errorKeys) return <div>Something went wrong</div>
 
+	const groups = keys
+		.map(key => ({ ...key.val(), id: key.key }))
+		.map(({ name, id }) => ({
+			id,
+			title: name,
+		}))
 
-    if (errorKeys) return <div>Something went wrong</div>
-
-    const groups = keys
-        .map(key => ({...key.val(), id: key.key}))
-        .map(({name, id}) => ({
-            id,
-            title: name,
-        }))
-
-    const items = bookings
-        .map(b => ({
-            ...b, group: b.keyId, title: b.name,
-            start_time: moment(b.checkIn * 1000),
-            end_time: moment(b.checkOut * 1000),
-            itemProps: {
-                // these optional attributes are passed to the root <div /> of each item as <div {...itemProps} />
-                'data-custom-attribute': 'Random content',
-                'aria-hidden': true,
-                onDoubleClick: () => {
-                    console.log('You clicked double!')
-                },
-                className: 'weekend',
-                style:
-                    moment(b.checkOut * 1000) < moment() ?
-                        {
-                            background: selectedBooking.id === b.id ? '#41d31f' : '#ff0073',
-                            backgroundColor: '#ff0073',
-                            border: '#ff0073', //#ff0073
-                            'color': 'white',
-                            'font-family': 'Source Sans Pro, sans-serif',
-                            'font-size': 14,
-                            'overflow': 'clip',
-                            'border-radius': '8px',
-                        }
-                        : {
-                            background: selectedBooking.id === b.id ? '#41d31f' : '#1976d2',
-                            backgroundColor: '#1976d2',
-                            border: '#1976d2',
-                            'color': 'white',
-                            'font-family': 'Source Sans Pro, sans-serif',
-                            'font-size': 14,
-                            'overflow': 'clip',
-                            'border-radius': '8px',
-                        },
-
-            }
-        }))
-    /*
+	const items = bookings.map(b => ({
+		...b,
+		group: b.keyId,
+		title: b.name,
+		start_time: moment(b.checkIn * 1000),
+		end_time: moment(b.checkOut * 1000),
+		itemProps: {
+			// these optional attributes are passed to the root <div /> of each item as <div {...itemProps} />
+			"data-custom-attribute": "Random content",
+			"aria-hidden": true,
+			onDoubleClick: () => {
+				console.log("You clicked double!")
+			},
+			className: "weekend",
+			style:
+				moment(b.checkOut * 1000) < moment()
+					? {
+							background: selectedBooking.id === b.id ? "#41d31f" : "#ff0073",
+							backgroundColor: "#ff0073",
+							border: "#ff0073", //#ff0073
+							color: "white",
+							"font-family": "Source Sans Pro, sans-serif",
+							"font-size": 14,
+							overflow: "clip",
+							"border-radius": "8px",
+					  }
+					: {
+							background: selectedBooking.id === b.id ? "#41d31f" : "#1976d2",
+							backgroundColor: "#1976d2",
+							border: "#1976d2",
+							color: "white",
+							"font-family": "Source Sans Pro, sans-serif",
+							"font-size": 14,
+							overflow: "clip",
+							"border-radius": "8px",
+					  },
+		},
+	}))
+	/*
      const populatedBookings = bookings
          .map(b => ({ ...b.val(), id: b.key}))
          .map(b => ({ ...b, room: keyInfo[b.keyId]?.name, checkIn: FormatDate(b.checkIn), checkOut: FormatDate(b.checkOut)}))
      */
-    const handleBookingMove = (bookingId, newStartTime, key) => {
-        let confirmAction = window.confirm("Please confirm you want to change the date of this booking.");
-        if (!confirmAction) {
-            return;
-        }
+	const handleBookingMove = (bookingId, newStartTime, key) => {
+		let confirmAction = window.confirm("Please confirm you want to change the date of this booking.")
+		if (!confirmAction) {
+			return
+		}
 
-        const booking = items.find(booking => booking.id === bookingId);
+		const booking = items.find(booking => booking.id === bookingId)
 
-        const checkIn = new moment(newStartTime).set({
-            hour: booking.start_time.hour(),
-            minute: booking.start_time.minute()
-        }).unix();
+		const checkIn = new moment(newStartTime)
+			.set({
+				hour: booking.start_time.hour(),
+				minute: booking.start_time.minute(),
+			})
+			.unix()
 
-        const checkOut = new moment(checkIn * 1000).add(booking.end_time.diff(booking.start_time, 'minute'), "minute").set({
-            hour: booking.end_time.hour(),
-            minute: booking.end_time.minute()
-        }).unix();
+		const checkOut = new moment(checkIn * 1000)
+			.add(booking.end_time.diff(booking.start_time, "minute"), "minute")
+			.set({
+				hour: booking.end_time.hour(),
+				minute: booking.end_time.minute(),
+			})
+			.unix()
 
-        const updatedBooking = {
-            checkIn: checkIn,
-            checkOut: checkOut,
-            email: booking.email,
-            keyId: key.id,
-            message: booking.message,
-            name: booking.title,
-        };
-        console.log(booking);
-        console.log(updatedBooking);
-        console.log({
-            1: new Date(booking.checkIn * 1000).toString(),
-            2: new Date(booking.checkOut * 1000).toString(),
-            3: new Date(updatedBooking.checkIn * 1000).toString(),
-            4: new Date(updatedBooking.checkOut * 1000).toString(),
-        });
+		const updatedBooking = {
+			checkIn: checkIn,
+			checkOut: checkOut,
+			email: booking.email,
+			keyId: key.id,
+			message: booking.message,
+			name: booking.title,
+		}
+		console.log(booking)
+		console.log(updatedBooking)
+		console.log({
+			1: new Date(booking.checkIn * 1000).toString(),
+			2: new Date(booking.checkOut * 1000).toString(),
+			3: new Date(updatedBooking.checkIn * 1000).toString(),
+			4: new Date(updatedBooking.checkOut * 1000).toString(),
+		})
 
+		set(ref(db, "keyboxes/" + boxId + "/bookings/" + bookingId), updatedBooking)
+			.then(() => {})
+			.catch(error => alert("Something went wrong " + error.message))
+	}
 
-        set(ref(db, "keyboxes/" + boxId + "/bookings/" + bookingId), updatedBooking)
-            .then(() => {
-            })
-            .catch(error => alert("Something went wrong " + error.message))
+	const handleBookingDelete = () => {
+		let confirmAction = window.confirm("Please confirm you want to delete the booking.")
+		if (confirmAction) {
+			set(ref(db, "keyboxes/" + boxId + "/bookings/" + selectedBooking.id), {})
+				.then(() => {})
+				.catch(error => alert("Something went wrong " + error.message))
+			//handleDeSelectingBooking();
+		} else {
+			alert("Canceled")
+		}
+	}
 
-    }
+	const handleDeSelectingBooking = () => {
+		setSelectedBooking({})
+	}
 
-    const handleBookingDelete = () => {
-        let confirmAction = window.confirm("Please confirm you want to delete the booking.");
-        if (confirmAction) {
-            set(ref(db, "keyboxes/" + boxId + "/bookings/" + selectedBooking.id), {})
-                .then(() => {
-                })
-                .catch(error => alert("Something went wrong " + error.message))
-            //handleDeSelectingBooking();
-        } else {
-            alert("Canceled");
-        }
-    }
+	const handleSelectingBooking = itemId => {
+		let sel = items.find(booking => booking.id === itemId)
+		setSelectedBooking({
+			...sel,
+			start_time: sel.start_time.format("hh:mm"),
+			end_time: sel.end_time.format("hh:mm"),
+		})
+	}
 
-    const handleDeSelectingBooking = () => {
-        setSelectedBooking({});
-    }
+	const handleNewBooking = (keyId, time) => {
+		const startDate = time
 
-    const handleSelectingBooking = (itemId) => {
-        let sel = items.find(booking => booking.id === itemId);
-        setSelectedBooking({
-            ...sel,
-            start_time: sel.start_time.format("hh:mm"),
-            end_time: sel.end_time.format("hh:mm"),
-        });
-    }
+		console.log({ keyId, startDate })
+		navigate(`/${boxId}/new-booking`)
+	}
 
-    const handleNewBooking = (keyId, time) => {
-        const startDate = time;
+	console.log(items)
 
-        console.log({keyId, startDate})
-        navigate(`/${boxId}/new-booking`);
-    }
-
-    console.log(items)
-
-    return <TimelineView groups={groups}
-                         items={items}
-                         loading={loading || loadingKeys}
-                         selectedBooking={selectedBooking}
-
-                         handleBookingMove={handleBookingMove}
-                         handleSelectingBooking={handleSelectingBooking}
-                         handleNewBooking={handleNewBooking}
-                         handleBookingDelete={handleBookingDelete}
-                         handleDeSelectingBooking={handleDeSelectingBooking}/>
+	return (
+		<TimelineView
+			groups={groups}
+			items={items}
+			loading={loading || loadingKeys}
+			selectedBooking={selectedBooking}
+			handleBookingMove={handleBookingMove}
+			handleSelectingBooking={handleSelectingBooking}
+			handleNewBooking={handleNewBooking}
+			handleBookingDelete={handleBookingDelete}
+			handleDeSelectingBooking={handleDeSelectingBooking}
+		/>
+	)
 }
