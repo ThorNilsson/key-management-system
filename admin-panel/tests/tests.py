@@ -1,55 +1,40 @@
+# import all required frameworks
 import unittest
-import sys
 from selenium import webdriver
-from selenium.webdriver.chrome.options import options
+from selenium.webdriver.common.keys import Keys
 
-class FirstSampleTest(unittest.TestCase):
-    # setUp runs before each test case
+# inherit TestCase Class and create a new test class
+class PythonOrgSearch(unittest.TestCase):
+
+    # initialization of webdriver
     def setUp(self):
-        desired_caps = {
-            "build": 'PyunitTest sample build', # Change your build name here
-            "name": 'Py-unittest', # Change your test name here
-            "browserName": 'Chrome',
-            "version": '92.0',
-            "platform": 'Windows 10',
-            "resolution": '1024x768',
-            "console": 'true', # Enable or disable console logs
-            "network":'true'   # Enable or disable network logs
-        }
-        self.driver = webdriver.Chrome
+        self.driver = webdriver.Safari()
 
+    # Test case method. It should always start with test_
+    def tests(self):
 
-# tearDown runs after each test case
-    def tearDown(self):
-        self.driver.quit()
-
-    # """ You can write the test cases here """
-    def test_unit_user_should_able_to_add_item(self):
-        # try:
+        # get driver
         driver = self.driver
+        # get python.org using selenium
+        driver.get("http://www.python.org")
 
-        # Url
-        driver.get("https://lambdatest.github.io/sample-todo-app/")
+        # assertion to confirm if title has python keyword in it
+        self.assertIn("Python", driver.title)
 
-        # Click on check box
-        check_box_one = driver.find_element_by_name("li1")
-        check_box_one.click()
+        # locate element using name
+        elem = driver.find_element_by_name("q")
 
-        # Click on check box
-        check_box_two = driver.find_element_by_name("li2")
-        check_box_two.click()
+        # send data
+        elem.send_keys("pycon")
 
-        # Enter item in textfield
-        textfield = driver.find_element_by_id("sampletodotext")
-        textfield.send_keys("Yey, Let's add it to list")
+        # receive data
+        elem.send_keys(Keys.RETURN)
+        assert "No results found." not in driver.page_source
 
-        # Click on add button
-        add_button = driver.find_element_by_id("addbutton")
-        add_button.click()
+    # cleanup method called after every test performed
+    def tearDown(self):
+        self.driver.close()
 
-        # Verified added item
-        added_item = driver.find_element_by_xpath("//span[@class='done-false']").text
-        print (added_item)
-
+# execute the script
 if __name__ == "__main__":
     unittest.main()
