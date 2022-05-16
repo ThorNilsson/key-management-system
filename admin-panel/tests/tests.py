@@ -7,7 +7,9 @@ import time
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
 # inherit TestCase Class and create a new test class
+
 class KMS_test_class(unittest.TestCase):
 
     # initialization of webdriver
@@ -49,10 +51,6 @@ class KMS_test_class(unittest.TestCase):
         # get python.org using selenium
         #driver.get("http://localhost:3000/overview")
 
-        # wait = WebDriverWait(driver, 10)
-        # wait.until(EC.visibility_of_element_located((By.XPATH,"//*[@id='root']/div/div[2]/div/div[3]/div/div/div[6]/button" )))
-
-
         time.sleep(2)
         # press_visit //*[@id="root"]/div/div[2]/div/div/div/div/div/div/button
         press_visit = driver.find_element_by_xpath("//*[@id='root']/div/div[2]/div/div/div/div/div/div/button").click()
@@ -61,18 +59,35 @@ class KMS_test_class(unittest.TestCase):
         press_add_case_2 = driver.find_element_by_xpath("//*[@id='root']/div/div[2]/div/div[3]/div/div/div[6]/button").click()
         time.sleep(2)
 
-        # change text in //*[@id=":r6f:"] to "Worst view ever"
-        change_text = driver.find_element_by_xpath("//*[@id=':r6f:']").send_keys("Worst view ever")
+        #Clears text in element
+        driver.find_element_by_xpath("/html/body/div[3]/div[3]/div/div/div/div[2]/div/input").send_keys(Keys.CONTROL + 'a' + Keys.BACK_SPACE)
+        time.sleep(2)
 
-        # change check in time to 13:37 in //*[@id=":r6l:"]
-        change_time = driver.find_element_by_xpath("//*[@id=':r6l:']").send_keys("11:00")
+
+        # change text in  /html/body/div[3]/div[3]/div/div/div/div[2]/div/input to "Worst view ever"
+        driver.find_element_by_xpath("/html/body/div[3]/div[3]/div/div/div/div[2]/div/input").send_keys("Worst view in town")
+        time.sleep(2)
+
+        #change_checkin_time in /html/body/div[3]/div[3]/div/div/div/div[4]/div/input to 10:00
+        driver.find_element_by_xpath("/html/body/div[3]/div[3]/div/div/div/div[4]/div/input").send_keys(Keys.CONTROL + 'a' + Keys.BACK_SPACE)
+        change_checkin_time = driver.find_element_by_xpath("/html/body/div[3]/div[3]/div/div/div/div[4]/div/input").send_keys("10:00")
+        time.sleep(2)
 
         #change check out time to 14:00 in //*[@id=":r6l:"]
-        change_time_out = driver.find_element_by_xpath("//*[@id=':r6m:']").send_keys("14:00")
+        driver.find_element_by_xpath("/html/body/div[3]/div[3]/div/div/div/div[5]/div/input").send_keys(Keys.CONTROL + 'a' + Keys.BACK_SPACE)
+        change_time_out = driver.find_element_by_xpath("/html/body/div[3]/div[3]/div/div/div/div[5]/div/input").send_keys("14:00")
         time.sleep(2)
+
+        #click on /html/body/div[3]/div[3]/div/div/div/div[6] 
+        driver.find_element_by_xpath("/html/body/div[3]/div[3]/div/div/div/div[6]").click()
+        time.sleep(2)
+
+        #click /html/body/div[3]/div[3]/div/div/div/div[7]/button
+        driver.find_element_by_xpath("/html/body/div[3]/div[3]/div/div/div/div[7]/button").click()
+        time.sleep(2)
+        
         assert "Overview" in driver.page_source
-
-
+        return
 
     # cleanup method called after every test performed
     def tearDown(self):
