@@ -33,6 +33,10 @@ export default function StartPagePresenter() {
 			.catch(error => console.error(error))
 	}, [boxIds, boxIdsError])
 
+	useEffect(() => {
+		document.title = "Keyboxes"
+	  }, [])
+
 	return (
 		<div>
             <Typography variant="h1" >Manage your keyboxes</Typography>
