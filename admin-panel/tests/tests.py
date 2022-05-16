@@ -10,12 +10,18 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 # inherit TestCase Class and create a new test class
 
-# Vid testning, installera Google Chrome driver och använd den i testen
+
+#  ! ! ! HOW TO TEST! ! !
+# Vid testning, installera Google Chrome driver
 # https://chromedriver.chromium.org/downloads
-# Checka om ni har python genom att skriva py i CMD.
+# Checka om ni har python genom att skriva py i CMD, 
+# installera om needed.
 # pip install selenium
-# sedan pip install webdriver-manager 
+# pip install webdriver-manager 
 # Skapa tester som egna funktioner i denna tests.py fil.
+# Vid testning behövs att npm start är running i en annan
+# terminal. När det är gjort så kan ni köra testen. 
+# (I.E. PATH/admin-panel/tests py tests.py)
 
 
 class KMS_test_class(unittest.TestCase):
