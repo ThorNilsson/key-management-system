@@ -36,7 +36,7 @@ export default function OverviewPresenter() {
 	const editKey = ({id, preferredKeySlot}) => {
 		console.log(id)
 		if (!id) return navigate(resolvePath(`key/new/${preferredKeySlot}`, pathname))
-		navigate(resolvePath(`key/${id}/edit`, pathname))
+		navigate(resolvePath(`key/${id}`, pathname))
 	}
 
 	return <OverView keys={slots} loading={loading || !numberOfKeySlots} editKey={editKey} />
