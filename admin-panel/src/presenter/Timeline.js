@@ -123,7 +123,7 @@ export default function TimelinePresenter() {
 		const startDate = time
 
 		console.log({ keyId, startDate })
-		navigate(`/${boxId}/new-booking`)
+		navigate(`/${boxId}/booking/new`)
 	}
 
 	return (

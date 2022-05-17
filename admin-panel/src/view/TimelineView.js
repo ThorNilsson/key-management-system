@@ -8,7 +8,7 @@ import EastIcon from "@mui/icons-material/East"
 
 export default function TimelineView(props) {
 	return (
-		<Stack directions="column" spacing={2}>
+		<Stack directions="column" spacing={2} sx={{pb: 50}}>
 			<Typography variant="h3">Timeline</Typography>
 			<DisplaySelectedBooking
 				selectedBooking={props.selectedBooking}
