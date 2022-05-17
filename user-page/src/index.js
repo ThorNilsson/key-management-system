@@ -6,9 +6,52 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { emailTest } from './emailTest';
 
+import { createTheme, ThemeProvider } from "@mui/material/styles"
+
+const theme = createTheme({
+  typography: {
+    h1: {
+      fontSize: 30,
+      fontWeight: 700,
+    },
+    h2: {
+      fontSize: 24,
+      fontWeight: 700,
+    },
+    h3: {
+      fontSize: 20,
+      fontWeight: 700,
+    },
+    h4: {
+      fontSize: 18,
+      fontWeight: 500,
+    },
+    h5: {
+      fontSize: 16,
+      fontWeight: 500,
+    },
+    h6: {
+      fontSize: 14,
+      fontWeight: 700,
+    },
+    subtitle1: "h2",
+    subtitle2: "h2",
+    body1: {
+      fontSize: 14,
+    },
+    body2: {
+      fontSize: 12,
+    },
+  },
+})
+
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <ThemeProvider theme={theme}>
+
+      <App />
+
+    </ThemeProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

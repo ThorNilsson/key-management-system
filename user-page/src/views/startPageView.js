@@ -1,4 +1,5 @@
 import { ApartmentRounded, CottageRounded, HouseRounded, ArrowForwardIos, Add } from "@mui/icons-material"
+
 import {
 	Button,
 	Card,
@@ -9,8 +10,7 @@ import {
 	CircularProgress,
 	Grid,
 	Stack,
-	Typography,
-    bookings
+	Typography
 } from "@mui/material"
 
 const ICONS = {
@@ -19,11 +19,12 @@ const ICONS = {
 	cottage: CottageRounded,
 }
 
-export default function StartPageView({ navigate, bookings, loading }) {
+export default function StartPageView({ navigate, bookings, loading, bookingLoading, logOut }) {
 	return (
 		<div>
-			<Typography variant="h1">Manage your keybookings</Typography>
-			{loading ? (
+			<Typography variant="h1">Manage your Bookings</Typography>
+			<Button onClick={logOut} variant="text" >log out</Button>
+			{loading || bookingLoading? (
 				<CircularProgress />
 			) : bookings.length === 0 ? (
 				<Stack direction="row" alignItems="center" justifyContent="center">
