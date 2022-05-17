@@ -6,7 +6,7 @@ import { addDays, getHours, setHours, getMinutes, setMinutes } from "date-fns"
 import { useList } from "react-firebase-hooks/database"
 
 import { db } from "../../api/firebase"
-import { ref, push } from "firebase/database"
+import { ref, push, set } from "firebase/database"
 import { useParams, useNavigate } from "react-router-dom"
 
 import NewBookingView from "../../view/booking/NewView"
@@ -68,8 +68,7 @@ export default function NewBookingPresenter() {
 			checkIn: checkedInUnix,
 			checkOut: checkedOutUnix,
 		}).then(snap => {
-			console.log(snap.key)
-			push(ref(db, "guests/" + email.replace('.','')), {
+			set(ref(db, "guests/" + email.replace('.','') + "/" + snap.key), {
 				bookingId: snap.key,
 				keyboxId: boxId
 			})
