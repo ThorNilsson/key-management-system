@@ -8,9 +8,9 @@ import Button from "@mui/material/Button"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 import { TimePicker } from "@mui/x-date-pickers/TimePicker"
-import BoxPopupHeader from "../components/BoxPopupHeader"
+import BoxPopupHeader from "../../components/BoxPopupHeader"
 import frLocale from "date-fns/locale/fr"
-import { submitForm } from "../util/index"
+import { submitForm } from "../../util/index"
 
 export default function NewBookingView({
 	keys,

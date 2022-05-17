@@ -45,9 +45,9 @@ export default function App() {
 						<Route path="bookings" element={<BookingsPresenter />} />
 						<Route path="bookings/:bookingId" element={<ViewBookingPresenter />} />
 						<Route path="bookings/:bookingId/edit" element={<EditBookingPresenter />} />
+						<Route path="bookings/new" element={<NewBookingPresenter />} />
 						<Route path="timeline" element={<TimelinePresenter />} />
 						<Route path="events" element={<EventsPresenter />} />
-						<Route path="new-booking" element={<NewBookingPresenter />} />
 						<Route path="edit" element={<EditBoxPresenter />} />
                         <Route path="key/:keyId" element={<KeyPresenter />} />
 						<Route path="key/:keyId/edit" element={<EditKeyPresenter />} />

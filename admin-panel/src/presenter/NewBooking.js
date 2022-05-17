@@ -9,7 +9,7 @@ import { db } from "../api/firebase"
 import { ref, push } from "firebase/database"
 import { useParams, useNavigate } from "react-router-dom"
 
-import NewBookingView from "../view/NewBookingView"
+import NewBookingView from "../view/box/NewView"
 import useTitle from "../hooks/useTitle"
 import { getAuth, sendSignInLinkToEmail } from 'firebase/auth';
 
