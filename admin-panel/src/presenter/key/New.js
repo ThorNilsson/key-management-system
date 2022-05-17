@@ -6,9 +6,14 @@ import { ref, set, get } from "firebase/database"
 import KeyFormView from "../../view/key/FormView"
 import NewKeyView, { NFC_SCAN_STEPS } from "../../view/key/NewView"
 
+import { format } from "date-fns"
+import useTitle from "../../hooks/useTitle"
+
+
 let nfcUnsub
 
 export default function NewKeyPresenter() {
+    useTitle("New key")
 	const { boxId, preferredKeySlot } = useParams()
 	const navigate = useNavigate()
 
@@ -18,8 +23,8 @@ export default function NewKeyPresenter() {
 	const [uid, setUid] = useState()
 	const [roomName, setRoomName] = useState("")
 	const [roomDescription, setRoomDescription] = useState("")
-	const [defaultCheckInTime, setDefaultCheckInTime] = useState("")
-	const [defaultCheckOutTime, setDefaultCheckOutTime] = useState("")
+	const [defaultCheckInTime, setDefaultCheckInTime] = useState(new Date(`2000-01-01 12:00`))
+	const [defaultCheckOutTime, setDefaultCheckOutTime] = useState(new Date(`2000-01-01 11:00`))
 	const [roomLongitude, setRoomLongitude] = useState("")
 	const [roomLatitude, setRoomLatitude] = useState("")
 	const [roomImage, setRoomImage] = useState("")
@@ -68,8 +73,8 @@ export default function NewKeyPresenter() {
 			longitude: roomLongitude,
 			latitude: roomLatitude,
 			image: roomImage,
-			defaultCheckInTime,
-			defaultCheckOutTime,
+			defaultCheckInTime: format(defaultCheckInTime, "HH:mm"),
+			defaultCheckOutTime: format(defaultCheckOutTime, "HH:mm"),
 			keySlot: 0,
 			preferredKeySlot: Number(preferredKeySlot),
 		})

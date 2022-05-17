@@ -9,7 +9,7 @@ import BookingsPresenter from "./presenter/Bookings"
 import TimelinePresenter from "./presenter/Timeline"
 import EventsPresenter from "./presenter/Events"
 import EditProfilePresenter from "./presenter/EditProfile"
-import NewBookingPresenter from "./presenter/NewBooking"
+import NewBookingPresenter from "./presenter/booking/NewBooking"
 import EditKeyPresenter from "./presenter/key/Edit"
 
 import { Route, Routes } from "react-router-dom"
@@ -20,6 +20,9 @@ import RegisterPresenter from "./presenter/RegisterPresenter"
 import NewKeyPresenter from "./presenter/key/New"
 import EditBoxPresenter from "./presenter/box/Edit"
 import KeyPresenter from "./presenter/key/Key"
+import AddBoxPresenter from "./presenter/box/AddBox"
+import ViewBookingPresenter from "./presenter/booking/ViewBookingPresenter"
+import EditBookingPresenter from "./presenter/booking/EditBooking"
 
 const auth = getAuth()
 
@@ -40,15 +43,18 @@ export default function App() {
 					<Route path=":boxId" element={<BoxPresenter />}>
 						<Route index element={<OverviewPresenter />} />
 						<Route path="bookings" element={<BookingsPresenter />} />
+						<Route path="bookings/:bookingId" element={<ViewBookingPresenter />} />
+						<Route path="bookings/:bookingId/edit" element={<EditBookingPresenter />} />
+						<Route path="bookings/new" element={<NewBookingPresenter />} />
 						<Route path="timeline" element={<TimelinePresenter />} />
 						<Route path="events" element={<EventsPresenter />} />
-						<Route path="new-booking" element={<NewBookingPresenter />} />
 						<Route path="edit" element={<EditBoxPresenter />} />
                         <Route path="key/:keyId" element={<KeyPresenter />} />
 						<Route path="key/:keyId/edit" element={<EditKeyPresenter />} />
 						<Route path="key/new/:preferredKeySlot" element={<NewKeyPresenter />} />
 					</Route>
 					<Route path="/edit" element={<EditProfilePresenter />} />
+					<Route path="/add-box" element={<AddBoxPresenter />} />
 					<Route
 						path="*"
 						element={

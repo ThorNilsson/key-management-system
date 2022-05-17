@@ -6,17 +6,20 @@ import EditKeyView from "../../view/key/EditView"
 import KeyFormView from "../../view/key/FormView"
 
 import useRelativeNavigation from "../../hooks/useRelativeNavigation"
+import useTitle from "../../hooks/useTitle"
+import { format } from "date-fns"
 
 let lastReadData = {}
 
 export default function EditKeyPresenter() {
+    useTitle("Edit key")
 	const { boxId, keyId } = useParams()
 	const navigate = useNavigate()
 	const relativeNavigate = useRelativeNavigation()
 	const [roomName, setRoomName] = useState("")
 	const [roomDescription, setRoomDescription] = useState("")
-	const [defaultCheckInTime, setDefaultCheckInTime] = useState("")
-	const [defaultCheckOutTime, setDefaultCheckOutTime] = useState("")
+	const [defaultCheckInTime, setDefaultCheckInTime] = useState(new Date())
+	const [defaultCheckOutTime, setDefaultCheckOutTime] = useState(new Date())
 	const [roomLongitude, setRoomLongitude] = useState("")
 	const [roomLatitude, setRoomLatitude] = useState("")
 	const [roomImage, setRoomImage] = useState("")
@@ -28,8 +31,8 @@ export default function EditKeyPresenter() {
 			const data = snapshot.val()
 			setRoomName(data.name)
 			setRoomDescription(data.description)
-			setDefaultCheckInTime(data.defaultCheckInTime)
-			setDefaultCheckOutTime(data.defaultCheckOutTime)
+			setDefaultCheckInTime(new Date(`2000-01-01 ${data.defaultCheckInTime}`))
+			setDefaultCheckOutTime(new Date(`2000-01-01 ${data.defaultCheckOutTime}`))
 			setRoomLongitude(data.longitude)
 			setRoomLatitude(data.latitude)
 			setRoomImage(data.image)
@@ -43,6 +46,7 @@ export default function EditKeyPresenter() {
 
 	const save = () => {
 		const keyRef = ref(db, `keyboxes/${boxId}/keys/${keyId}`)
+        
 		set(keyRef, {
 			...lastReadData,
 			name: roomName,
@@ -50,8 +54,8 @@ export default function EditKeyPresenter() {
 			longitude: roomLongitude,
 			latitude: roomLatitude,
 			image: roomImage,
-			defaultCheckInTime,
-			defaultCheckOutTime,
+			defaultCheckInTime: format(defaultCheckInTime, "HH:mm"),
+			defaultCheckOutTime: format(defaultCheckOutTime, "HH:mm"),
 		})
 			.then(() => {
 				navigate(`/${boxId}`)
