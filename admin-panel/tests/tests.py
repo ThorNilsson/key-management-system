@@ -39,12 +39,11 @@ class KMS_test_class(unittest.TestCase):
         # call login function
         self.login_test()
         # call overview function
-        #self.overview_test()
-
+        self.overview_test()
         # call new booking test function
         self.new_booking_test()
-        #self.editbox_test()
-        
+        self.editbox_test()
+
 
     def login_test(self):
         # get driver
@@ -68,17 +67,20 @@ class KMS_test_class(unittest.TestCase):
         # get driver
         driver = self.driver
         time.sleep(2)
-        driver.find_element(by=By.XPATH, value="/html/body/div[1]/div/div[2]/div/div/div/div/div/div/button/span[1]/svg").click()
+        edit_box = driver.find_element(by=By.XPATH, value="/html/body/div[1]/div/div[2]/div/div[1]/div[2]/div/button[2]").click()
+        time.sleep(2)
+        name_field = driver.find_element(by=By.XPATH, value="/html/body/div[3]/div[3]/div/div[1]/div[1]/div/input")
+        time.sleep(2)
+        name_field.send_keys(Keys.CONTROL + 'a' + Keys.BACK_SPACE)
+        time.sleep(2)
+        name_field.send_keys("Apartment Uno")
+        time.sleep(5)
+        driver.find_element(by=By.XPATH, value="/html/body/div[3]/div[3]/div/div[2]/button").click()
         time.sleep(2)
         driver.find_element(by=By.XPATH, value="/html/body/div[1]/div/div[2]/div/div[1]/div[2]/div/button[2]").click()
         time.sleep(2)
-        driver.find_element(by=By.XPATH, value="/html/body/div[5]/div[3]/div/div[1]/div[1]/div/input").send_keys(Keys.CONTROL + 'a' + Keys.BACK_SPACE)
-        driver.find_element(by=By.XPATH, value="/html/body/div[5]/div[3]/div/div[1]/div[1]/div/input").send_keys("Lodg")
-        time.sleep(2)
-        driver.find_element(by=By.XPATH, value="/html/body/div[1]/div/div[2]/div/div[1]/div[2]/div/button[2]").click()
-        # get python.org using selenium
-        #driver.get("http://localhost:3000/overview")
-
+        assert "Apartment Uno" in driver.page_source
+        return
 
     def overview_test(self):
         # get driver
@@ -148,10 +150,9 @@ class KMS_test_class(unittest.TestCase):
         # driver.find_element(by=By.XPATH, value="/html/body/div[3]/div[3]/div/div[1]/form/div[1]/div/input").send_keys("Michell Test")
         # time.sleep(2)
 
-
-        # # enter_email in /html/body/div[3]/div[3]/div/div[1]/div[1]/div[2]/div/input to "mi.cho123@hotmail.com"
-        # driver.find_element(by=By.XPATH, value="/html/body/div[3]/div[3]/div/div[1]/form/div[2]/div/input").send_keys('mi.cho123@hotmail.com')
-        # time.sleep(1)
+        # enter_email in /html/body/div[3]/div[3]/div/div[1]/div[1]/div[2]/div/input to "mi.cho123@hotmail.com"
+        driver.find_element(by=By.XPATH, value="/html/body/div[3]/div[3]/div/div[1]/div[1]/div[2]/div/input").send_keys('mi.cho123@hotmail.com')
+        time.sleep(1)
 
         # # enter_guest_message /html/body/div[3]/div[3]/div/div[1]/div[1]/div[3]/div "Welcome to KMS"
         # driver.find_element(by=By.XPATH, value="/html/body/div[3]/div[3]/div/div[1]/form/div[3]/div/textarea[1]").send_keys("Welcome to KMS")
@@ -165,9 +166,9 @@ class KMS_test_class(unittest.TestCase):
         # driver.find_element(by=By.XPATH, value="/html/body/div[4]/div[3]/ul/li[2]").click()
         # time.sleep(1)
         
-        # # Clear chekin-time space
-        # driver.find_element(by=By.XPATH, value="/html/body/div[3]/div[3]/div/div[1]/form/div[5]/div[1]/div/input").send_keys(Keys.CONTROL + 'a' + Keys.BACK_SPACE)
-        # time.sleep(2)
+        # Clear checkin-time space
+        driver.find_element(by=By.XPATH, value="/html/body/div[3]/div[3]/div/div[1]/div[1]/div[5]/div[1]/div/input").send_keys(Keys.CONTROL + 'a' + Keys.BACK_SPACE)
+        time.sleep(2)
 
         # #enter checkin time in /html/body/div[3]/div[3]/div/div[1]/div[1]/div[5]/div[1]/div/input to 1100
         # driver.find_element(by=By.XPATH, value="/html/body/div[3]/div[3]/div/div[1]/form/div[5]/div[1]/div/input").send_keys("1100")
