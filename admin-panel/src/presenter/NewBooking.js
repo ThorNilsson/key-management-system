@@ -11,9 +11,11 @@ import { useParams, useNavigate } from "react-router-dom"
 
 import NewBookingView from "../view/NewBookingView"
 import useTitle from "../hooks/useTitle"
+import { getAuth, sendSignInLinkToEmail } from 'firebase/auth';
 
 export default function NewBookingPresenter() {
-    useTitle("New booking")
+	const auth = getAuth()
+	useTitle("New booking")
 	const { boxId } = useParams()
 	const navigate = useNavigate()
 
@@ -33,17 +35,17 @@ export default function NewBookingPresenter() {
 	})
 
 	const [keys, loading, error] = useList(ref(db, `keyboxes/${boxId}/keys`))
-    const keyVals = useMemo(() => keys.map(key => ({ ...key.val(), id: key.key })), [keys])
+	const keyVals = useMemo(() => keys.map(key => ({ ...key.val(), id: key.key })), [keys])
 
 	if (error) return <div>Something went wrong loading keys</div>
 
-    const updateTimesBasedOnKey = keyId => {
-        setRoom(keyId)
-        const key = keyVals.find(key => key.id === keyId)
+	const updateTimesBasedOnKey = keyId => {
+		setRoom(keyId)
+		const key = keyVals.find(key => key.id === keyId)
 
-        setCheckInTime(new Date(`2022-01-01 ${key.defaultCheckInTime}`))
-        setCheckOutTime(new Date(`2022-01-01 ${key.defaultCheckOutTime}`))
-    }
+		setCheckInTime(new Date(`2022-01-01 ${key.defaultCheckInTime}`))
+		setCheckOutTime(new Date(`2022-01-01 ${key.defaultCheckOutTime}`))
+	}
 	const handleSubmit = () => {
 		let checkedIn = setHours(checkIn, getHours(checkInTime))
 		checkedIn = setMinutes(checkedIn, getMinutes(checkInTime))
@@ -61,9 +63,34 @@ export default function NewBookingPresenter() {
 			keyId: room,
 			checkIn: checkedInUnix,
 			checkOut: checkedOutUnix,
-		})
-			.then(() => navigate("/" + boxId + "/bookings"))
-			.catch(error => alert("Something went wrong " + error.message))
+		}).then(snap => {
+			console.log(snap.key)
+			push(ref(db, "guests/" + email.replace('.','')), {
+				bookingId: snap.key,
+				keyboxId: boxId
+			})
+			navigate("/" + boxId + "/bookings")
+		}).catch(error => alert("Something went wrong " + error.message));
+		sendEmail()
+	}
+
+	const sendEmail = (event) => {
+		const actionCodeSettings = {
+			url: 'http://localhost:3001/asodiaouio29186ey7gawd',
+			handleCodeInApp: true,
+		};
+
+		sendSignInLinkToEmail(auth, email, actionCodeSettings)
+			.then(() => {
+				console.log("email sent")
+			})
+			.catch((error) => {
+				console.log(error)
+				const errorCode = error.code;
+				const errorMessage = error.message;
+				// ...
+			});
+
 	}
 
 	return (
@@ -85,9 +112,9 @@ export default function NewBookingPresenter() {
 			setMessage={setMessage}
 			name={name}
 			setName={setName}
-            dateRange={dateRange} 
-            setDateRange={setDateRange}
-            close={() => navigate(`/${boxId}`)}
+			dateRange={dateRange}
+			setDateRange={setDateRange}
+			close={() => navigate(`/${boxId}`)}
 		/>
 	)
 }
