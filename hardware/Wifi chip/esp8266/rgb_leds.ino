@@ -3,11 +3,27 @@ void LoadingLed()
 {
   fadeToBlackBy( leds, NUM_LEDS, 50);
   leds[i] = CRGB::White;
+  i = i > NUM_LEDS ? 0 : i+1;
+  FastLED.show();
+}
+
+void CloseDoorLed()
+{
+  fadeToBlackBy( leds, NUM_LEDS, 50);
+  leds[i] = CRGB::Orange;
   i = i >= NUM_LEDS ? 0 : i+1;
   FastLED.show();
 }
 
-void CloseBoxLed( uint8_t colorIndex)
+void greenLed()
+{
+  fill_solid( leds, NUM_LEDS, CRGB::Green);
+  FastLED.show();
+}
+
+/*
+ * 
+ void CloseBoxLed( uint8_t colorIndex)
 {
   uint8_t brightness = 255;
   leds[i] = CRGB::Purple;
@@ -18,6 +34,7 @@ void CloseBoxLed( uint8_t colorIndex)
   fadeToBlackBy( leds, NUM_LEDS, 130);
   delay(100);
 }
+ */
 
 void clearLeds(){
   FastLED.clear();

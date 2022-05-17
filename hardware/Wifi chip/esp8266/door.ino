@@ -1,5 +1,5 @@
 //Unlocks the door that secures all the keys.
-void unlockDoor() {
+void unlockDoor2() {
   printDebug("Opening door. ", "");
   /*
      Implement check if door magnet is opened.
@@ -12,13 +12,34 @@ void unlockDoor() {
   sendLog("Box door was unlocked.", "", "", "");
 }
 
-void closeDoor() {
-  /*
-     Implement check if door magnet is opened.
-  */
-  printDebug("Close door now", "");
+void unlockDoor() {
+  printDebug("Opening door. ", "");
+  unsigned long initialTime = millis();
+  unsigned long timeoutSeconds = 10;
 
-  sendLog("Box door closed", "", "", "");
+  while ( millis() - initialTime < timeoutSeconds * 1000) {
+    greenLed();
+    tone(buzzer_Pin, 1000);
+    digitalWrite(lock_Pin, HIGH);
+    delay(500);
+
+    clearLeds();
+    noTone(buzzer_Pin);
+    digitalWrite(lock_Pin, LOW);
+    delay(500);
+
+    if (isDoorOpen()) {
+      sendLog("Box door was unlocked.", "", "", "");
+      return;
+    }
+  }
+  sendLog("Box door was not opend.", "", "", "");
+}
+
+void closeDoor() {
+  shouldCloseDoor = true;
+  printDebug("Close door now", "");
+  sendLog("Waiting for box to be closed", "", "", "");
 }
 
 
