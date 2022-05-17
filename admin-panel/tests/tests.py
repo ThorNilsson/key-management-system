@@ -16,7 +16,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 # https://chromedriver.chromium.org/downloads
 # Checka om ni har python genom att skriva py i CMD, 
 # installera om needed.
-# pip install selenium
+# pip install selenium (i terminalen)
 # pip install webdriver-manager 
 # Skapa tester som egna funktioner i denna tests.py fil.
 # Vid testning behövs att npm start är running i en annan
@@ -41,7 +41,8 @@ class KMS_test_class(unittest.TestCase):
         #self.overview_test()
 
         # call new booking test function
-        self.new_booking_test()
+        # self.new_booking_test()
+        self.editbox_test()
         
 
     def login_test(self):
@@ -60,6 +61,21 @@ class KMS_test_class(unittest.TestCase):
 
         assert "SIGN UP" not in driver.page_source
         return
+
+    def editbox_test(self):
+        # get driver
+        driver = self.driver
+        time.sleep(2)
+        driver.find_element(by=By.XPATH, value="/html/body/div[1]/div/div[2]/div/div/div/div/div/div/button/span[1]/svg").click()
+        time.sleep(2)
+        driver.find_element(by=By.XPATH, value="/html/body/div[1]/div/div[2]/div/div[1]/div[2]/div/button[2]").click()
+        time.sleep(2)
+        driver.find_element(by=By.XPATH, value="/html/body/div[5]/div[3]/div/div[1]/div[1]/div/input").send_keys(Keys.CONTROL + 'a' + Keys.BACK_SPACE)
+        driver.find_element(by=By.XPATH, value="/html/body/div[5]/div[3]/div/div[1]/div[1]/div/input").send_keys("Lodg")
+        time.sleep(2)
+        driver.find_element(by=By.XPATH, value="/html/body/div[1]/div/div[2]/div/div[1]/div[2]/div/button[2]").click()
+        # get python.org using selenium
+        #driver.get("http://localhost:3000/overview")
 
 
     def overview_test(self):
