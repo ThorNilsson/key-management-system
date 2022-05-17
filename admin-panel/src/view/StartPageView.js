@@ -10,7 +10,8 @@ import {
 	Grid,
 	Stack,
 	Typography,
-    Box
+    Box,
+    Link
 } from "@mui/material"
 
 const ICONS = {
@@ -68,7 +69,7 @@ export default function StartPageView({ navigate, boxes, loading }) {
 											</Typography>
 										</CardContent>
 										<CardActions style={{ justifyContent: "flex-end" }}>
-											<Button variant="outlined" endIcon={<ArrowForwardIos />}>
+											<Button component={Link} variant="outlined" endIcon={<ArrowForwardIos />}>
 												Visit
 											</Button>
 										</CardActions>

@@ -80,7 +80,7 @@ export default function NewBookingPresenter() {
 
 	const sendEmail = () => {
 		const actionCodeSettings = {
-			url: 'http://localhost:3001/asodiaouio29186ey7gawd',
+			url: 'http://localhost:3000/login',
 			handleCodeInApp: true,
 		};
 
