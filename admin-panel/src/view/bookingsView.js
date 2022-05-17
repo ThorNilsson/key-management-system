@@ -18,7 +18,7 @@ export default function BookingsView({rows, columns, loading}) {
             {loading ? (
                 <CircularProgress />
             ) : (
-			<div style={{ height: 800, width: "100%" }}>
+			<div style={{ height: 800 }}>
 				<DataGrid
 					rows={rows}
 					columns={columns}

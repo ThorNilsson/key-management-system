@@ -12,14 +12,6 @@ export default function BookingsPresenter() {
 	const [bookings, loading, error] = useList(ref(db, `keyboxes/${boxId}/bookings`))
 	const [keyInfo, setKeyInfo] = useState({})
 
-	const FormatDate = (event) => {
-		return new Date(event * 1000).toLocaleTimeString([], {year: 'numeric', day: '2-digit', month: '2-digit', hour: 'numeric', minute:'numeric', timezone: 'GMT+2'});
-	}
-
-	const handleEdit = () => {
-		
-	}
-
 	useEffect(() => {
 		if (!bookings || bookings.length === 0) return
 
@@ -38,21 +30,20 @@ export default function BookingsPresenter() {
 
 	const populatedBookings = bookings
 		.map(b => ({ ...b.val(), id: b.key}))
-		.map(b => ({ ...b, room: keyInfo[b.keyId]?.name, checkIn: FormatDate(b.checkIn), checkOut: FormatDate(b.checkOut), 
-			renderCell: () => {<Button>h</Button>}}))
+		.map(b => ({ ...b, room: keyInfo[b.keyId]?.name}))
+
+	
+
+	const handleView = id => console.log("goto: ", id)
+
+	const columns = [
+		{ field: "id", headerName: "Booking id", width: 150 },
+		{ field: 'room', headerName: 'Room', width: 70 },
+		{ field: "name", headerName: "Name", width: 130 },
+		{ field: "editDelete", headerName: "", width: 80, sortable: false,
+		renderCell: rowData => <Button onClick={() => handleView(rowData.id)}>View</Button>}
+	]
 
 
 	return <BookingsView columns={columns} loading={loading} rows={populatedBookings} />
 }
-
-const columns = [
-	{ field: "id", headerName: "Booking id", width: 50 },
-	{ field: 'room', headerName: 'Room', width: 70 },
-	{ field: "checkIn", headerName: "Check in", width: 140 },
-	{ field: "checkOut", headerName: "Check out", width: 140 },
-	{ field: "name", headerName: "Name", width: 130 },
-	{ field: "role", headerName: "Role", width: 70 },
-	{ field: "message", headerName: "Message", width: 250 },
-	{ field: "url", headerName: "Link", width: 180 },
-	{ field: "editDelete", headerName: "Edit/Delete", width: 100}
-]
