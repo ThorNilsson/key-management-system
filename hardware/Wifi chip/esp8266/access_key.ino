@@ -41,6 +41,4 @@ void accessKey(int keySlot, String errorMessage, String username, String userId,
   sendLog("Key accessed.", username, bookingId, userId);
 
   //Close door
-
-
 }
