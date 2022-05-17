@@ -12,7 +12,7 @@ import { useParams, useNavigate } from "react-router-dom"
 import NewBookingView from "../../view/box/NewView"
 import useTitle from "../../hooks/useTitle"
 import { getAuth, sendSignInLinkToEmail } from 'firebase/auth';
-import BookingFormView from "../../view/box/FormView"
+import BookingFormView from "../../view/booking/FormView"
 
 export default function NewBookingPresenter() {
 	const auth = getAuth()
