@@ -6,7 +6,7 @@ import { onValue, set, ref } from "firebase/database"
 import { useParams } from "react-router-dom"
 import useTitle from "../../hooks/useTitle"
 
-import EditBookingView from "../../view/booking/EditBookingView"
+import EditBookingView from "../../view/booking/EditView"
 
 
 let lastReadData
