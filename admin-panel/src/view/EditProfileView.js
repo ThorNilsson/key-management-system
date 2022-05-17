@@ -12,8 +12,7 @@ import {
 	ListItemText,
 	ListItemButton,
 } from "@mui/material"
-import React from "react"
-
+import React, { useEffect } from 'react'
 import { EmailRounded } from "@mui/icons-material"
 import { LockClockRounded } from "@mui/icons-material"
 import { CheckRounded } from "@mui/icons-material"
@@ -37,6 +36,10 @@ export default function EditProfileView({
 	setNewPassword,
 	setNewRepeatPassword,
 }) {
+	useEffect(() => {
+		document.title = "Edit profile"
+	  }, [])
+
 	return (
 		<Grid container columns={{ xs: 1, sm: 2 }} spacing={2}>
 			<Grid item xs={1} sm={2}>

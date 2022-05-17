@@ -9,14 +9,18 @@ import BookingsPresenter from "./presenter/Bookings"
 import TimelinePresenter from "./presenter/Timeline"
 import EventsPresenter from "./presenter/Events"
 import EditProfilePresenter from "./presenter/EditProfile"
+import NewBookingPresenter from "./presenter/NewBooking"
 import EditKeyPresenter from "./presenter/key/Edit"
-import KeyPresenter from "./presenter/key/Key"
 
-import { Route, Routes } from "react-router-dom" 
+import { Route, Routes } from "react-router-dom"
 import { getAuth } from "firebase/auth"
 
 import { useAuthState } from "react-firebase-hooks/auth"
 import RegisterPresenter from "./presenter/RegisterPresenter"
+import NewKeyPresenter from "./presenter/key/New"
+import EditBoxPresenter from "./presenter/box/Edit"
+import KeyPresenter from "./presenter/key/Key"
+import AddBoxPresenter from "./presenter/box/AddBox"
 
 const auth = getAuth()
 
@@ -24,7 +28,7 @@ export default function App() {
 	const [user, loading, error] = useAuthState(auth)
 
 	if (loading) return <div>Loading...</div>
-    if (error) return <div>Could not authenticate... {/* TODO */}</div>
+	if (error) return <div>Could not authenticate... {/* TODO */}</div>
 
 	if (!user) return <RegisterPresenter props={auth} />
 
@@ -39,13 +43,14 @@ export default function App() {
 						<Route path="bookings" element={<BookingsPresenter />} />
 						<Route path="timeline" element={<TimelinePresenter />} />
 						<Route path="events" element={<EventsPresenter />} />
-						<Route path="events" element={<EventsPresenter/>} />
-						<Route path="key" element={<KeyPresenter/>} >
-                            <Route path=":keyId/edit" element={<EditKeyPresenter />} />
-                        </Route>
-						
+						<Route path="new-booking" element={<NewBookingPresenter />} />
+						<Route path="edit" element={<EditBoxPresenter />} />
+                        <Route path="key/:keyId" element={<KeyPresenter />} />
+						<Route path="key/:keyId/edit" element={<EditKeyPresenter />} />
+						<Route path="key/new/:preferredKeySlot" element={<NewKeyPresenter />} />
 					</Route>
-                    <Route path="/edit" element={<EditProfilePresenter />} />
+					<Route path="/edit" element={<EditProfilePresenter />} />
+					<Route path="/add-box" element={<AddBoxPresenter />} />
 					<Route
 						path="*"
 						element={

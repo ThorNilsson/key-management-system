@@ -18,13 +18,13 @@ import { off, onValue, ref } from "firebase/database"
 
 export default function Header() {
 	const auth = getAuth()
-    const [username, setUsername] = useState("")
-    useEffect(() => {
-        const usernameRef = ref(db, `users/${auth.currentUser.uid}/username`)
-        const handleUsername = snapshot => setUsername(snapshot.val())
-        onValue(usernameRef, handleUsername)
-        return () => off(usernameRef, 'value', handleUsername)
-    }, [])
+	const [username, setUsername] = useState("")
+	useEffect(() => {
+		const usernameRef = ref(db, `users/${auth.currentUser.uid}/username`)
+		const handleUsername = snapshot => setUsername(snapshot.val())
+		onValue(usernameRef, handleUsername)
+		return () => off(usernameRef, "value", handleUsername)
+	}, [auth.currentUser.uid])
 	const navigate = useNavigate()
 
 	const [anchorElUser, setAnchorElUser] = useState(null)
@@ -56,7 +56,7 @@ export default function Header() {
 					<Typography>Logged in as {username}</Typography>
 					<Tooltip title="Open settings">
 						<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-							<Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+							<Avatar>{getInitials(username)}</Avatar>
 						</IconButton>
 					</Tooltip>
 					<Menu
@@ -74,10 +74,12 @@ export default function Header() {
 						open={Boolean(anchorElUser)}
 						onClose={handleCloseUserMenu}
 					>
-						<MenuItem onClick={() => {
-                            handleCloseUserMenu()
-                            navigate("/edit")
-                            }}>
+						<MenuItem
+							onClick={() => {
+								handleCloseUserMenu()
+								navigate("/edit")
+							}}
+						>
 							<Typography variant="body1" component="span" textAlign="center">
 								Edit profile
 							</Typography>
@@ -97,4 +99,13 @@ export default function Header() {
 			</Toolbar>
 		</Paper>
 	)
+}
+
+function getInitials(username) {
+	if (typeof username !== "string" || username.length === 0) return ""
+	try {
+		return `${username.split(" ")[0][0]}${username.split(" ")[1][0]}`
+	} catch (error) {
+		return username.charAt(0)
+	}
 }
