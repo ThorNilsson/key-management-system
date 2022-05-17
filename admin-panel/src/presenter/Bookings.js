@@ -5,12 +5,15 @@ import { ref, get } from "firebase/database"
 import { useState, useEffect } from "react"
 import { db } from "../api/firebase"
 import Button from "@mui/material/Button"
+import useTitle from "../hooks/useTitle"
 
 export default function BookingsPresenter() {
+    useTitle("View bookings")
 	const { boxId } = useParams()
 
 	const [bookings, loading, error] = useList(ref(db, `keyboxes/${boxId}/bookings`))
 	const [keyInfo, setKeyInfo] = useState({})
+	console.log(bookings)
 
 	useEffect(() => {
 		if (!bookings || bookings.length === 0) return

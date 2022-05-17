@@ -4,10 +4,12 @@ import EditBoxView from "../../view/box/EditView"
 
 import { ref, set, onValue } from "firebase/database"
 import { db } from "../../api/firebase"
+import { getAuth } from "firebase/auth"
 
 let lastSyncedData
 
 export default function EditBoxPresenter() {
+	const auth = getAuth()
 	const [color, setColor] = useState("")
 	const [description, setDescription] = useState("")
 	const [image, setImage] = useState("")
@@ -23,7 +25,7 @@ export default function EditBoxPresenter() {
 		const keyRef = ref(db, `keyboxes/${boxId}/info`)
 		const unsub = onValue(keyRef, snapshot => {
 			const data = snapshot.val()
-            lastSyncedData = data
+			lastSyncedData = data
 			setColor(data.color)
 			setDescription(data.description)
 			setImage(data.image)
@@ -39,7 +41,7 @@ export default function EditBoxPresenter() {
 
 	const handleSubmit = () => {
 		set(ref(db, "keyboxes/" + boxId + "/info/"), {
-            ...lastSyncedData,
+			...lastSyncedData,
 			color,
 			description,
 			image,
@@ -52,9 +54,17 @@ export default function EditBoxPresenter() {
 			.catch(error => alert("Something went wrong " + error.message))
 	}
 
+	const deleteBox = () => {
+		if (window.confirm("Are you sure?")) {
+			set(ref(db, "users/" + auth.currentUser.uid + "/boxes/" + boxId), null)
+				.then(() => navigate("/" + boxId))
+				.catch(error => alert("Something went wrong " + error.message))
+		}
+	}
+
 	return (
 		<EditBoxView
-            close={() => navigate("/" + boxId)}
+			close={() => navigate("/" + boxId)}
 			color={color}
 			setColor={setColor}
 			description={description}
@@ -70,7 +80,8 @@ export default function EditBoxPresenter() {
 			keySlots={keySlots}
 			setKeySlots={setKeySlots}
 			handleSubmit={handleSubmit}
-            loading={loading}
+			loading={loading}
+			deleteBox={deleteBox}
 		/>
 	)
 }

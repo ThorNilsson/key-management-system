@@ -14,8 +14,10 @@ import { deleteUser } from "firebase/auth"
 import { set } from "firebase/database"
 import { db } from "../api/firebase"
 import { ref } from "firebase/database"
+import useTitle from "../hooks/useTitle"
 
 export default function EditProfilePresenter() {
+    useTitle("Edit profile")
 	const auth = getAuth()
 	const navigate = useNavigate()
 
