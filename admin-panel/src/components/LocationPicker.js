@@ -1,6 +1,7 @@
 import React from "react"
 import { useEffect, useRef } from "react"
 import "mapbox-gl/dist/mapbox-gl.css"
+/* eslint import/no-webpack-loader-syntax: off */
 import mapboxgl from "!mapbox-gl"
 import Box from "@mui/material/Box"
 
