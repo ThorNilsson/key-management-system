@@ -5,11 +5,13 @@ import { ref, get } from "firebase/database"
 import { useState, useEffect } from "react"
 import { db } from "../api/firebase"
 import Button from "@mui/material/Button"
+import useRelativeNavigation from "../hooks/useRelativeNavigation"
 import useTitle from "../hooks/useTitle"
 
 export default function BookingsPresenter() {
     useTitle("View bookings")
 	const { boxId } = useParams()
+	const relativeNavigate = useRelativeNavigation()
 
 	const [bookings, loading, error] = useList(ref(db, `keyboxes/${boxId}/bookings`))
 	const [keyInfo, setKeyInfo] = useState({})
@@ -37,7 +39,7 @@ export default function BookingsPresenter() {
 
 	
 
-	const handleView = id => console.log("goto: ", id)
+	const handleView = id => relativeNavigate(id)
 
 	const columns = [
 		{ field: "id", headerName: "Booking id", width: 150 },
