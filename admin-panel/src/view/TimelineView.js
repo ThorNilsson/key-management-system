@@ -128,7 +128,7 @@ function itemRenderer({ item, timelineContext, itemContext, getItemProps }) {
 	return (
 		<Paper
 			{...itemsProps}
-			elevation={itemContext.selected ? 2 : 0}
+			elevation={itemContext.selected ? 4 : 0}
 			sx={{
 				position: "absolute",
 				top,
@@ -137,10 +137,14 @@ function itemRenderer({ item, timelineContext, itemContext, getItemProps }) {
 				height,
 				zIndex: style.zIndex,
 				color: "common.white",
+				overflow: "hidden",
+                p: 1,
 				...timeRelativeStlyes,
 			}}
 		>
-			{item.title}
+			<Stack justifyContent="center">
+				<Typography variant="h6" sx={{whiteSpace: "nowrap"}}>{item.title}</Typography>
+			</Stack>
 		</Paper>
 	)
 }

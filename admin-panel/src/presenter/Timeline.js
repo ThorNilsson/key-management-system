@@ -35,7 +35,6 @@ export default function TimelinePresenter() {
 		return () => unsub()
 	}, [boxId])
 
-	//const [bookings, loading, error] = useList(ref(db, `keyboxes/${boxId}/bookings`))
 	const [keys, loadingKeys, errorKeys] = useList(ref(db, `keyboxes/${boxId}/keys`))
 
 	const [selectedBooking, setSelectedBooking] = useState({})
@@ -55,34 +54,6 @@ export default function TimelinePresenter() {
 		title: b.name,
 		start_time: moment(b.checkIn * 1000),
 		end_time: moment(b.checkOut * 1000),
-		itemProps: {
-			// these optional attributes are passed to the root <div /> of each item as <div {...itemProps} />
-			"data-custom-attribute": "Random content",
-			"aria-hidden": true,
-			className: "weekend",
-			/* style:
-				moment(b.checkOut * 1000) < moment()
-					? {
-							background: selectedBooking.id === b.id ? "#41d31f" : "#ff0073",
-							backgroundColor: "#ff0073",
-							border: "#ff0073", //#ff0073
-							color: "white",
-							"font-family": "Source Sans Pro, sans-serif",
-							"font-size": 14,
-							overflow: "clip",
-							"border-radius": "8px",
-					  }
-					: {
-							background: selectedBooking.id === b.id ? "#41d31f" : "#1976d2",
-							backgroundColor: "#1976d2",
-							border: "#1976d2",
-							color: "white",
-							"font-family": "Source Sans Pro, sans-serif",
-							"font-size": 14,
-							overflow: "clip",
-							"border-radius": "8px",
-					  }, */
-		},
 	}))
 
 	const handleBookingMove = (bookingId, newStartTime, key) => {
