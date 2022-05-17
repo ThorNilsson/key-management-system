@@ -61,9 +61,9 @@ export default function NewBookingPresenter() {
 		const checkedOutUnix = parseInt((checkedOut.getTime() / 1000).toFixed(0))
 
 		push(ref(db, "keyboxes/" + boxId + "/bookings/"), {
-			name: name,
-			email: email,
-			message: message,
+			name,
+			email,
+			message,
 			keyId: room,
 			checkIn: checkedInUnix,
 			checkOut: checkedOutUnix,
@@ -73,9 +73,9 @@ export default function NewBookingPresenter() {
 				bookingId: snap.key,
 				keyboxId: boxId
 			})
+            sendEmail()
 			navigate("/" + boxId + "/bookings")
 		}).catch(error => alert("Something went wrong " + error.message));
-		sendEmail()
 	}
 
 	const sendEmail = () => {
