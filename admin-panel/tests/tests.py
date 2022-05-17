@@ -8,6 +8,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.support.ui import Select
 # inherit TestCase Class and create a new test class
 
 
@@ -41,8 +42,8 @@ class KMS_test_class(unittest.TestCase):
         #self.overview_test()
 
         # call new booking test function
-        # self.new_booking_test()
-        self.editbox_test()
+        self.new_booking_test()
+        #self.editbox_test()
         
 
     def login_test(self):
@@ -166,7 +167,7 @@ class KMS_test_class(unittest.TestCase):
         # Clear chekin-time space
         driver.find_element(by=By.XPATH, value="/html/body/div[3]/div[3]/div/div[1]/div[1]/div[5]/div[1]/div/input").send_keys(Keys.CONTROL + 'a' + Keys.BACK_SPACE)
         time.sleep(2)
-        
+
         #enter checkin time in /html/body/div[3]/div[3]/div/div[1]/div[1]/div[5]/div[1]/div/input to 1100
         driver.find_element(by=By.XPATH, value="/html/body/div[3]/div[3]/div/div[1]/div[1]/div[5]/div[1]/div/input").send_keys("1100")
         time.sleep(2)
@@ -179,16 +180,32 @@ class KMS_test_class(unittest.TestCase):
         driver.find_element(by=By.XPATH, value="/html/body/div[3]/div[3]/div/div[1]/div[1]/div[5]/div[2]/div/input").send_keys("1400")
         time.sleep(2)
 
+        # press select = /html/body/div[3]/div[3]/div/div[1]/div[2]/div/div[2]/div[2]/div[2]/span/span[1]/select
+        select = Select(driver.find_element_by_xpath("/html/body/div[3]/div[3]/div/div[1]/div[2]/div/div[2]/div[2]/div[2]/span/span[1]/select"))
 
-        #press checking-in-date /html/body/div[3]/div[3]/div/div[1]/div[2]/div/div[2]/div[2]/div[2]/span/span[1]/select, select 18th of june
-        driver.find_element(by=By.XPATH, value="/html/body/div[3]/div[3]/div/div[1]/div[2]/div/div[2]/div[2]/div[2]/span/span[1]/select/option[18]").click()
+        #click /html/body/div[3]/div[3]/div/div[1]/div[2]/div/div[2]/div[2]/div[2]/span/span[1]/select
+        driver.find_element_by_xpath("/html/body/div[3]/div[3]/div/div[1]/div[2]/div/div[2]/div[2]/div[2]/span/span[1]/select").click()
 
-        # press confirm_booking /html/body/div[3]/div[3]/div/div[2]/button
-        driver.find_element(by=By.XPATH, value="/html/body/div[3]/div[3]/div/div[2]/button").click()
+
+        time.sleep(2)
+        #Select by text "May"
+        select.select_by_visible_text("June")
         time.sleep(2)
 
+        #press day /html/body/div[3]/div[3]/div/div[1]/div[2]/div/div[2]/div[2]/div[3]/div[1]/div[3]/button[18]/span[2]
+        driver.find_element(by=By.XPATH, value="/html/body/div[3]/div[3]/div/div[1]/div[2]/div/div[2]/div[2]/div[3]/div[1]/div[3]/button[18]").click()
+        time.sleep(2)
+        
+
+        time.sleep(5)
+
+
+        #press confirm_booking /html/body/div[3]/div[3]/div/div[2]/button
+        driver.find_element(by=By.XPATH, value="/html/body/div[3]/div[3]/div/div[2]/button").click()
+        
+        time.sleep(2)
         #Assert NEW BOOKING
-        assert "NEW BOOKING" in driver.page_source
+        assert "CONFIRM BOOKING" not in driver.page_source
 
     # cleanup method called after every test performed
     def tearDown(self):
