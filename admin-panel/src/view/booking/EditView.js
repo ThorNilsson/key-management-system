@@ -1,10 +1,10 @@
+import CircularProgress from '@mui/material/CircularProgress'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import Button from '@mui/material/Button'
+
 import BoxPopupHeader from '../../components/BoxPopupHeader'
 
-
-import { CircularProgress, DialogActions, DialogContent, Button } from '@mui/material'
-
-
-import React from "react"
 import { submitForm } from '../../util/index'
 
 export default function EditBookingView({children, loading, close, back, name, formRef}) {

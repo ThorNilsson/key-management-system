@@ -1,7 +1,7 @@
 import { DataGrid } from "@mui/x-data-grid"
-import { Typography } from "@mui/material"
+import Typography from "@mui/material/Typography"
 import CircularProgress from '@mui/material/CircularProgress';
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 
 
 

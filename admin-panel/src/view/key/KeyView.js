@@ -1,10 +1,19 @@
-import { CircularProgress, DialogContent, Typography, Button, DialogActions, CardMedia, Stack, Paper } from "@mui/material"
-import React from "react"
+import CircularProgress from "@mui/material/CircularProgress"
+import DialogContent from "@mui/material/DialogContent"
+import Typography from "@mui/material/Typography"
+import Button from "@mui/material/Button"
+import DialogActions from "@mui/material/DialogActions"
+import CardMedia from "@mui/material/CardMedia"
+import Stack from "@mui/material/Stack"
+import Paper from "@mui/material/Paper"
+
 import BoxPopupHeader from "../../components/BoxPopupHeader"
 
-import { grey } from '@mui/material/colors';
+import grey from '@mui/material/colors/grey';
 
-import { ArrowForwardIosRounded, ImageRounded, KeyRounded } from "@mui/icons-material"
+import ArrowForwardIosRounded from "@mui/icons-material/ArrowForwardIosRounded"
+import ImageRounded from "@mui/icons-material/ImageRounded"
+import KeyRounded from "@mui/icons-material/KeyRounded"
 
 export default function KeyView({ edit, close, loading, info, release }) {
 	if (loading) return <CircularProgress />

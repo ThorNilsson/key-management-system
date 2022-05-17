@@ -1,16 +1,20 @@
-import { DeleteRounded, ArrowForwardIosRounded, ScheduleRounded, EmailRounded, KeyRounded, WysiwygRounded } from "@mui/icons-material"
-import {
-	Button,
-	CircularProgress,
-	DialogActions,
-	DialogContent,
-	List,
-	ListItem,
-	ListItemAvatar,
-	Avatar,
-    ListItemText,
-} from "@mui/material"
-import React from "react"
+import DeleteRounded from "@mui/icons-material/DeleteRounded"
+import ArrowForwardIosRounded from "@mui/icons-material/ArrowForwardIosRounded"
+import ScheduleRounded from "@mui/icons-material/ScheduleRounded"
+import EmailRounded from "@mui/icons-material/EmailRounded"
+import KeyRounded from "@mui/icons-material/KeyRounded"
+import WysiwygRounded from "@mui/icons-material/WysiwygRounded"
+
+import Button from "@mui/material/Button"
+import CircularProgress from "@mui/material/CircularProgress"
+import DialogActions from "@mui/material/DialogActions"
+import DialogContent from "@mui/material/DialogContent"
+import List from "@mui/material/List"
+import ListItem from "@mui/material/ListItem"
+import ListItemAvatar from "@mui/material/ListItemAvatar"
+import Avatar from "@mui/material/Avatar"
+import ListItemText from "@mui/material/ListItemText"
+
 import BoxPopupHeader from "../../components/BoxPopupHeader"
 
 export default function BookingView({ loading, booking, deleteBooking, edit, close }) {

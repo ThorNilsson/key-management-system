@@ -1,5 +1,8 @@
-import { Button, CircularProgress, DialogActions, DialogContent } from "@mui/material"
-import { Typography } from "@mui/material"
+import Button from "@mui/material/Button"
+import CircularProgress from "@mui/material/CircularProgress"
+import DialogActions from "@mui/material/DialogActions"
+import DialogContent from "@mui/material/DialogContent"
+import Typography from "@mui/material/Typography"
 import BoxPopupHeader from "../../components/BoxPopupHeader"
 
 export default function EditKeyView({ children, save, name, close, back, uid, loading }) {

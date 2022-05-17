@@ -1,4 +1,7 @@
-import { Tabs, Tab, Box, Dialog } from "@mui/material"
+import Tabs from "@mui/material/Tabs"
+import Tab from "@mui/material/Tab"
+import Box from "@mui/material/Box"
+import Dialog from "@mui/material/Dialog"
 import { useEffect, useState, useMemo } from "react"
 import { Outlet, useNavigate, useParams, generatePath } from "react-router-dom"
 

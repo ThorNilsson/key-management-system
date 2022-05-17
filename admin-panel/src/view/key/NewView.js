@@ -1,8 +1,15 @@
-import { Stepper, Button, Typography, Step, StepLabel, CircularProgress, Stack, DialogContent } from "@mui/material"
+import Stepper from "@mui/material/Stepper"
+import Button from "@mui/material/Button"
+import Typography from "@mui/material/Typography"
+import Step from "@mui/material/Step"
+import StepLabel from "@mui/material/StepLabel"
+import CircularProgress from "@mui/material/CircularProgress"
+import Stack from "@mui/material/Stack"
+import DialogContent from "@mui/material/DialogContent"
 
-import { RadioButtonCheckedRounded } from "@mui/icons-material"
-import { SensorsRounded } from "@mui/icons-material"
-import { DoneAllRounded } from "@mui/icons-material"
+import RadioButtonCheckedRounded from "@mui/icons-material/RadioButtonCheckedRounded"
+import SensorsRounded from "@mui/icons-material/SensorsRounded"
+import DoneAllRounded from "@mui/icons-material/DoneAllRounded"
 import BoxPopupHeader from "../../components/BoxPopupHeader"
 
 export const NFC_SCAN_STEPS = {

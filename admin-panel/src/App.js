@@ -1,4 +1,4 @@
-import { Container } from "@mui/material"
+import Container from "@mui/material/Container"
 
 import Header from "./components/Header"
 import BoxPresenter from "./presenter/Box"

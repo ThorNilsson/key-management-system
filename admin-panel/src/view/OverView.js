@@ -1,6 +1,11 @@
-import { ButtonBase, Grid, Paper, Stack, Typography } from "@mui/material"
-import { Key } from "@mui/icons-material"
-import { CircularProgress } from "@mui/material"
+import ButtonBase from "@mui/material/ButtonBase"
+import Grid from "@mui/material/Grid"
+import Paper from "@mui/material/Paper"
+import Stack from "@mui/material/Stack"
+import Typography from "@mui/material/Typography"
+import CircularProgress from "@mui/material/CircularProgress"
+import KeyRounded from "@mui/icons-material/KeyRounded"
+
 
 export default function OverView({ keys, loading, editKey }) {
 	<Typography variant="h3" sx={{ mb: 3 }}>
@@ -19,7 +24,7 @@ export default function OverView({ keys, loading, editKey }) {
 								<Paper sx={{ p: 1, height: "100%" }}>
 									{key ? (
 										<Stack direction="column" sx={{ height: "100%" }}>
-											<Key
+											<KeyRounded
 												sx={{ fontSize: 40 }}
 												style={{ opacity: key.keySlot === key.preferredKeySlot ? 1 : 0.3 }}
 											/>

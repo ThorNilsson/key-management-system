@@ -1,11 +1,19 @@
-import BoxPopupHeader from "../../components/BoxPopupHeader"
-import * as React from "react"
-import { TextField, MenuItem, Button, DialogContent, DialogActions, Typography, Stack, Paper } from "@mui/material"
+import TextField from "@mui/material/TextField"
+import MenuItem from "@mui/material/MenuItem"
+import Button from "@mui/material/Button"
+import DialogContent from "@mui/material/DialogContent"
+import DialogActions from "@mui/material/DialogActions"
+import Typography from "@mui/material/Typography"
+import Stack from "@mui/material/Stack"
+import Paper from "@mui/material/Paper"
+import CircularProgress from "@mui/material/CircularProgress"
+
 import "react-date-range/dist/styles.css" // main style file
 import "react-date-range/dist/theme/default.css" // theme css file
+
+import BoxPopupHeader from "../../components/BoxPopupHeader"
 import LocationPicker from "../../components/LocationPicker"
 
-import { CircularProgress } from "@mui/material"
 
 const AVAILABLE_COLORS = [
 	{

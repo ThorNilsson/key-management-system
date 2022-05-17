@@ -1,6 +1,11 @@
 
-import { Button, DialogTitle, IconButton, Stack, Typography } from "@mui/material"
-import { ArrowBackIosNewRounded, CloseRounded } from "@mui/icons-material"
+import Button from "@mui/material/Button"
+import DialogTitle from "@mui/material/DialogTitle"
+import IconButton from "@mui/material/IconButton"
+import Stack from "@mui/material/Stack"
+import Typography from "@mui/material/Typography"
+import ArrowBackIosNewRounded from "@mui/icons-material/ArrowBackIosNewRounded"
+import CloseRounded from "@mui/icons-material/CloseRounded"
 
 export default function BoxPopupHeader({ close, title, back, ...props }) {
 	return (

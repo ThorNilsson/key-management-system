@@ -1,16 +1,14 @@
-import {
-	TextField,
-	Button,
-	Typography,
-	Container,
-} from "@mui/material"
+import TextField from "@mui/material/TextField"
+import Button from "@mui/material/Button"
+import Typography from "@mui/material/Typography"
+import Container  from "@mui/material/Container"
 import "react-date-range/dist/styles.css" // main style file
 import "react-date-range/dist/theme/default.css" // theme css file
 import { getAuth } from "firebase/auth"
 import { ref, set } from "firebase/database"
 import { db } from "../../api/firebase"
 import { useState } from "react"
-import { ArrowBackIosNewRounded } from "@mui/icons-material"
+import ArrowBackIosNewRounded from "@mui/icons-material/ArrowBackIosNewRounded"
 import { useNavigate } from "react-router-dom"
 
 export default function AddBoxPresenter() {
@@ -25,8 +23,12 @@ export default function AddBoxPresenter() {
 
 	return (
 		<Container maxWidth="xs">
-            <Button onClick={() => navigate("/")} variant="text" startIcon={<ArrowBackIosNewRounded />}>Back</Button>
-            <Typography variant="h2" sx={{mt: 3}}>Add new box</Typography>
+			<Button onClick={() => navigate("/")} variant="text" startIcon={<ArrowBackIosNewRounded />}>
+				Back
+			</Button>
+			<Typography variant="h2" sx={{ mt: 3 }}>
+				Add new box
+			</Typography>
 			<TextField
 				onInput={e => setBoxId(e.target.value)}
 				autoFocus

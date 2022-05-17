@@ -1,8 +1,10 @@
 
 
-import { CircularProgress, DialogActions, DialogContent } from "@mui/material"
-
+import CircularProgress from "@mui/material/CircularProgress"
+import DialogActions from "@mui/material/DialogActions"
+import DialogContent from "@mui/material/DialogContent"
 import Button from "@mui/material/Button"
+
 import BoxPopupHeader from "../../components/BoxPopupHeader"
 
 import { submitForm } from "../../util/index"

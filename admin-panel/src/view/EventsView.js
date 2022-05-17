@@ -1,9 +1,10 @@
-import { Button, Typography, Stack } from "@mui/material"
+import Button from "@mui/material/Button"
+import Typography from "@mui/material/Typography"
+import Stack from "@mui/material/Stack"
 import { DataGrid } from "@mui/x-data-grid"
 
 import CircularProgress from "@mui/material/CircularProgress"
 import DeleteIcon from "@mui/icons-material/Delete"
-import React from "react"
 
 export default function EventsView({ rows, loading, columns, handleEventsDelete }) {
 	return (

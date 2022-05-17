@@ -1,14 +1,19 @@
-import {
-	ApartmentRounded,
-	ArrowBackIosNew,
-	ArrowDropDownRounded,
-	CottageRounded,
-	Edit,
-	HouseRounded,
-} from "@mui/icons-material"
-import { Button, Stack, Box, Typography, Select, MenuItem, Skeleton } from "@mui/material"
+import ApartmentRounded from "@mui/icons-material/ApartmentRounded"
+import ArrowBackIosNew from "@mui/icons-material/ArrowBackIosNew"
+import ArrowDropDownRounded from "@mui/icons-material/ArrowDropDownRounded"
+import CottageRounded from "@mui/icons-material/CottageRounded"
+import Edit from "@mui/icons-material/Edit"
+import HouseRounded from "@mui/icons-material/HouseRounded"
+import EventRounded from "@mui/icons-material/EventRounded";
 
-import { EventRounded } from "@mui/icons-material";
+import Button from "@mui/material/Button"
+import Stack from "@mui/material/Stack"
+import Box from "@mui/material/Box"
+import Typography from "@mui/material/Typography"
+import Select from "@mui/material/Select"
+import MenuItem from "@mui/material/MenuItem"
+import Skeleton from "@mui/material/Skeleton"
+
 
 const ICONS = {
 	apartment: ApartmentRounded,

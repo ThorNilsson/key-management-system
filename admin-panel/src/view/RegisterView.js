@@ -6,8 +6,8 @@ import Checkbox from "@mui/material/Checkbox"
 import Box from "@mui/material/Box"
 import Typography from "@mui/material/Typography"
 import Container from "@mui/material/Container"
-import { Stack } from "@mui/material"
-import React, { useEffect } from 'react'
+import Stack from "@mui/material/Stack"
+import { useEffect } from 'react'
 
 function RegisterView({
 	email,
