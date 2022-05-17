@@ -1,4 +1,3 @@
-
 import TextField from "@mui/material/TextField"
 import { DateRangePicker } from "react-date-range"
 import MenuItem from "@mui/material/MenuItem"
@@ -11,6 +10,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider"
 import { TimePicker } from "@mui/x-date-pickers/TimePicker"
 import BoxPopupHeader from "../components/BoxPopupHeader"
 import frLocale from "date-fns/locale/fr"
+import { submitForm } from "../util/index"
 
 export default function NewBookingView({
 	keys,
@@ -32,7 +32,8 @@ export default function NewBookingView({
 	setName,
 	dateRange,
 	setDateRange,
-    close
+	close,
+	formRef,
 }) {
 	return (
 		<>
@@ -42,7 +43,7 @@ export default function NewBookingView({
 			) : (
 				<>
 					<DialogContent>
-						<Stack direction="column" spacing={2}>
+						<Stack direction="column" onSubmit={handleSubmit} ref={formRef} component="form" spacing={2}>
 							<TextField
 								onInput={e => setName(e.target.value)}
 								autoFocus
@@ -83,10 +84,13 @@ export default function NewBookingView({
 								variant="outlined"
 								label="Booked room"
 								value={room}
+								required
 								onChange={event => setRoom(event.target.value)}
 							>
 								{keys.map(key => (
-									<MenuItem key={key.id} value={key.id}>{key.name}</MenuItem>
+									<MenuItem key={key.id} value={key.id}>
+										{key.name}
+									</MenuItem>
 								))}
 							</TextField>
 							<Stack direction="row" spacing={2}>
@@ -98,7 +102,7 @@ export default function NewBookingView({
 											setCheckInTime(newValue)
 											console.log(checkInTime)
 										}}
-										renderInput={params => <TextField fullWidth {...params} />}
+										renderInput={params => <TextField fullWidth required {...params} />}
 									/>
 									<TimePicker
 										label="Time for check out"
@@ -107,12 +111,10 @@ export default function NewBookingView({
 											setCheckOutTime(newValue)
 											console.log(checkOutTime)
 										}}
-										renderInput={params => <TextField fullWidth {...params} />}
+										renderInput={params => <TextField fullWidth required {...params} />}
 									/>
 								</LocalizationProvider>
 							</Stack>
-						</Stack>
-						<Stack direction={"row"}>
 							<div>
 								<CardHeader title="Dates Booked"></CardHeader>
 								<DateRangePicker
@@ -134,9 +136,8 @@ export default function NewBookingView({
 						</Stack>
 					</DialogContent>
 					<DialogActions>
-						<Button onClick={handleSubmit} variant="contained">
-							{" "}
-							Confirm booking{" "}
+						<Button onClick={() => submitForm(formRef)} variant="contained">
+							Confirm booking
 						</Button>
 					</DialogActions>
 				</>

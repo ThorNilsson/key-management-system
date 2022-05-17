@@ -21,6 +21,8 @@ import NewKeyPresenter from "./presenter/key/New"
 import EditBoxPresenter from "./presenter/box/Edit"
 import KeyPresenter from "./presenter/key/Key"
 import AddBoxPresenter from "./presenter/box/AddBox"
+import ViewBookingPresenter from "./presenter/booking/ViewBookingPresenter"
+import EditBookingPresenter from "./presenter/booking/EditBooking"
 
 const auth = getAuth()
 
@@ -41,6 +43,8 @@ export default function App() {
 					<Route path=":boxId" element={<BoxPresenter />}>
 						<Route index element={<OverviewPresenter />} />
 						<Route path="bookings" element={<BookingsPresenter />} />
+						<Route path="bookings/:bookingId" element={<ViewBookingPresenter />} />
+						<Route path="bookings/:bookingId/edit" element={<EditBookingPresenter />} />
 						<Route path="timeline" element={<TimelinePresenter />} />
 						<Route path="events" element={<EventsPresenter />} />
 						<Route path="new-booking" element={<NewBookingPresenter />} />

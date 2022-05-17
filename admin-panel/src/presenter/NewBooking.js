@@ -1,7 +1,7 @@
 import "react-date-range/dist/styles.css" // main style file
 import "react-date-range/dist/theme/default.css" // theme css file
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useRef } from "react"
 import { addDays, getHours, setHours, getMinutes, setMinutes } from "date-fns"
 import { useList } from "react-firebase-hooks/database"
 
@@ -18,6 +18,8 @@ export default function NewBookingPresenter() {
 	useTitle("New booking")
 	const { boxId } = useParams()
 	const navigate = useNavigate()
+
+    const formRef = useRef()
 
 	const [checkIn, setCheckIn] = useState(new Date(Date.now()))
 	const [checkInTime, setCheckInTime] = useState(new Date("2022-01-01 12:00"))
@@ -42,11 +44,12 @@ export default function NewBookingPresenter() {
 	const updateTimesBasedOnKey = keyId => {
 		setRoom(keyId)
 		const key = keyVals.find(key => key.id === keyId)
+        setCheckInTime(new Date(`2022-01-01 ${key.defaultCheckInTime}`))
+        setCheckOutTime(new Date(`2022-01-01 ${key.defaultCheckOutTime}`))
+    }
 
-		setCheckInTime(new Date(`2022-01-01 ${key.defaultCheckInTime}`))
-		setCheckOutTime(new Date(`2022-01-01 ${key.defaultCheckOutTime}`))
-	}
-	const handleSubmit = () => {
+	const handleSubmit = e => {
+        e.preventDefault()
 		let checkedIn = setHours(checkIn, getHours(checkInTime))
 		checkedIn = setMinutes(checkedIn, getMinutes(checkInTime))
 
@@ -74,7 +77,7 @@ export default function NewBookingPresenter() {
 		sendEmail()
 	}
 
-	const sendEmail = (event) => {
+	const sendEmail = () => {
 		const actionCodeSettings = {
 			url: 'http://localhost:3001/asodiaouio29186ey7gawd',
 			handleCodeInApp: true,
@@ -85,10 +88,8 @@ export default function NewBookingPresenter() {
 				console.log("email sent")
 			})
 			.catch((error) => {
-				console.log(error)
-				const errorCode = error.code;
-				const errorMessage = error.message;
-				// ...
+				console.error(error)
+                alert("Something went wrong!")
 			});
 
 	}
@@ -112,9 +113,10 @@ export default function NewBookingPresenter() {
 			setMessage={setMessage}
 			name={name}
 			setName={setName}
-			dateRange={dateRange}
-			setDateRange={setDateRange}
-			close={() => navigate(`/${boxId}`)}
+            dateRange={dateRange} 
+            setDateRange={setDateRange}
+            close={() => navigate(`/${boxId}`)}
+            formRef={formRef}
 		/>
 	)
 }
