@@ -9,7 +9,7 @@ import useRelativeNavigation from "../hooks/useRelativeNavigation"
 import useTitle from "../hooks/useTitle"
 
 export default function BookingsPresenter() {
-    useTitle("View bookings")
+	useTitle("View bookings")
 	const { boxId } = useParams()
 	const relativeNavigate = useRelativeNavigation()
 
@@ -33,21 +33,24 @@ export default function BookingsPresenter() {
 	if (error) return <div>Something went wrong</div>
 
 	const populatedBookings = bookings
-		.map(b => ({ ...b.val(), id: b.key}))
-		.map(b => ({ ...b, room: keyInfo[b.keyId]?.name}))
-
-	
+		.map(b => ({ ...b.val(), id: b.key }))
+		.map(b => ({ ...b, room: keyInfo[b.keyId]?.name }))
 
 	const handleView = id => relativeNavigate(id)
 
 	const columns = [
-		{ field: "id", headerName: "Booking id", width: 150 },
-		{ field: 'room', headerName: 'Room', width: 70 },
-		{ field: "name", headerName: "Name", width: 130 },
-		{ field: "editDelete", headerName: "", width: 80, sortable: false,
-		renderCell: rowData => <Button onClick={() => handleView(rowData.id)}>View</Button>}
+		{ field: "id", headerName: "Booking id", minWidth: 150, flex: 2 },
+		{ field: "room", headerName: "Room", minWidth: 70, flex: 1 },
+		{ field: "name", headerName: "Name", minWidth: 130, flex: 2 },
+		{
+			field: "editDelete",
+			headerName: "",
+			minWidth: 80,
+			flex: 1,
+			sortable: false,
+			renderCell: rowData => <Button onClick={() => handleView(rowData.id)}>View</Button>,
+		},
 	]
-
 
 	return <BookingsView columns={columns} loading={loading} rows={populatedBookings} />
 }
