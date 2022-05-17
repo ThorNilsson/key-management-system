@@ -8,6 +8,10 @@ bool isWithinTimePeriod() {
   return now > requestedTime && now < expiredTime;
 }
 
+int getTimestamp(){
+  return lastNTPtime +( millis()/1000);
+}
+
 /*
    Gets the current time from time server and updates now- variable to correct time.
 */
@@ -52,6 +56,7 @@ void showTime(tm localTime) {
   Serial.print(localTime.tm_min);
   Serial.print(':');
   Serial.print(localTime.tm_sec);
+  Serial.println();
 #endif
   //Serial.print(" Day of Week ");
   //if (localTime.tm_wday == 0)   Serial.println(7);

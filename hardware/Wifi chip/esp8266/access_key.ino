@@ -23,8 +23,6 @@ void accessKey(int keySlot, String errorMessage, String username, String userId,
 
   unlockDoor();
 
-  //check if door is open
-
   if (!accessSlot(keySlot)) {
     sendLog(errorMessage + "Lock is jammed or the custummer is stupid", username, bookingId, userId);
     notifyError();
@@ -40,7 +38,5 @@ void accessKey(int keySlot, String errorMessage, String username, String userId,
   notifySuccess();
   sendLog("Key accessed.", username, bookingId, userId);
 
-  //Close door
-
-
+  closeDoor();
 }

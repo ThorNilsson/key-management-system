@@ -110,6 +110,11 @@ const int idLenght = 20;
 String tag;
 
 bool isDoorOpenVal = false;
+bool shouldCloseDoor = false;
+
+unsigned long checkDoorTimer = millis();
+unsigned long closeDoorLedTimer = millis();
+unsigned long closeBoxLedInterval = 40;
 
 void setup()
 {
@@ -198,7 +203,10 @@ void setup()
 
   notify();
   printDebug("Setup done.", "");
+
+  //testInit();
 }
+
 
 void loop()
 {
@@ -233,7 +241,7 @@ void loop()
     - returnKey       Used to return a key by scanning the nfc tag.
   */
   String newTag = checkRFID();
-  
+
   if (!newTag.equals("NotAdded")) {
     if (strcmp(masterTag, newTag.c_str()) == 0) {
       configureWifi();
@@ -249,6 +257,14 @@ void loop()
   }
 
   /*
+    If door should be closed, render close animation.
+  */
+  if (shouldCloseDoor && millis() - closeDoorLedTimer > closeBoxLedInterval) {
+    CloseDoorLed();
+    closeDoorLedTimer = millis();
+  }
+
+  /*
     Check if the state of the door changes and if so send a log to the database to update the value.
   */
   if (isDoorOpenVal != isDoorOpen()) {
@@ -257,10 +273,13 @@ void loop()
       sendLog("Someone tried to open the box by force and succeded, Door is now open", "", "", "");
     }
     else {
-      sendLog("Someone closed the door", "", "", "");
+      shouldCloseDoor = false;
+      notifySuccess();
+      sendLog("The door was closed", "", "", "");
+      clearLeds();
     }
   }
-  
+
   /*
     Check any incomming commands that might be late or if something happends with the array at a unknown point.
   */

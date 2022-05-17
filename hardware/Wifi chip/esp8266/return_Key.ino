@@ -1,6 +1,6 @@
 void returnKey(int keySlot, String keyId) {
   printDebug("Returning key: ", String(keySlot));
-
+  
   int preferredKeySlot = Firebase.getString(fbdo, getPreferredKeySlotPath(keyId)) ? fbdo.to<int>() : 0;
 
   if (preferredKeySlot == 0) {
@@ -43,5 +43,5 @@ void returnKey(int keySlot, String keyId) {
   notifySuccess();
   sendLog("Key was returned.", "", "", "");
 
-  //Close door
+  closeDoor();
 }

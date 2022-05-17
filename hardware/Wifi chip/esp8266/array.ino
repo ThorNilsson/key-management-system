@@ -64,7 +64,7 @@ bool getWaitForResponse(int slot, int seconds) {
     }
   }
   clearLeds();
-  sendLog("Timed out", "", "", "");
+  //sendLog("Timed out", "", "", "");
 
   return false;
 }
