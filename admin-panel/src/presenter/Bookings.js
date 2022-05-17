@@ -15,7 +15,6 @@ export default function BookingsPresenter() {
 
 	const [bookings, loading, error] = useList(ref(db, `keyboxes/${boxId}/bookings`))
 	const [keyInfo, setKeyInfo] = useState({})
-	console.log(bookings)
 
 	useEffect(() => {
 		if (!bookings || bookings.length === 0) return

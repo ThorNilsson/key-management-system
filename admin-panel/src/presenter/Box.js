@@ -88,8 +88,24 @@ export default function BoxPresenter() {
 					</Box>
 				</>
 			) : (
-				<Dialog scroll="paper" open={true} onClose={() => navigate(`/${boxId}`)} maxWidth={window.innerWidth}>
-                    <Outlet />
+				<Dialog
+					scroll="paper"
+					open={true}
+					onClose={() => {
+                        try {
+                            const search = basePath.replace("/:boxId/", "").split("/")[0]
+                            const tab = TABS.find(tab => tab.link === search)
+                            if(!tab) return navigate(`/${boxId}`)
+                            navigate(`/${boxId}/${tab.link}`)
+                            
+                        } catch (error) {
+                            console.error("Error when closing Dialog", error)
+                            navigate(`/${boxId}`)
+                        }
+					}}
+					maxWidth={window.innerWidth}
+				>
+					<Outlet />
 				</Dialog>
 			)}
 		</div>
