@@ -35,7 +35,7 @@ export function LoginPresenter() {
         const logOut = () => {
             signOut(auth)
         }
-        const starCountRef = ref(db, 'links/' + window.location.pathname.split('/')[1]);
+        const starCountRef = ref(db, 'guests/' + auth.currentUser.email.replace('.',''));
         console.log(window.location.pathname.split('/')[1])
         get(starCountRef).then((snapshot) => {
             const data = snapshot.val();
