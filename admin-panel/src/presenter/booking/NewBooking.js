@@ -5,13 +5,14 @@ import { useState, useMemo, useRef } from "react"
 import { addDays, getHours, setHours, getMinutes, setMinutes } from "date-fns"
 import { useList } from "react-firebase-hooks/database"
 
-import { db } from "../api/firebase"
+import { db } from "../../api/firebase"
 import { ref, push } from "firebase/database"
 import { useParams, useNavigate } from "react-router-dom"
 
-import NewBookingView from "../view/box/NewView"
-import useTitle from "../hooks/useTitle"
+import NewBookingView from "../../view/box/NewView"
+import useTitle from "../../hooks/useTitle"
 import { getAuth, sendSignInLinkToEmail } from 'firebase/auth';
+import BookingFormView from "../../view/box/FormView"
 
 export default function NewBookingPresenter() {
 	const auth = getAuth()
@@ -96,27 +97,31 @@ export default function NewBookingPresenter() {
 
 	return (
 		<NewBookingView
-			keys={keyVals}
 			loading={loading}
-			handleSubmit={handleSubmit}
-			setCheckIn={setCheckIn}
-			checkInTime={checkInTime}
-			setCheckInTime={setCheckInTime}
-			setCheckOut={setCheckOut}
-			checkOutTime={checkOutTime}
-			setCheckOutTime={setCheckOutTime}
-			email={email}
-			setEmail={setEmail}
-			room={room}
-			setRoom={updateTimesBasedOnKey}
-			message={message}
-			setMessage={setMessage}
-			name={name}
-			setName={setName}
-            dateRange={dateRange} 
-            setDateRange={setDateRange}
             close={() => navigate(`/${boxId}`)}
             formRef={formRef}
-		/>
+		>
+            <BookingFormView 
+			    keys={keyVals}
+                handleSubmit={handleSubmit}
+                setCheckIn={setCheckIn}
+                checkInTime={checkInTime}
+                setCheckInTime={setCheckInTime}
+                setCheckOut={setCheckOut}
+                checkOutTime={checkOutTime}
+                setCheckOutTime={setCheckOutTime}
+                email={email}
+                setEmail={setEmail}
+                room={room}
+                setRoom={updateTimesBasedOnKey}
+                message={message}
+                setMessage={setMessage}
+                name={name}
+                setName={setName}
+                dateRange={dateRange} 
+                setDateRange={setDateRange}
+                formRef={formRef}
+            />
+        </NewBookingView>
 	)
 }

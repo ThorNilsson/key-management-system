@@ -9,7 +9,7 @@ import BookingsPresenter from "./presenter/Bookings"
 import TimelinePresenter from "./presenter/Timeline"
 import EventsPresenter from "./presenter/Events"
 import EditProfilePresenter from "./presenter/EditProfile"
-import NewBookingPresenter from "./presenter/NewBooking"
+import NewBookingPresenter from "./presenter/booking/NewBooking"
 import EditKeyPresenter from "./presenter/key/Edit"
 
 import { Route, Routes } from "react-router-dom"
