@@ -1,27 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import Base from './basePresenter'
-import ViewPresenter from './viewPresenter';
-import { ref, get } from "firebase/database"
-import { useListVals } from "react-firebase-hooks/database"
-import { db } from "../firebase"
-import loadingGif from '../Loading_icon.gif'
+import React, { useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth'
-import { getAuth, isSignInWithEmailLink, signInWithEmailLink, sendSignInLinkToEmail, signOut } from 'firebase/auth';
+import { getAuth, isSignInWithEmailLink, signInWithEmailLink, sendSignInLinkToEmail } from 'firebase/auth';
 import { LoginView } from '../views/loginView';
 import StartPagePresenter from './startPage';
+import { CircularProgress, Stack, } from "@mui/material"
+
 export function LoginPresenter() {
-    //http://localhost:3000/asodiaouio29186ey7gawd
-    //const email = "keymanagementsystemKMS@gmail.com"
-    const [loaded, setLoaded] = useState(false)
     const [email, setEmail] = useState();
-    const [bookingEmail, setBookingEmail] = useState();
-    const [bookingId, setBookingId] = useState();
-    const [keyboxId, setKeyboxId] = useState();
     const [counter, setCounter] = useState(5);
     const [loginDisable, setLoginDisable] = useState();
     const [errorText, setErrorText] = useState("");
     const auth = getAuth()
-    console.log(auth)
     const [user, loading, error] = useAuthState(auth)
 
 
@@ -30,34 +19,17 @@ export function LoginPresenter() {
         logIn()
     }
 
-    useEffect(() => {
-        if (user) {
-            const starCountRef = ref(db, 'guests/' + auth.currentUser.email.replace('.', ''));
-            console.log(window.location.pathname.split('/')[1])
-            get(starCountRef).then((snapshot) => {
-                const data = snapshot.val();
-                console.log(data)
-                setKeyboxId(data.keyboxId);
-                setBookingId(data.bookingId);
-            }).catch((error) => {
-                console.error(error);
-            });
-        }
-    }, [user]);
-
-    if (loading) return <img src={loadingGif}></img>
+    if (loading) return (<div className='topbar1' >
+        <Stack justifyContent="center"
+            alignItems="center" height={'100%'}><CircularProgress /></Stack>
+    </div>
+    )
+    if (error) return <div>{error.message}</div>
 
 
     if (user) {
-        console.log(user)
-
-        console.log(bookingId)
-
-
         return (
             <div>
-                {/* <Base keyboxId={keyboxId} logOut={logOut} />
-                <ViewPresenter keyboxId={keyboxId} bookingId={bookingId} /> */}
                 <StartPagePresenter />
             </div>
         )
@@ -90,7 +62,7 @@ export function LoginPresenter() {
     const sendEmail = (event) => {
         event.preventDefault()
         const actionCodeSettings = {
-            url: 'http://localhost:3000/asodiaouio29186ey7gawd',
+            url: 'http://localhost:3000/login',
             handleCodeInApp: true,
         };
 
@@ -100,9 +72,6 @@ export function LoginPresenter() {
             })
             .catch((error) => {
                 console.log(error)
-                const errorCode = error.code;
-                const errorMessage = error.message;
-                // ...
             });
 
     }

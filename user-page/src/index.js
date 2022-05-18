@@ -4,7 +4,7 @@ import './index.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { emailTest } from './emailTest';
+import { BrowserRouter } from "react-router-dom"
 
 import { createTheme, ThemeProvider } from "@mui/material/styles"
 
@@ -16,11 +16,11 @@ const theme = createTheme({
     },
     h2: {
       fontSize: 24,
-      fontWeight: 700,
+      fontWeight: 500,
     },
     h3: {
       fontSize: 20,
-      fontWeight: 700,
+      fontWeight: 500,
     },
     h4: {
       fontSize: 18,
@@ -48,9 +48,9 @@ const theme = createTheme({
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-
-      <App />
-
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
     </ThemeProvider>
   </React.StrictMode>,
   document.getElementById('root')

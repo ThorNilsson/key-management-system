@@ -1,21 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import TimeUntilView from '../views/timeUntilView';
-function ReturnTimer(props) {
-    const [timeLeft, setTimeLeft] = useState(getTimeUntilReturn(props.returnTime));
-    
+import LockIcon from '../outline_lock_black_48dp.png'
+function TimeUntilPresenter(props) {
+    const [timeLeft, setTimeLeft] = useState(getTimeUntil(props.time));
+
     useEffect(() => {
-        setInterval(() => setTimeLeft(getTimeUntilReturn(props.returnTime)), 30);
+        setInterval(() => setTimeLeft(getTimeUntil(props.time)), 30);
     });
 
     return (
         <div>
-            <TimeUntilView date={timeLeft} return={true}/>
+            <TimeUntilView date={timeLeft} return={props.return} button={true} action={props.openBox}
+            icon={LockIcon} pressed={props.pressed}/>
         </div>
     );
+    
 }
 
 
-function getTimeUntilReturn(returnTime) {
+function getTimeUntil(returnTime) {
     let difference = returnTime - Date.now();
     let timeLeft = {};
 
@@ -29,4 +32,4 @@ function getTimeUntilReturn(returnTime) {
     return timeLeft;
 }
 
-export default ReturnTimer;
+export default TimeUntilPresenter;
