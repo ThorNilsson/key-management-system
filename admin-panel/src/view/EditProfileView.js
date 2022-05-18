@@ -1,22 +1,20 @@
-import {
-	Button,
-	Card,
-	CardContent,
-	TextField,
-	Typography,
-	Grid,
-	Stack,
-	List,
-	ListItem,
-	ListItemAvatar,
-	ListItemText,
-	ListItemButton,
-} from "@mui/material"
-import React, { useEffect } from 'react'
-import { EmailRounded } from "@mui/icons-material"
-import { LockClockRounded } from "@mui/icons-material"
-import { CheckRounded } from "@mui/icons-material"
-import { Error } from "@mui/icons-material"
+import Button from "@mui/material/Button"
+import Card from "@mui/material/Card"
+import CardContent from "@mui/material/CardContent"
+import TextField from "@mui/material/TextField"
+import Typography from "@mui/material/Typography"
+import Grid from "@mui/material/Grid"
+import Stack from "@mui/material/Stack"
+import List from "@mui/material/List"
+import ListItem from "@mui/material/ListItem"
+import ListItemAvatar from "@mui/material/ListItemAvatar"
+import ListItemText from "@mui/material/ListItemText"
+import ListItemButton from "@mui/material/ListItemButton"
+import EmailRounded from "@mui/icons-material/EmailRounded"
+import LockClockRounded from "@mui/icons-material/LockClockRounded"
+import CheckRounded from "@mui/icons-material/CheckRounded"
+import Error from "@mui/icons-material/Error"
+import { useEffect } from 'react'
 
 export default function EditProfileView({
 	user,

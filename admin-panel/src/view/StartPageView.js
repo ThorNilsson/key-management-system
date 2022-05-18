@@ -1,17 +1,20 @@
-import { ApartmentRounded, CottageRounded, HouseRounded, ArrowForwardIos, Add } from "@mui/icons-material"
-import {
-	Button,
-	Card,
-	CardActionArea,
-	CardActions,
-	CardContent,
-	CardMedia,
-	CircularProgress,
-	Grid,
-	Stack,
-	Typography,
-    Box
-} from "@mui/material"
+import ApartmentRounded from "@mui/icons-material/ApartmentRounded"
+import CottageRounded from "@mui/icons-material/CottageRounded"
+import HouseRounded from "@mui/icons-material/HouseRounded"
+import ArrowForwardIos from "@mui/icons-material/ArrowForwardIos"
+import Add from "@mui/icons-material/Add"
+import Button from "@mui/material/Button"
+import Card from "@mui/material/Card"
+import CardActionArea from "@mui/material/CardActionArea"
+import CardActions from "@mui/material/CardActions"
+import CardContent from "@mui/material/CardContent"
+import CardMedia from "@mui/material/CardMedia"
+import CircularProgress from "@mui/material/CircularProgress"
+import Grid from "@mui/material/Grid"
+import Stack from "@mui/material/Stack"
+import Typography from "@mui/material/Typography"
+import Box from "@mui/material/Box"
+import Link from "@mui/material/Link"
 
 const ICONS = {
 	apartment: ApartmentRounded,
@@ -68,7 +71,7 @@ export default function StartPageView({ navigate, boxes, loading }) {
 											</Typography>
 										</CardContent>
 										<CardActions style={{ justifyContent: "flex-end" }}>
-											<Button variant="outlined" endIcon={<ArrowForwardIos />}>
+											<Button component={Link} variant="outlined" endIcon={<ArrowForwardIos />}>
 												Visit
 											</Button>
 										</CardActions>

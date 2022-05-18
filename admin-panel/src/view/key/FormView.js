@@ -1,6 +1,8 @@
 import React from "react"
 
-import { TextField, Typography, Stack } from "@mui/material"
+import TextField from "@mui/material/TextField"
+import Typography from "@mui/material/Typography"
+import Stack from "@mui/material/Stack"
 import LocationPicker from "../../components/LocationPicker"
 
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
@@ -58,7 +60,7 @@ export default function KeyFormView({
 				variant="outlined"
 				value={roomImage}
 			/>
-			<Stack direction="row" spacing={2} sx={{my: 2}}>
+			<Stack direction="row" spacing={2} sx={{ my: 2 }}>
 				<LocalizationProvider dateAdapter={AdapterDateFns} locale={frLocale}>
 					<TimePicker
 						label="Default check in time"

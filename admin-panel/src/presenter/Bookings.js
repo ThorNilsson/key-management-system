@@ -4,19 +4,17 @@ import { useParams } from "react-router-dom"
 import { ref, get } from "firebase/database"
 import { useState, useEffect } from "react"
 import { db } from "../api/firebase"
+import Button from "@mui/material/Button"
+import useRelativeNavigation from "../hooks/useRelativeNavigation"
 import useTitle from "../hooks/useTitle"
 
 export default function BookingsPresenter() {
-    useTitle("View bookings")
+	useTitle("View bookings")
 	const { boxId } = useParams()
+	const relativeNavigate = useRelativeNavigation()
 
 	const [bookings, loading, error] = useList(ref(db, `keyboxes/${boxId}/bookings`))
 	const [keyInfo, setKeyInfo] = useState({})
-	console.log(bookings)
-
-	const FormatDate = (event) => {
-		return new Date(event * 1000).toLocaleTimeString([], {year: 'numeric', day: '2-digit', month: '2-digit', hour: 'numeric', minute:'numeric', timezone: 'GMT+2'});
-	}
 
 	useEffect(() => {
 		if (!bookings || bookings.length === 0) return
@@ -35,20 +33,24 @@ export default function BookingsPresenter() {
 	if (error) return <div>Something went wrong</div>
 
 	const populatedBookings = bookings
-		.map(b => ({ ...b.val(), id: b.key}))
-		.map(b => ({ ...b, room: keyInfo[b.keyId]?.name, checkIn: FormatDate(b.checkIn), checkOut: FormatDate(b.checkOut)}))
+		.map(b => ({ ...b.val(), id: b.key }))
+		.map(b => ({ ...b, room: keyInfo[b.keyId]?.name }))
 
+	const handleView = id => relativeNavigate(id)
+
+	const columns = [
+		{ field: "id", headerName: "Booking id", minWidth: 150, flex: 2 },
+		{ field: "room", headerName: "Room", minWidth: 70, flex: 1 },
+		{ field: "name", headerName: "Name", minWidth: 130, flex: 2 },
+		{
+			field: "editDelete",
+			headerName: "",
+			minWidth: 80,
+			flex: 1,
+			sortable: false,
+			renderCell: rowData => <Button onClick={() => handleView(rowData.id)}>View</Button>,
+		},
+	]
 
 	return <BookingsView columns={columns} loading={loading} rows={populatedBookings} />
 }
-
-const columns = [
-	{ field: "id", headerName: "Booking id", width: 200 },
-	{ field: 'room', headerName: 'Room', width: 70 },
-	{ field: "checkIn", headerName: "Check in", width: 140 },
-	{ field: "checkOut", headerName: "Check out", width: 140 },
-	{ field: "name", headerName: "Name", width: 130 },
-	{ field: "role", headerName: "Role", width: 70 },
-	{ field: "message", headerName: "Message", width: 500 },
-	{ field: "url", headerName: "Link", width: 400 },
-]

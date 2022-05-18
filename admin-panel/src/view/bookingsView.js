@@ -1,7 +1,7 @@
 import { DataGrid } from "@mui/x-data-grid"
-import { Typography } from "@mui/material"
+import Typography from "@mui/material/Typography"
 import CircularProgress from '@mui/material/CircularProgress';
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 
 
 
@@ -18,7 +18,7 @@ export default function BookingsView({rows, columns, loading}) {
             {loading ? (
                 <CircularProgress />
             ) : (
-			<div style={{ height: 800, width: "100%" }}>
+			<div style={{ height: 800, maxWidth: 500 }}>
 				<DataGrid
 					rows={rows}
 					columns={columns}
@@ -26,6 +26,7 @@ export default function BookingsView({rows, columns, loading}) {
 					rowsPerProleOptions={[10]}
 					checkboxSelection={false}
 					showColumnRightBorder={false}
+                    disableColumnMenu
 				/>
 			</div>
             )}

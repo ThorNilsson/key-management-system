@@ -1,25 +1,33 @@
-import Button from "@mui/material/Button"
+
+
 import CircularProgress from "@mui/material/CircularProgress"
 import DialogActions from "@mui/material/DialogActions"
 import DialogContent from "@mui/material/DialogContent"
-import Typography from "@mui/material/Typography"
+import Button from "@mui/material/Button"
+
 import BoxPopupHeader from "../../components/BoxPopupHeader"
 
-export default function EditKeyView({ children, save, name, close, back, uid, loading }) {
+import { submitForm } from "../../util/index"
+
+export default function NewBookingView({
+	loading,
+	close,
+	formRef,
+    children
+}) {
 	return (
 		<>
-			<BoxPopupHeader title={`Edit key for ${name}`} close={close} back={back} />
+			<BoxPopupHeader title="Create new booking" close={close} />
 			{loading ? (
 				<CircularProgress />
 			) : (
 				<>
 					<DialogContent>
-						<Typography variant="body1">NFC uid: {uid}</Typography>
 						{children}
 					</DialogContent>
 					<DialogActions>
-						<Button onClick={save} variant="contained">
-							Update
+						<Button onClick={() => submitForm(formRef)} variant="contained">
+							Confirm booking
 						</Button>
 					</DialogActions>
 				</>
