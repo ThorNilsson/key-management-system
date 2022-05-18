@@ -2,7 +2,8 @@ import { ref, get } from "firebase/database"
 import { db } from "../firebase"
 import BaseView from '../views/baseView'
 import React, { useRef, useEffect, useState } from 'react';
-import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
+/* eslint import/no-webpack-loader-syntax: off */
+import mapboxgl from "!mapbox-gl"
 import { getAuth, signOut } from 'firebase/auth';
 import { useNavigate } from "react-router-dom"
 mapboxgl.accessToken = 'pk.eyJ1Ijoia2Fyb2xpbmE5OSIsImEiOiJjbDFvejYxOGMwOGdzM2NucXB3bWk4dzB0In0.O_nYe5G8ZDN_jc6B6dT1aQ';
@@ -10,7 +11,7 @@ mapboxgl.accessToken = 'pk.eyJ1Ijoia2Fyb2xpbmE5OSIsImEiOiJjbDFvejYxOGMwOGdzM2Nuc
 function Base() {
     const mapContainer = useRef(null);
     const map = useRef(null);
-    const [zoom, setZoom] = useState(15);
+    const zoom = 15;
     const auth = getAuth()
     const bookingId = window.location.href.split('/')[4]
     const [keyboxId, setKeyboxId] = useState();
@@ -27,7 +28,7 @@ function Base() {
         } else {
             navigate(`/login`)
         }
-    }, []);
+    },);
 
     useEffect(() => {
         if (keyboxId) {
@@ -61,11 +62,6 @@ function Base() {
                     });
                     map.current.addControl(geolocate);
 
-                    var options = {
-                        enableHighAccuracy: true,
-                        timeout: 5000,
-                        maximumAge: 0
-                    };
                 } else {
                     console.log("No data available");
                 }

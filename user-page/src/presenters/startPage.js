@@ -15,9 +15,8 @@ export default function StartPagePresenter() {
 
     const [bookings, setBookings] = useState([])
     const [keys, setKeys] = useState([])
-    const [bookingsError, setBookingsError] = useState()
     const [loading, setLoading] = useState(true)
-    const [bookingIds, bookingLoading, bookingIdsError] = useListVals(ref(db, 'guests/' + auth.currentUser.email.replace('.', '')))
+    const [bookingIds, bookingLoading] = useListVals(ref(db, 'guests/' + auth.currentUser.email.replace('.', '')))
 
 
     // Fetch bookings
@@ -41,16 +40,14 @@ export default function StartPagePresenter() {
                             setLoading(false)
                         })
                         .catch(error => {
-                            setBookingsError(error)
                             console.error(error)
                         })
                 })
                 .catch(error => {
-                    setBookingsError(error)
                     console.error(error)
                 })
         }
-    }, [bookingLoading])
+    }, [bookingLoading, bookingIds])
 
 
     const logOut = () => {

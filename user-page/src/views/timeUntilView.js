@@ -1,4 +1,3 @@
-import RadioButtonCheckedRounded from "@mui/icons-material/RadioButtonCheckedRounded"
 import { Typography } from "@mui/material"
 function TimeUntilView(props) {
     return (
@@ -21,7 +20,7 @@ function TimeUntilView(props) {
                 <div className="divOverMapContainer">
                     <div className="divOverMap">
                         <div className="lockIcon">
-                            <img src={props.icon}></img>
+                            <img src={props.icon} alt='kmsicon'></img>
                             <Typography variant="h3" sx={{ mt: 6 }} align="center" color={'#616161'}>To return, hold the key-tag against the door</Typography>
                         </div>
                     </div>

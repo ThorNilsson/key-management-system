@@ -7,13 +7,12 @@ function BaseView(props) {
             <Box
                 sx={{
                     display: 'flex',
-                    justifyContent: 'center',
                     bgcolor: '#dddddd',
                     height: '10vh',
                     justifyContent: 'space-between',
                     alignItems: 'center'
                 }}>
-                <img src={logo} className='logo' onClick={() => props.navigate(`/login`)}></img>
+                <img src={logo} className='logo' alt='logo' onClick={() => props.navigate(`/login`)}></img>
                 <div className='headerText'>Retrieve Key from Box</div>
                 <Button size='small' sx={{ mt: 0.5, mr: '10px', color: 'white', backgroundColor: '#d43d3f', ':hover': { backgroundColor: '#9e2e2e' } }} variant='contained' onClick={props.logOut}>Sign Out</Button>
             </Box>

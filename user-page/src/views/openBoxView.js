@@ -28,7 +28,7 @@ function StateView(props) {
                                     },
                                 }}
                                 color="primary" />
-                            : <img style={{width: "100px"}} src={props.icon}></img>}
+                            : <img style={{width: "100px"}} src={props.icon} alt='icon'></img>}
                         {props.button ? <div className="openButton" onClick={e => props.action()}>OPEN</div> :
                             props.pressed ? <div className='pressBlue'>Press the blue button on the box!</div> :
                                 <div className='retrieveKey'>{props.overMap}</div>}
