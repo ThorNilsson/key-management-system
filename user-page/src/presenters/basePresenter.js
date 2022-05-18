@@ -1,57 +1,88 @@
+import { ref, get } from "firebase/database"
+import { db } from "../firebase"
 import BaseView from '../views/baseView'
 import React, { useRef, useEffect, useState } from 'react';
 import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
+import { getAuth, signOut } from 'firebase/auth';
+import { useNavigate } from "react-router-dom"
 mapboxgl.accessToken = 'pk.eyJ1Ijoia2Fyb2xpbmE5OSIsImEiOiJjbDFvejYxOGMwOGdzM2NucXB3bWk4dzB0In0.O_nYe5G8ZDN_jc6B6dT1aQ';
 
-function Base(props) {
+function Base() {
     const mapContainer = useRef(null);
     const map = useRef(null);
-    const [lng, setLng] = useState(props.model.targetLocation.lng);
-    const [lat, setLat] = useState(props.model.targetLocation.lat);
     const [zoom, setZoom] = useState(15);
-
+    const auth = getAuth()
+    const bookingId = window.location.href.split('/')[4]
+    const [keyboxId, setKeyboxId] = useState();
+    const navigate = useNavigate()
 
     useEffect(() => {
-        if (map.current) return; // initialize map only once
-        map.current = new mapboxgl.Map({
-            container: mapContainer.current,
-            style: 'mapbox://styles/mapbox/light-v10',
-            center: [lng, lat],
-            zoom: zoom
-        });
-        const el = document.createElement('div');
-        el.style.backgroundImage = `url(https://cdn.discordapp.com/attachments/955491126272458772/961627183594487859/Untitled_Artwork.png)`;
-        el.style.width = `50px`;
-        el.style.height = `50px`;
-        el.style.backgroundSize = '100%';
+        if (auth.currentUser) {
+            get(ref(db, 'guests/' + auth.currentUser.email.replace('.', '') + '/' + bookingId)).then((snapshot) => {
+                const data = snapshot.val();
+                setKeyboxId(data.keyboxId)
+            }).catch((error) => {
+                console.error(error);
+            });
+        } else {
+            navigate(`/login`)
+        }
+    }, []);
 
-        new mapboxgl.Marker(el
-        ).setLngLat([lng, lat]).setOffset([0, -25])
-            .addTo(map.current);
+    useEffect(() => {
+        if (keyboxId) {
+            const starCountRef = ref(db, 'keyboxes/' + keyboxId + '/info');
+            get(starCountRef).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    if (map.current) return; // initialize map only once
+                    map.current = new mapboxgl.Map({
+                        container: mapContainer.current,
+                        style: 'mapbox://styles/mapbox/light-v10',
+                        center: [data.longitude, data.latitude],
+                        zoom: zoom
+                    });
+                    const el = document.createElement('div');
+                    el.style.backgroundImage = `url(https://cdn.discordapp.com/attachments/955491126272458772/961627183594487859/Untitled_Artwork.png)`;
+                    el.style.width = `50px`;
+                    el.style.height = `50px`;
+                    el.style.backgroundSize = '100%';
 
-        const geolocate = new mapboxgl.GeolocateControl({
-            positionOptions: {
-                enableHighAccuracy: true
-            },
-            trackUserLocation: true,
-            showUserHeading: true
-        });
-        map.current.addControl(geolocate);
-        geolocate.on('geolocate', () => {
-            console.log('A geolocate event has occurred.');
-        });
-        
-        var options = {
-            enableHighAccuracy: true,
-            timeout: 5000,
-            maximumAge: 0
-        };
+                    new mapboxgl.Marker(el
+                    ).setLngLat([data.longitude, data.latitude]).setOffset([0, -25])
+                        .addTo(map.current);
 
-    });
+                    const geolocate = new mapboxgl.GeolocateControl({
+                        positionOptions: {
+                            enableHighAccuracy: true
+                        },
+                        trackUserLocation: true,
+                        showUserHeading: true
+                    });
+                    map.current.addControl(geolocate);
+
+                    var options = {
+                        enableHighAccuracy: true,
+                        timeout: 5000,
+                        maximumAge: 0
+                    };
+                } else {
+                    console.log("No data available");
+                }
+            }).catch((error) => {
+                console.error(error);
+            });
+        }
+    }, [keyboxId]);
+
+
+    const logOut = () => {
+        signOut(auth)
+    }
 
     return (
         <div>
-            <BaseView mapContainer={mapContainer} />
+            <BaseView mapContainer={mapContainer} logOut={logOut} navigate={navigate} />
         </div>
     );
 }

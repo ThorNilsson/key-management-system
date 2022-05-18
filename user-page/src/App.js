@@ -1,16 +1,36 @@
 import './App.css';
-import React, { useRef, useEffect, useState } from 'react';
-import Base from './presenters/basePresenter'
-import Model from './model';
+import Base from './presenters/basePresenter';
+import { LoginPresenter } from './presenters/logInPresenter';
+import StartPagePresenter from './presenters/startPage';
 import ViewPresenter from './presenters/viewPresenter';
-import BeforeAccess from './presenters/beforeAccessPres';
+import { Route, Routes } from "react-router-dom"
+import { Container } from "@mui/material"
+
+
+//import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
+
 function App() {
-  let model = new Model();
+
   return (
     <div>
-      {model.firebaseTest()}
-      <Base model={model} />
-      <ViewPresenter model={model}/>
+      <Routes>
+        <Route path="/login" element={<LoginPresenter />} />
+        <Route path="/startpage" element={<StartPagePresenter />} />
+        <Route path="/booking/:bookingId" element={
+          <div>
+            <Base />
+            <ViewPresenter />
+          </div>
+        } />
+        <Route
+          path="*"
+          element={
+            <main style={{ padding: "1rem" }}>
+              <p>There's nothing here!</p>
+            </main>
+          }
+        />
+      </Routes>
     </div>
   )
 }
