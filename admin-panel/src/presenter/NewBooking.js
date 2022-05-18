@@ -11,8 +11,10 @@ import { useParams, useNavigate } from "react-router-dom"
 
 import NewBookingView from "../view/NewBookingView"
 import useTitle from "../hooks/useTitle"
+import { getAuth, sendSignInLinkToEmail } from 'firebase/auth';
 
 export default function NewBookingPresenter() {
+	const auth = getAuth()
     useTitle("New booking")
 	const { boxId } = useParams()
 	const navigate = useNavigate()
@@ -64,7 +66,27 @@ export default function NewBookingPresenter() {
 		})
 			.then(() => navigate("/" + boxId + "/bookings"))
 			.catch(error => alert("Something went wrong " + error.message))
+		sendEmail()
 	}
+
+	const sendEmail = (event) => {
+        const actionCodeSettings = {
+            url: 'http://localhost:3000/asodiaouio29186ey7gawd',
+            handleCodeInApp: true,
+        };
+
+        sendSignInLinkToEmail(auth, email, actionCodeSettings)
+            .then(() => {
+                console.log("email sent")
+            })
+            .catch((error) => {
+                console.log(error)
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                // ...
+            });
+
+    }
 
 	return (
 		<NewBookingView
