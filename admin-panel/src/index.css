@@ -1,3 +1,7 @@
+* {
+    box-sizing: border-box;
+}
+
 body {
   margin: 0;
 }
@@ -8,4 +12,8 @@ img.cover {
 img.profile {
     border-radius: 4px;
     box-shadow: 0 1px 2px 0px rgba(0,0,0,.2);
+}
+
+.rdrDefinedRangesWrapper {
+    display: none;
 }
