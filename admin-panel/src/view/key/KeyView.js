@@ -14,7 +14,6 @@ import grey from '@mui/material/colors/grey';
 import ArrowForwardIosRounded from "@mui/icons-material/ArrowForwardIosRounded"
 import ImageRounded from "@mui/icons-material/ImageRounded"
 import KeyRounded from "@mui/icons-material/KeyRounded"
-import moment from "moment";
 
 export default function KeyView({edit, close, loading, info, release, counter, access}) {
     if (loading) return <CircularProgress/>
