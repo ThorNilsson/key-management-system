@@ -12,47 +12,45 @@ beforeEach(() => {
 	// setup a DOM element as a render target
 	container = document.createElement("div")
 	document.body.appendChild(container)
+    root = createRoot(container)
 })
 
 afterEach(() => {
 	// cleanup on exiting
+    root.unmount()
 	container.remove()
 	container = null
 })
 
-it("Renders differently depending on props", () => {
+it("Component renders successfully without props", () => {
 	act(() => {
-        root = createRoot(container)
 		root.render(<BoxPopupHeader />)
 	})
 	expect(container.querySelectorAll("button").length).toBe(0)
+	expect(container.textContent).toEqual("")
+})
 
+it("Component Adds buttons when props are passed", () => {
 	act(() => {
-        root.unmount()
-        root = createRoot(container)
 		root.render(<BoxPopupHeader close={() => console.log("Dummy function")} />)
 	})
 	expect(container.querySelectorAll("button").length).toBe(1)
 
 	act(() => {
-        root.unmount()
-        root = createRoot(container)
 		root.render(<BoxPopupHeader back={() => console.log("Dummy function")} />)
 	})
 	expect(container.querySelectorAll("button").length).toBe(1)
 
 	act(() => {
-        root.unmount()
-        root = createRoot(container)
 		root.render(
 			<BoxPopupHeader back={() => console.log("Dummy function")} close={() => console.log("Dummy function")} />
 		)
 	})
 	expect(container.querySelectorAll("button").length).toBe(2)
+})
 
+it("Displays title", () => {
 	act(() => {
-        root.unmount()
-        root = createRoot(container)
 		root.render(<BoxPopupHeader title="Hello world!" />)
 	})
 	expect(container.textContent).toContain("Hello world!")
