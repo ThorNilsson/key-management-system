@@ -23,7 +23,7 @@ const ICONS = {
 	cottage: CottageRounded,
 }
 
-export default function StartPageView({ navigate, bookings, keys, loading, bookingLoading, logOut }) {
+export default function StartPageView({ navigate, currentBookings, expiredBookings, keys, loading, bookingLoading, logOut}) {
 	console.log(keys)
 	return (
 		<div>
@@ -45,15 +45,16 @@ export default function StartPageView({ navigate, bookings, keys, loading, booki
 					<Stack justifyContent="center"
 						alignItems="center" height={'100%'}><CircularProgress /></Stack>
 				</div>
-			) : bookings.length === 0 ? (
+			) : currentBookings.length === 0 && expiredBookings.length === 0 ? (
 				<Stack direction="row" alignItems="center" justifyContent="center">
 					<bookings component="span" sx={{ p: 5, my: 2, borderRadius: 2, border: "2px dashed grey" }}>
 						<Typography variant="h2">You currently have no bookings assigned to you</Typography>
 					</bookings>
 				</Stack>
 			) : (
+				<>
 				<Stack>
-					{bookings.map(booking => {
+					{currentBookings.map(booking => {
 						const Icon = ICONS[booking.type] || HouseRounded
 						const key = keys.find(key => key.id === booking.keyId)
 						return (
@@ -99,6 +100,54 @@ export default function StartPageView({ navigate, bookings, keys, loading, booki
 						)
 					})}
 				</Stack>
+				<Stack>
+				{expiredBookings.map(booking => {
+					const Icon = ICONS[booking.type] || HouseRounded
+					const key = keys.find(key => key.id === booking.keyId)
+					return (
+						<Grid item xs={1} key={booking.id}>
+							<Card sx={{ mx: 1, mt: 2 }}>
+								<CardActionArea disabled={true}>
+									{key.image && key.image !== "" ? (
+										<CardMedia
+											component="img"
+											height="140"
+											image={key.image}
+											alt={"image for " + key.name}
+										/>
+									) : (
+										<CardMedia>
+											<Icon sx={{ fontSize: 100, color: booking.color }} />
+										</CardMedia>
+									)}
+									<CardContent sx={{ p: 3 }} spacing={2} direction="column">
+										<Typography variant="h3" gutterBottom>
+											{key.name}
+										</Typography>
+										<Typography
+											variant="body1"
+											sx={{
+												display: "-webkit-bookings",
+												overflow: "hidden",
+												WebkitbookingsOrient: "vertical",
+												WebkitLineClamp: 2,
+											}}
+										>
+											{format(new Date(booking.checkIn * 1000), 'eee dd MMM yyyy') + '-' + format(new Date(booking.checkOut * 1000), 'eee dd MMM yyyy')}
+										</Typography>
+									</CardContent>
+									<CardActions style={{ justifyContent: "flex-end" }}>
+										<Button component={Link} variant="outlined" color="error">
+											Expired
+										</Button>
+									</CardActions>
+								</CardActionArea>
+							</Card>
+						</Grid>
+					)
+				})}
+			</Stack>
+			</>
 			)}
 		</div>
 	)

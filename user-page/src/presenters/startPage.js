@@ -13,7 +13,8 @@ export default function StartPagePresenter() {
     const navigate = useNavigate()
     const auth = getAuth()
 
-    const [bookings, setBookings] = useState([])
+    const [currentBookings, setCurrentBookings] = useState([])
+    const [expiredBookings, setExpiredBookings] = useState([])
     const [keys, setKeys] = useState([])
     const [bookingsError, setBookingsError] = useState()
     const [loading, setLoading] = useState(true)
@@ -30,7 +31,8 @@ export default function StartPagePresenter() {
             Promise.all(promises)
                 .then(data => {
                     var bookings = (data.map((snap, i) => ({ ...snap.val(), id: bookingIds[i] })))
-                    setBookings(bookings)
+                    setCurrentBookings(bookings.filter(b => b.checkOut * 1000 - Date.now() >= 0))
+                    setExpiredBookings(bookings.filter(b => b.checkOut * 1000 - Date.now() < 0))
                     const promises1 = bookings.map(booking => get(ref(db, "keyboxes/" + booking.id.keyboxId + "/keys/" + booking.keyId)))
                     Promise.all(promises1)
                         .then(data => {
@@ -56,6 +58,17 @@ export default function StartPagePresenter() {
         signOut(auth)
     }
 
-    return <StartPageView navigate={navigate} bookings={bookings} keys={keys} loading={loading}
-        logOut={logOut} bookingLoading={bookingLoading} />
+    return <StartPageView navigate={navigate} currentBookings={currentBookings.sort(compare)} expiredBookings={expiredBookings.sort(compare)}
+        keys={keys} loading={loading} logOut={logOut} bookingLoading={bookingLoading} />
+}
+
+function compare(a, b) {
+    if (a.checkIn < b.checkIn) {
+        return -1;
+    }
+    if (a.checkIn > b.checkIn) {
+        return 1;
+    }
+    // a must be equal to b
+    return 0;
 }
