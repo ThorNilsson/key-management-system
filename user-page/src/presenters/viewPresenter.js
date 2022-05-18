@@ -4,7 +4,7 @@ import TooFarView from "../views/tooFarView";
 import LockIcon from '../outline_lock_black_48dp.png'
 import unLockIcon from '../outline_lock_open_black_48dp.png'
 import Icon from '../successIcon.png'
-import logo from '../logo-box.png'
+import logo from '../keylogo.png'
 import { ref, get, onValue, query, orderByChild, limitToLast, set } from "firebase/database"
 import { db } from "../firebase"
 import { getAuth } from 'firebase/auth';
@@ -24,6 +24,7 @@ function ViewPresenter() {
     const [success, setSuccess] = useState(false);
     const [pressed, setPressed] = useState(false);
     const locationWatchId = useRef(null);
+    const timeoutRef = useRef(null);
     const { currentUser } = getAuth()
     const bookingId = window.location.href.split('/')[4]
 
@@ -33,9 +34,7 @@ function ViewPresenter() {
     }, []);
 
     useEffect(() => {
-
-        setTimeout(() => (setReturnStage(true), setSuccess(true)), 10000)
-
+        
         if (pressed) {
             setTimeout(() => (setPressed(false)), 60000)
         }
@@ -45,13 +44,12 @@ function ViewPresenter() {
         if (currentUser) {
             get(ref(db, 'guests/' + currentUser.email.replace('.', '') + '/' + bookingId)).then((snapshot) => {
                 const data = snapshot.val();
-                console.log(data)
                 setKeyboxId(data.keyboxId)
             }).catch((error) => {
                 console.error(error);
             });
         }
-    }, []);
+    },);
 
     useEffect(() => {
 
@@ -61,21 +59,19 @@ function ViewPresenter() {
         const isBoxOpenRef = query(ref(db, 'keyboxes/' + keyboxId + '/log'), orderByChild('time'), limitToLast(1));
         onValue(isBoxOpenRef, (snapshot) => {
             const data = snapshot.val();
-            if (data != null) {
+            if (data !== null) {
                 const keys = Object.keys(data);
                 const array = keys.map(key => ({ key: key, value: data[key] }));
                 const isOpen = array[0].value.isOpen;
-                console.log(isOpen);
                 setBoxState(isOpen);
             }
         });
-    }, [data]);
+    }, [data, keyboxId]);
 
     useEffect(() => {
         if (keyboxId) {
             const bookingRef = ref(db, 'keyboxes/' + keyboxId + '/bookings/' + bookingId);
             get(bookingRef).then((snapshot) => {
-                console.log(snapshot.val());
                 const data = snapshot.val();
                 setData({
                     startDate: data.checkIn * 1000,
@@ -90,8 +86,7 @@ function ViewPresenter() {
                 const getKeySlotStatusRef = ref(db, 'keyboxes/' + keyboxId + '/keys/' + data.keyId + '/keySlot');
                 onValue(getKeySlotStatusRef, (snapshot) => {
                     const data = snapshot.val();
-                    if (data != null) {
-                        console.log(data);
+                    if (data !== null) {
                         setKeyState(data);
                     }
                 });
@@ -101,7 +96,6 @@ function ViewPresenter() {
 
             const infoRef = ref(db, 'keyboxes/' + keyboxId + '/info');
             get(infoRef).then((snapshot) => {
-                console.log(snapshot.val());
                 const data = snapshot.val();
                 setBoxData({
                     description: data.description
@@ -118,7 +112,7 @@ function ViewPresenter() {
             });
         }
 
-    }, [keyboxId]);
+    }, [keyboxId, bookingId]);
     function setDistanceToTarget(pos, lng, lat) {
         var crd = pos.coords;
         setDist(Math.round(distance(crd.latitude, crd.longitude, lat, lng) * 1000))
@@ -135,17 +129,17 @@ function ViewPresenter() {
             <TimeUntilPresenter time={data.startDate} return={false} />
         )
     }
-    if (dist > 100) {
+    if (dist > 100000) {
         return (
             <TooFarView dist={dist} description={boxData.description} />
         )
     }
-    if (!boxState && keyState != 0 && dist != undefined && !returnStage) {
+    if (!boxState && keyState !== 0 && dist !== undefined && !returnStage) {
         const topText = `You are ${dist === undefined ? '0' : dist} meters from the box`
         const bottomText = 'Open Box!'
         if (!pressed) {
             return (
-                <StateView button={true} key='open' action={() => (openBox(keyboxId, bookingId, data.name, data.keyId), setPressed(true))}
+                <StateView button={true} key='open' action={() => {openBox(keyboxId, bookingId, data.name, data.keyId); setPressed(true)}}
                     topText={topText} bottomText={bottomText} icon={LockIcon} />
             )
         } else {
@@ -155,7 +149,7 @@ function ViewPresenter() {
             )
         }
     }
-    if (boxState && keyState != 0 && !returnStage) {
+    if (boxState && keyState !== 0 && !returnStage) {
         const topText = 'You have opened the box'
         const bottomText = 'Retrieve the indicated key!'
         const overMap = 'Retrieve Key'
@@ -174,7 +168,9 @@ function ViewPresenter() {
         )
     }
     if (!boxState && keyState === 0 && !returnStage && !success) {
-
+        if(!timeoutRef.current){
+            timeoutRef.current = setTimeout(() => setSuccess(true), 10 * 1000)
+        }
         const topText = `Welcome ${data.name}, have a great stay! `
         const bottomText = data.message
         const overMap = 'Success'
@@ -183,21 +179,18 @@ function ViewPresenter() {
             <StateView key='success' topText={topText} bottomText={bottomText} overMap={overMap} icon={Icon} />
         )
     }
-    if (success) {
-        if (!pressed) {
-            return (
-                <TimeUntilPresenter time={data.returnDate} return={true}
-                    openBox={() => (openBox(keyboxId, bookingId, data.name, data.keyId), setPressed(true))} />
-            )
-        } else {
-            return (
-                <TimeUntilPresenter time={data.returnDate} return={true}
-                    pressed={pressed} />
-            )
+    if (success && !boxState && keyState === 0) {
+        if(!returnStage){
+            setReturnStage(true)
         }
+        return (
+            <TimeUntilPresenter time={data.returnDate} return={true}
+                pressed={pressed} />
+        )
     }
+    
+    if ( returnStage && boxState && keyState === 0) {
 
-    if (returnStage && boxState && keyState === 0) {
         const topText = 'You have opened the box'
         const bottomText = 'Return the indicated key!'
         const overMap = 'Return Key'
@@ -207,7 +200,7 @@ function ViewPresenter() {
         )
     }
 
-    if (returnStage && boxState && keyState != 0) {
+    if (returnStage && boxState && keyState !== 0) {
         const topText = 'You have returned the key'
         const bottomText = 'Thank you! Please close the door'
         const overMap = 'Close door'
@@ -216,7 +209,7 @@ function ViewPresenter() {
             <StateView key='close' topText={topText} bottomText={bottomText} overMap={overMap} icon={unLockIcon} />
         )
     }
-    if (returnStage && !boxState && keyState != 0) {
+    if (returnStage && !boxState && keyState !== 0) {
         const topText = 'Well done'
         const bottomText = 'Thank you for using KMS!'
         const overMap = 'Welcome back!'
@@ -239,7 +232,6 @@ function openBox(keyboxId, bookingId, nameOnBooking, keyId) {
         keyId: keyId,
         action: "getKeyByBooking",
     });
-    console.log("timer started")
 }
 
 function degreesToRadians(degrees) {

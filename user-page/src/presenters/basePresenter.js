@@ -20,7 +20,6 @@ function Base() {
         if (auth.currentUser) {
             get(ref(db, 'guests/' + auth.currentUser.email.replace('.', '') + '/' + bookingId)).then((snapshot) => {
                 const data = snapshot.val();
-                console.log(data)
                 setKeyboxId(data.keyboxId)
             }).catch((error) => {
                 console.error(error);
@@ -35,7 +34,6 @@ function Base() {
             const starCountRef = ref(db, 'keyboxes/' + keyboxId + '/info');
             get(starCountRef).then((snapshot) => {
                 if (snapshot.exists()) {
-                    console.log(snapshot.val());
                     const data = snapshot.val();
                     if (map.current) return; // initialize map only once
                     map.current = new mapboxgl.Map({
@@ -44,7 +42,6 @@ function Base() {
                         center: [data.longitude, data.latitude],
                         zoom: zoom
                     });
-                    console.log(data.longitude)
                     const el = document.createElement('div');
                     el.style.backgroundImage = `url(https://cdn.discordapp.com/attachments/955491126272458772/961627183594487859/Untitled_Artwork.png)`;
                     el.style.width = `50px`;
@@ -63,9 +60,6 @@ function Base() {
                         showUserHeading: true
                     });
                     map.current.addControl(geolocate);
-                    geolocate.on('geolocate', () => {
-                        console.log('A geolocate event has occurred.');
-                    });
 
                     var options = {
                         enableHighAccuracy: true,

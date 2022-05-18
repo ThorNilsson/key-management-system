@@ -38,10 +38,7 @@ export function LoginPresenter() {
     const logIn = () => {
         if (isSignInWithEmailLink(auth, window.location.href)) {
             signInWithEmailLink(auth, email, window.location.href).then(data => {
-                console.log(data)
             }).catch(error => {
-                console.log(error.code)
-                console.log(counter)
                 if (error.code === 'auth/invalid-email') {
                     if (counter === 0) {
                         setErrorText("Too many tries, send a new link and try again")
