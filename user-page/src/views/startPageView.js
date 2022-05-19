@@ -58,7 +58,7 @@ export default function StartPageView({ navigate, bookings, keys, loading, booki
 							return (
 								<Grid item xs={1} key={booking.id.bookingId}>
 									<Card sx={{ mx: 1, mt: 2 }}>
-										<CardActionArea onClick={() => navigate(`/booking/${booking.id.bookingId}`)} disabled={booking.checkOut * 1000 < Date.now()}>
+										<CardActionArea name='card'onClick={() => navigate(`/booking/${booking.id.bookingId}`)} disabled={booking.checkOut * 1000 < Date.now()}>
 											{key.image && key.image !== "" ? (
 												<CardMedia
 													component="img"

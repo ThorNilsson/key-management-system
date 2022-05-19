@@ -45,7 +45,7 @@ export function LoginView({
                         helperText={emailErrorText}
                         error={emailErrorText !== ""}
                     />
-                    <Button type="submit" disabled={loginDisable} fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+                    <Button id="signIn" name="signIn" type="submit" disabled={loginDisable} fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
                         Sign In
                     </Button>
                     <Grid container style={{ textAlign: "center", display: "block" }}>
