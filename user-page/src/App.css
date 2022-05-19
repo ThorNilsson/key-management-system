@@ -1,0 +1,207 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.map-container {
+  height: 48vh;
+}
+
+.topbar {
+  height: 30vh;
+}
+.topbar1 {
+  height: 30vh;
+  position: absolute;
+  top: 10vh;
+  left: 10vw;
+  right: 10vw;
+}
+
+.topbar_text1{
+  display: flex;
+  justify-content: center;
+  line-height: 10vh;
+  padding-top: 20px;
+  color: #616161;
+  width: 100%;
+  font-size: 130%;
+}
+.topbar_text2{
+  display: flex;
+  justify-content: center;
+  line-height: 10vh;
+  
+  color: #616161;
+  width: 100%;
+  font-size: 160%;
+}
+
+.time_left{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-top: 40px;
+}
+
+.time{
+  color: #616161;
+  display: flex;
+  line-height: 500%;
+  color: #616161;
+}
+
+.time_units{
+  width: fit-content;
+  padding-top: 20px;
+}
+.time_amount{
+  width: fit-content;
+  font-size: 500%;
+}
+
+.bottombar {
+  height: 12vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #616161;
+}
+
+.howitworks{
+  width: 50%;
+  padding-left: 10%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.contact{
+  width: 50%;
+  padding-right: 10%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.header {
+  height: 10vh;
+  width: 100vw;
+  background-color: #dddddd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #616161;
+}
+
+.extraDiv{
+  width: 100;
+  height: 100;
+  background-color: #dddddd;
+  padding-left: 10;
+  color: #dddddd;
+}
+
+.headerText{
+  margin-top: 50;
+  color: #616161;
+}
+
+.logo{
+  width: 6%; 
+  padding-left: 10px;
+}
+@media only screen and (max-width: 450px) {
+  .logo{
+    width: 20%; 
+    padding-left: 10px;
+  }
+}
+
+
+
+.divOverMapContainer{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.divOverMap{
+  background-color: rgb(255, 255, 255);
+  height: 40vh;
+  width: 80vw;
+  display: flex;
+  align-items: center;
+  color: #616161;
+  border-radius: 10px;
+  position: absolute;
+  bottom: 16vh;
+}
+
+.lockIcon{
+  width: 100%;
+  padding: auto;
+  place-content: center;
+  text-align: center;
+}
+
+.openButtonContainer{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.openButton{
+  width: 80%;
+  height: 90px;
+  background-color: green;
+  margin: auto !important;
+  text-align: center;
+  place-content: center;
+  color: white;
+  font-size: 200%;
+  display: grid;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.retrieveKey{
+  font-size: 200%;
+}
+
+.pressBlue{
+  font-size: 200%;
+}
+
+

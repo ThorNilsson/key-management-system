@@ -1,38 +1,84 @@
 /*
-  unlock 2 - unlocks the specified key
-  status 3 - gets the status of key in lock
-
+  accessSlot a - unlocks the specified key
+  returnSlot r - returns the specified key
+  ledSlot    l - light the led of specified key
   stat 4
   ledg 1
   ledr 3
 */
-
-boolean unlockSlot(int slot) {
-  String command = "unlock " + slot;
-  //KeyArray.print(command);
-  //String result = KeyArray.read();
-  //return result.equls("ok");
+boolean accessSlot(int slot) {
+  Serial.print("a");
+  Serial.print(slot);
+  return getWaitForResponse(slot, 60);
 }
 
-boolean closeSlot(int slot) {
-
-  String command = "lock " + slot;
-  //KeyArray.print(command);
-
-  return digitalRead(sensor_Pin);
+boolean returnSlot(int slot) {
+  Serial.print("r");
+  Serial.print(slot);
+  return getWaitForResponse(slot, 60);
 }
+
+
+boolean ledSlot(int slot) {
+  Serial.print("l");
+  Serial.print(slot);
+  return getWaitForResponse(slot, 5);
+}
+
 boolean isKeyInSlot(int slot) {
-  String command = "status " + slot;
-  //KeyArray.print(command);
-  //String readString;
-  //while (Serial.available()) {
-  //  delay(3);  //delay to allow buffer to fill
-  //  if (Serial.available() > 0) {
-  //   char c = Serial.read();  //gets one byte from serial buffer
-  //  readString += c; //makes the string readString
-  // }
-  // }
-  //String result = KeyArray.read();
-  return true;
-  //return result.equls("ok true");
+  Serial.print("s");
+  Serial.print(slot);
+  return getWaitForResponse(slot, 5);
+}
+
+bool getWaitForResponse(int slot, int seconds) {
+  unsigned long initialTime = millis();
+
+  unsigned long initialLedTime = millis();
+  unsigned long interval = 40;
+
+  unsigned long initialErrorTime = millis();
+  boolean doNotifyError = false;
+
+  while (initialTime + (seconds * 1000) >  millis())
+  {
+    if (millis() - initialLedTime > interval) {
+      if (doNotifyError)
+        doNotifyError = notifyErrorNoDelay(millis() - initialErrorTime);
+      else
+        LoadingLed();
+      initialLedTime = millis();
+    }
+
+    if (Serial.available() > 0) {
+      int incomingByte = Serial.read();
+      clearLeds();
+
+      switch (incomingByte) {
+        case 'k': return true;    break;    // k for ok
+        case 'w': doNotifyError = true; initialErrorTime = millis();  break;    // w for wrong hole
+        case 't': return false;  break;     // t for true
+        case 'f': return false;  break;     // f for false
+        default:  break;
+      }
+    }
+  }
+  clearLeds();
+  //sendLog("Timed out", "", "", "");
+
+  return false;
+}
+
+bool getResponse() {
+  if (Serial.available() > 0) {
+    int incomingByte = Serial.read();
+
+    switch (incomingByte) {
+      case 'k': return true;    break;    // k for ok
+      case 'w': notifyError();  break;    // w for wrong hole
+      case 't': return false;  break;     // t for true
+      case 'f': return false;  break;     // f for false
+      default: return false; break;
+    }
+  }
 }

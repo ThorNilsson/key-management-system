@@ -1,51 +1,38 @@
+String checkRFID() {
+  String newTag = "NotAdded";
 
-
-void checkMastertagTag() {
-  char newTag[NVM_MAX_LENZ];
-
-  // is master tag added??
-  if (strcmp(masterTag, "NotAdded") == 0) {
-    Serial.println("Adding master tag");
+  if (rfid.PICC_IsNewCardPresent() && rfid.PICC_ReadCardSerial()) {
+    for (byte i = 0; i < 4; i++) {
+      tag += rfid.uid.uidByte[i];
+    }
     notify();
-    notify();
-    notify();
-    notify();
-    notify();
-    String newTagS = readRfidTag(100);
-
-    newTagS.toCharArray(newTag, NVM_MAX_LENZ);
-    nvm.put("masterTag", newTag);
-    nvm.get("masterTag", masterTag);
-    Serial.print("Master tag is added: ");
-    Serial.println(masterTag);
-  } else {
-    Serial.print("Master tag is already added: ");
-    Serial.println(masterTag);
+    printDebug("A tag has been scanned: ", tag);
+    newTag = tag;
+    tag = "";
+    rfid.PICC_HaltA();
+    rfid.PCD_StopCrypto1();
   }
+  return newTag;
 }
 
-
-
-String readRfidTag(int timeout) {
-  Serial.println("Scan the tag you want to be the master RFID tag");
+String waitForRFID(int timeout) {
   String newTag = "NotAdded";
-  bool notScanned = true;
-  while (notScanned) {
-    if (rfid.PICC_IsNewCardPresent()) {
-      if (rfid.PICC_ReadCardSerial()) {
-        for (byte i = 0; i < 4; i++) {
-          tag += rfid.uid.uidByte[i];
-        }
-        notify();
-        Serial.println(tag);
-        newTag = tag;
+  unsigned long initialTimeoutTime = millis();
+  unsigned long initialTime = millis();
+  unsigned long interval = 100;
 
-        notScanned = false;
-        tag = "";
-        rfid.PICC_HaltA();
-        rfid.PCD_StopCrypto1();
-      }
+  while (initialTimeoutTime + (timeout * 1000) >  millis())
+  {
+    newTag = checkRFID();
+    if (!newTag.equals("NotAdded")) {
+      return newTag;
+    }
+
+    if (millis() - initialTime < interval) {
+      LoadingLed();
+      initialTime = millis();
     }
   }
   return newTag;
 }
+  
