@@ -21,8 +21,6 @@ export default function BookingsPresenter() {
     const [showPrevious, setShowPrevious] = useState(false)
     const [populatedBookings, setPopulatedBookings] = useState([])
 
-    const allZero = {hour: 0, minute: 0, second: 0, millisecond: 0};
-
     useEffect(() => {
         if (!bookings || bookings.length === 0) return
 
@@ -44,7 +42,7 @@ export default function BookingsPresenter() {
                 ...b,
                 room: keyInfo[b.keyId]?.name,
             })))
-    }, [showPrevious, bookings])
+    }, [showPrevious, bookings, keyInfo])
 
     if (error) return <div>Something went wrong</div>
 
