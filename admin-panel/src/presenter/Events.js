@@ -11,7 +11,7 @@ import { format } from "date-fns"
 import useTitle from "../hooks/useTitle"
 
 const columns = [
-	{ field: "id", headerName: "ID", width: 100 },
+	{ field: "id", headerName: "ID", width: 120 },
 	{ field: "index", headerName: "Index", width: 30 },
 	{
 		field: "time",

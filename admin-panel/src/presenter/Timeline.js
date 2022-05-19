@@ -51,7 +51,7 @@ export default function TimelinePresenter() {
 	const items = bookings.map(b => ({
 		...b,
 		group: b.keyId,
-		title: b.name,
+		title: b.message,
 		start_time: moment(b.checkIn * 1000),
 		end_time: moment(b.checkOut * 1000),
 	}))
