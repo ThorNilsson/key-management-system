@@ -41,7 +41,7 @@ export default function BoxPresenter() {
 
 	const [box, setBox] = useState(null)
 	const [boxes, setBoxes] = useState(null)
-	const [boxIds, , boxIdsError] = useListVals(ref(db, `users/${currentUser.uid}/boxes`))
+	const [boxIds, , boxIdsError] = useListVals(ref(db, `users/${currentUser?.uid}/boxes`))
 
 	// Fetch boxes
 	useEffect(() => {
@@ -106,7 +106,7 @@ export default function BoxPresenter() {
                             navigate(`/${boxId}`)
                         }
 					}}
-					maxWidth={window.innerWidth}
+					maxWidth={window.innerWidth + "px"}
 				>
 					<Outlet />
 				</Dialog>
