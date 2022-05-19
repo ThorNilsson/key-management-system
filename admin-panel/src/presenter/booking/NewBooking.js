@@ -85,7 +85,7 @@ export default function NewBookingPresenter() {
 
 		sendSignInLinkToEmail(auth, email, actionCodeSettings)
 			.then(() => {
-				console.log("email sent")
+				console.log("email sent to user")
 			})
 			.catch((error) => {
 				console.error(error)
