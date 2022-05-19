@@ -79,7 +79,7 @@ export default function NewBookingPresenter() {
 
 	const sendEmail = () => {
 		const actionCodeSettings = {
-			url: 'http://localhost:3000/login',
+			url: 'https://lambent-granita-fce9bd.netlify.app/login',
 			handleCodeInApp: true,
 		};
 
@@ -100,7 +100,7 @@ export default function NewBookingPresenter() {
             close={() => navigate(`/${boxId}`)}
             formRef={formRef}
 		>
-            <BookingFormView 
+            <BookingFormView
 			    keys={keyVals}
                 handleSubmit={handleSubmit}
                 setCheckIn={setCheckIn}
@@ -117,7 +117,7 @@ export default function NewBookingPresenter() {
                 setMessage={setMessage}
                 name={name}
                 setName={setName}
-                dateRange={dateRange} 
+                dateRange={dateRange}
                 setDateRange={setDateRange}
                 formRef={formRef}
             />
