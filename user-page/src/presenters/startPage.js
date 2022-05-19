@@ -35,8 +35,7 @@ export default function StartPagePresenter() {
                     const promises1 = bookings.map(booking => get(ref(db, "keyboxes/" + booking.id.keyboxId + "/keys/" + booking.keyId)))
                     Promise.all(promises1)
                         .then(data => {
-                            const keys1 = data.map((snap) => ({ ...snap.val(), id: snap.key }))
-                            setKeys(keys1)
+                            setKeys(data.map((snap) => ({ ...snap.val(), id: snap.key })))
                             setLoading(false)
                         })
                         .catch(error => {

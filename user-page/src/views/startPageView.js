@@ -86,17 +86,6 @@ export default function StartPageView({ navigate, bookings, keys, loading, booki
 												>
 													{format(new Date(booking.checkIn * 1000), 'eee dd MMM yyyy') + '-' + format(new Date(booking.checkOut * 1000), 'eee dd MMM yyyy')}
 												</Typography>
-												<Typography
-													variant="body1"
-													sx={{
-														display: "-webkit-bookings",
-														overflow: "hidden",
-														WebkitbookingsOrient: "vertical",
-														WebkitLineClamp: 2,
-													}}
-												>
-													hej
-												</Typography>
 											</CardContent>
 											<CardActions style={{ justifyContent: "flex-end" }}>
 												{booking.checkOut * 1000 < Date.now() ?

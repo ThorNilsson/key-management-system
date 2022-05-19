@@ -50,7 +50,7 @@ export function LoginView({
                     </Button>
                     <Grid container style={{ textAlign: "center", display: "block" }}>
                         <Grid item>
-                            <Button type="submit" fullWidth variant="contained" sx={{  mb: 2 }} onClick={sendEmail}>
+                            <Button type="submit" id="send" name="send" fullWidth variant="contained" sx={{  mb: 2 }} onClick={sendEmail}>
                                 Send Email
                             </Button>
                         </Grid>

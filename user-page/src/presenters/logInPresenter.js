@@ -4,6 +4,7 @@ import { getAuth, isSignInWithEmailLink, signInWithEmailLink, sendSignInLinkToEm
 import { LoginView } from '../views/loginView';
 import StartPagePresenter from './startPage';
 import { CircularProgress, Stack, } from "@mui/material"
+import { useNavigate } from "react-router-dom"
 
 export function LoginPresenter() {
     const [email, setEmail] = useState();
@@ -12,6 +13,7 @@ export function LoginPresenter() {
     const [errorText, setErrorText] = useState("");
     const auth = getAuth()
     const [user, loading, error] = useAuthState(auth)
+    const navigate = useNavigate()
 
 
     const handleSubmit = event => {
@@ -19,15 +21,18 @@ export function LoginPresenter() {
         logIn()
     }
 
-    if (loading) return (<div className='topbar1' >
-        <Stack justifyContent="center"
-            alignItems="center" height={'100%'}><CircularProgress /></Stack>
-    </div>
+    if (loading) return (
+        <div className='topbar1' >
+            <Stack justifyContent="center" alignItems="center" height={'100%'}>
+                <CircularProgress id='loading'/>
+            </Stack>
+        </div>
     )
     if (error) return <div>{error.message}</div>
 
 
     if (user) {
+        navigate(`/startpage`)
         return (
             <div>
                 <StartPagePresenter />
@@ -68,9 +73,11 @@ export function LoginPresenter() {
                 console.log("email sent")
             })
             .catch((error) => {
+                if (error.code === 'auth/missing-email') {
+                    setErrorText("Missing email")
+                }
                 console.log(error)
             });
-
     }
 
     return (
