@@ -1,14 +1,10 @@
 import TimelineView from "../view/TimelineView.js"
-
 import "react-calendar-timeline/lib/Timeline.css"
 import moment from "moment"
-
 import { useList } from "react-firebase-hooks/database"
 import { onValue, ref, set } from "firebase/database"
 import { db } from "../api/firebase.js"
-
 import useTitle from "../hooks/useTitle"
-
 import { useNavigate, useParams } from "react-router-dom"
 import { useEffect, useState } from "react"
 
@@ -51,7 +47,7 @@ export default function TimelinePresenter() {
 	const items = bookings.map(b => ({
 		...b,
 		group: b.keyId,
-		title: b.name,
+		title: b.message,
 		start_time: moment(b.checkIn * 1000),
 		end_time: moment(b.checkOut * 1000),
 	}))
