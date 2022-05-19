@@ -11,11 +11,15 @@ let root = null
 beforeEach(() => {
 	container = document.createElement("div")
 	document.body.appendChild(container)
-    root = createRoot(container)
+    act(() => {
+        root = createRoot(container)
+    })
 })
 
 afterEach(() => {
-    root.unmount()
+    act(() => {
+        root.unmount()
+    })
 	container.remove()
 	container = null
 })
@@ -38,6 +42,7 @@ it("Component Adds buttons when props are passed", () => {
 		root.render(<BoxPopupHeader back={() => console.log("Dummy function")} />)
 	})
 	expect(container.querySelectorAll("button").length).toBe(1)
+	expect(container.querySelector("button").textContent).toEqual("Back")
 
 	act(() => {
 		root.render(
