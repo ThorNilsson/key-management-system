@@ -9,7 +9,6 @@ import useRelativeNavigation from "../hooks/useRelativeNavigation"
 import useTitle from "../hooks/useTitle"
 import {format, formatDistanceToNow, isPast, isToday} from "date-fns";
 import moment from "moment";
-import EastIcon from "@mui/icons-material/East";
 import Chip from "@mui/material/Chip";
 
 export default function BookingsPresenter() {
@@ -44,7 +43,6 @@ export default function BookingsPresenter() {
             .map(b => ({
                 ...b,
                 room: keyInfo[b.keyId]?.name,
-                checkInDays: moment(b.checkIn * 1000).set(allZero).diff(moment().set(allZero), "days"),
             })))
     }, [showPrevious, bookings])
 
