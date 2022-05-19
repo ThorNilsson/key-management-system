@@ -79,7 +79,7 @@ export default function NewBookingPresenter() {
 
 	const sendEmail = () => {
 		const actionCodeSettings = {
-			url: 'http://localhost:3000/login',
+			url: 'https://lambent-granita-fce9bd.netlify.app/login',
 			handleCodeInApp: true,
 		};
 

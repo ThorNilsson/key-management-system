@@ -59,7 +59,7 @@ export function LoginPresenter() {
     const sendEmail = (event) => {
         event.preventDefault()
         const actionCodeSettings = {
-            url: 'http://localhost:3000/login',
+            url: 'https://lambent-granita-fce9bd.netlify.app/login',
             handleCodeInApp: true,
         };
 
