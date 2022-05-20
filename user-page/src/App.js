@@ -4,16 +4,18 @@ import { LoginPresenter } from './presenters/logInPresenter';
 import StartPagePresenter from './presenters/startPage';
 import ViewPresenter from './presenters/viewPresenter';
 import { Route, Routes } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 
 
 //import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 
 function App() {
+  const navigate = useNavigate()
 
   return (
     <div>
       <Routes>
-        <Route path="/login" element={<LoginPresenter />} />
+        <Route path="/login" element={<LoginPresenter navigate={() => navigate()}/>} />
         <Route path="/startpage" element={<StartPagePresenter />} />
         <Route path="/booking/:bookingId" element={
           <div>
