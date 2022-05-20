@@ -4,13 +4,11 @@ import { LoginPresenter } from './presenters/logInPresenter';
 import StartPagePresenter from './presenters/startPage';
 import ViewPresenter from './presenters/viewPresenter';
 import { Route, Routes } from "react-router-dom"
-import { useNavigate } from "react-router-dom"
 
 
 //import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 
 function App() {
-  const navigate = useNavigate()
 
   return (
     <div>
