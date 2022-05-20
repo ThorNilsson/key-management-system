@@ -4,14 +4,16 @@ import { getAuth, isSignInWithEmailLink, signInWithEmailLink, sendSignInLinkToEm
 import { LoginView } from '../views/loginView';
 import StartPagePresenter from './startPage';
 import { CircularProgress, Stack, } from "@mui/material"
+import { useNavigate } from "react-router-dom"
 
-export function LoginPresenter(navigate) {
+export function LoginPresenter() {
     const [email, setEmail] = useState();
     const [counter, setCounter] = useState(5);
     const [loginDisable, setLoginDisable] = useState();
     const [errorText, setErrorText] = useState("");
     const auth = getAuth()
     const [user, loading, error] = useAuthState(auth)
+    const navigate = useNavigate()
 
 
     const handleSubmit = event => {

@@ -15,7 +15,7 @@ function App() {
   return (
     <div>
       <Routes>
-        <Route path="/login" element={<LoginPresenter navigate={() => navigate()}/>} />
+        <Route path="/login" element={<LoginPresenter />}/>
         <Route path="/startpage" element={<StartPagePresenter />} />
         <Route path="/booking/:bookingId" element={
           <div>
