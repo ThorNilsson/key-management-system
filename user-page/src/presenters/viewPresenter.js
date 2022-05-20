@@ -129,7 +129,7 @@ function ViewPresenter() {
             <TimeUntilPresenter time={data.startDate} return={false} />
         )
     }
-    if (dist > 100) {
+    if (dist > 100000) {
         return (
             <TooFarView dist={dist} description={boxData.description} />
         )
