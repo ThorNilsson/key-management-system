@@ -100,7 +100,7 @@ export default function NewBookingPresenter() {
             close={() => navigate(`/${boxId}`)}
             formRef={formRef}
 		>
-            <BookingFormView 
+            <BookingFormView
 			    keys={keyVals}
                 handleSubmit={handleSubmit}
                 setCheckIn={setCheckIn}
@@ -117,7 +117,7 @@ export default function NewBookingPresenter() {
                 setMessage={setMessage}
                 name={name}
                 setName={setName}
-                dateRange={dateRange} 
+                dateRange={dateRange}
                 setDateRange={setDateRange}
                 formRef={formRef}
             />

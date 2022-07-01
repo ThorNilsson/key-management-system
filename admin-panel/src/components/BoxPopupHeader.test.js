@@ -9,15 +9,17 @@ globalThis.IS_REACT_ACT_ENVIRONMENT = true
 let container = null
 let root = null
 beforeEach(() => {
-	// setup a DOM element as a render target
 	container = document.createElement("div")
 	document.body.appendChild(container)
-    root = createRoot(container)
+    act(() => {
+        root = createRoot(container)
+    })
 })
 
 afterEach(() => {
-	// cleanup on exiting
-    root.unmount()
+    act(() => {
+        root.unmount()
+    })
 	container.remove()
 	container = null
 })
@@ -40,6 +42,7 @@ it("Component Adds buttons when props are passed", () => {
 		root.render(<BoxPopupHeader back={() => console.log("Dummy function")} />)
 	})
 	expect(container.querySelectorAll("button").length).toBe(1)
+	expect(container.querySelector("button").textContent).toEqual("Back")
 
 	act(() => {
 		root.render(
