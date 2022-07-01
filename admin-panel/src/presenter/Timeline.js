@@ -81,7 +81,7 @@ export default function TimelinePresenter() {
 			email: booking.email,
 			keyId: key.id,
 			message: booking.message,
-			name: booking.title,
+			name: booking.name,
 		}
 		console.log(booking)
 		console.log(updatedBooking)

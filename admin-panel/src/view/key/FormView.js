@@ -32,7 +32,7 @@ export default function KeyFormView({
 				onInput={e => setRoomName(e.target.value)}
 				autoFocus
 				margin="normal"
-				label="Room name"
+				label="Key name"
 				type="text"
 				fullWidth
 				variant="outlined"
@@ -45,7 +45,7 @@ export default function KeyFormView({
 				multiline
 				minRows={3}
 				margin="dense"
-				label="Room description"
+				label="Description or instructions to customer"
 				type="text"
 				variant="outlined"
 				value={roomDescription}

@@ -72,7 +72,7 @@ export default function BookingFormView({
 			<TextField
 				select
 				variant="outlined"
-				label="Booked room"
+				label="Booked key"
 				value={room}
 				required
 				onChange={event => setRoom(event.target.value)}

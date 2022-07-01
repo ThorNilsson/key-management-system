@@ -42,7 +42,7 @@ export function LoginPresenter() {
 
     const logIn = () => {
         if (isSignInWithEmailLink(auth, window.location.href)) {
-            signInWithEmailLink(auth, email, window.location.href).then(data => {
+            signInWithEmailLink(auth, email, window.location.href).then(() => {
             }).catch(error => {
                 if (error.code === 'auth/invalid-email') {
                     if (counter === 0) {
@@ -64,7 +64,7 @@ export function LoginPresenter() {
     const sendEmail = (event) => {
         event.preventDefault()
         const actionCodeSettings = {
-            url: 'https://kms-get-my-key.netlify.app/login',
+            url: 'https://kms-access-key.netlify.app/login',
             handleCodeInApp: true,
         };
 

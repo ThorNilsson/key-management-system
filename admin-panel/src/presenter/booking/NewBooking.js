@@ -79,7 +79,7 @@ export default function NewBookingPresenter() {
 
 	const sendEmail = () => {
 		const actionCodeSettings = {
-			url: 'https://lambent-granita-fce9bd.netlify.app/login',
+			url: 'https://kms-access-key.netlify.app/login',
 			handleCodeInApp: true,
 		};
 
