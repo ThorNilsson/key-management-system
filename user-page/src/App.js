@@ -13,6 +13,7 @@ function App() {
   return (
     <div>
       <Routes>
+        <Route path="/*" element={<LoginPresenter />}/>
         <Route path="/login" element={<LoginPresenter />}/>
         <Route path="/startpage" element={<StartPagePresenter />} />
         <Route path="/booking/:bookingId" element={

@@ -64,7 +64,7 @@ export function LoginPresenter() {
     const sendEmail = (event) => {
         event.preventDefault()
         const actionCodeSettings = {
-            url: 'https://lambent-granita-fce9bd.netlify.app/login',
+            url: 'https://kms-get-my-key.netlify.app/login',
             handleCodeInApp: true,
         };
 
