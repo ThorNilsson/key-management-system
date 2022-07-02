@@ -80,6 +80,7 @@ export default function NewBookingPresenter() {
 	const sendEmail = () => {
 		const actionCodeSettings = {
 			url: 'https://kms-access-key.netlify.app/login',
+			//url: 'https://localhost:3001/login',
 			handleCodeInApp: true,
 		};
 
